@@ -1,0 +1,19 @@
+{
+  "name": "forever23.co",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forever23co/forever23.co.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/forever23co/forever23.co/issues"
+  },
+  "homepage": "https://github.com/forever23co/forever23.co#readme"
+}
