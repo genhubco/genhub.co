@@ -1,33 +1,62 @@
-html {
-  height: 100%;
-}
-
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
-}
-
-.content {
-  margin-top: -30px;
+.header {
+    margin: 30px auto;
+    width: 100%;
+    text-align: center;
 }
 
 .title h1 {
-  margin: 0;
-  font-family: "Fjalla One", sans-serif;
+    margin: 0;
+    font-family: "Fjalla One", sans-serif;
 }
 
 .description {
-  margin: 8px 0;
-  color: #a7afb5;
-  font-family: "PT Sans", sans-serif;
+    margin: 8px 0;
+    color: #a7afb5;
+    font-family: "PT Sans", sans-serif;
 }
 
 .contact {
-  color: #007fff;
-  text-decoration: none;
-  font-family: "PT Sans", sans-serif;
-  margin-right: 5px;
+    color: #007fff;
+    text-decoration: none;
+    font-family: "PT Sans", sans-serif;
+    margin-right: 5px;
+}
+
+.card {
+    margin: auto;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    width: 500px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(200,200,200,0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(200,200,200,0.74);
+    box-shadow: 0px 0px 5px 0px rgba(200,200,200,0.75);
+}
+
+.card-title {
+    margin-left: 30px;
+    margin-right: 30px;
+    font-family: "PT Sans", sans-serif;
+}
+
+.card-image img {
+    max-width: 100%;
+}
+
+.card-desc {
+    margin-left: 30px;
+    margin-right: 30px;
+    font-family: "PT Sans", sans-serif;
+}
+
+.card-link {
+    margin-left: 30px;
+    margin-right: 30px;
+    text-align: right;
+}
+
+.card-link a {
+    color: #007fff;
+    font-family: "PT Sans", sans-serif;
+    text-decoration: none;
 }
