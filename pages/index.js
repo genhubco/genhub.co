@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Header from "../components/Header";
 import Card from "../components/Card";
+
 import "../styles/main.css";
 
 export default () => (
