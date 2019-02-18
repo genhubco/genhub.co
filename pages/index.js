@@ -16,7 +16,7 @@ export default () => (
         </Head>
         <Header/>
         <Card
-            img="Article1s.png"
+            img="Article1s.svg"
             title="Introduction"
             desc="Field of genetic engineering is currently under revolutionary breakthroughs that have potential to create/change whole industries..."
             link="https://medium.com/forever23/forever23-introduction-5f887c6d9490"
