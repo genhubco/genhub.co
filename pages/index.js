@@ -16,6 +16,12 @@ export default () => (
         </Head>
         <Header/>
         <Card
+            img="Article2s.svg"
+            title="Automating CRISPR: Part 1"
+            desc={<p>CRISPR stands for `<b>clustered regularly interspaced short palindromic repeats</b>`. It was first found in bacteria and acts as an immune system in prokaryotic cells...</p>}
+            link="https://medium.com/forever23/automating-crispr-part-1-90e0b4af19fe"
+        />
+        <Card
             img="Article1s.svg"
             title="Introduction"
             desc="Field of genetic engineering is currently under revolutionary breakthroughs that have potential to create/change whole industries..."

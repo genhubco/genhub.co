@@ -23,7 +23,7 @@
 }
 
 .card {
-    margin: auto;
+    margin: 0 auto 25px;
     padding-top: 30px;
     padding-bottom: 30px;
     width: 500px;
