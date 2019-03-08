@@ -1,12 +1,41 @@
 .header {
-    margin: 30px auto;
     width: 100%;
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
 }
 
-.title h1 {
-    margin: 0;
-    font-family: "Fjalla One", sans-serif;
+.logo img {
+    width: 45px;
+}
+
+.btn-primary {
+    font-weight: bold;
+    font-family: "PT Sans", sans-serif;
+    letter-spacing: 1px;
+    margin: 5px;
+    height: 35px;
+    width: 100px;
+    background-color: #007fff;
+    border: none;
+    font-size: 14px;
+    color: white;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(200,200,200,0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(200,200,200,0.74);
+    box-shadow: 0px 0px 5px 0px rgba(200,200,200,0.75);
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #1489ff;
+}
+
+.btn-primary:active {
+    outline: none;
+}
+
+.btn-primary:focus {
+    outline: none;
 }
 
 .description {
@@ -19,7 +48,7 @@
     color: #007fff;
     text-decoration: none;
     font-family: "PT Sans", sans-serif;
-    margin-right: 5px;
+    margin-right: 10px;
 }
 
 .card {
@@ -59,4 +88,26 @@
     color: #007fff;
     font-family: "PT Sans", sans-serif;
     text-decoration: none;
+}
+
+.content-small {
+    width: 500px;
+    margin: auto;
+}
+
+.demo-title {
+    font-family: "PT Sans", sans-serif;
+    text-align: center;
+}
+
+.homepage-title {
+    color: #a7afb5;
+    font-family: "PT Sans", sans-serif;
+    font-size: 16px;
+    margin: 0 0 10px 0;
+}
+
+.footer {
+    padding-bottom: 10px;
+    text-align: center;
 }

@@ -1,9 +1,15 @@
-export default () => (
+import Link from 'next/link';
+import { withRouter } from 'next/router'
+
+export default withRouter(({router}) => (
     <div className="header">
-        <div className="title"><h1>forever23</h1></div>
-        <p className="description">Democratizing genetic engineering</p>
-        <a target="_blank" href="mailto:lazoviccorp@gmail.com" className="contact">contact</a>
-        <a target="_blank" href="https://medium.com/forever23" className="contact">blog</a>
-        <a target="_blank" href="https://angel.co/forever23/jobs" className="contact">jobs</a>
+        <Link href="/">
+            <a className="logo"><img src="/static/NewLogo.svg"/></a>
+        </Link>
+        {router.route !== "/demo" && <Link href="/demo">
+            <button className="btn-primary">
+                Demo
+            </button>
+        </Link>}
     </div>
-)
+));
