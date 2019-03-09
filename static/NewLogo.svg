@@ -1,8 +1,13 @@
-<svg width="368" height="368" viewBox="0 0 368 368" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="368" height="368" fill="white"/>
-<path d="M184 176.538C217.102 176.538 243.937 150.391 243.937 118.138C243.937 85.8843 217.102 59.7377 184 59.7377" stroke="black" stroke-width="35"/>
-<path d="M184 176.538C217.102 176.538 243.937 150.391 243.937 118.138C243.937 85.8843 217.102 59.7377 184 59.7377" stroke="black" stroke-width="35"/>
-<path d="M184 308.262C221.332 308.262 251.595 278.775 251.595 242.4C251.595 206.025 221.332 176.538 184 176.538" stroke="black" stroke-width="35"/>
-<path d="M184 308.262C146.668 308.262 116.405 278.775 116.405 242.4C116.405 206.025 146.668 176.538 184 176.538" stroke="black" stroke-width="35"/>
-<line x1="150.202" y1="59.764" x2="184.058" y2="59.764" stroke="black" stroke-width="35"/>
+<svg width="172" height="285" viewBox="0 0 172 285" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="172" height="285" fill="white"/>
+<path d="M85.4489 134.729C118.551 134.729 145.386 108.582 145.386 76.329C145.386 44.0756 118.551 17.929 85.4489 17.929" stroke="black" stroke-width="35"/>
+<path d="M85.4488 266.454C122.781 266.454 153.044 236.966 153.044 200.591C153.044 164.217 122.781 134.729 85.4488 134.729" stroke="url(#paint0_linear)" stroke-width="35"/>
+<path d="M85.4489 266.454C48.1169 266.454 17.8534 236.966 17.8534 200.591C17.8534 164.217 48.1169 134.729 85.4489 134.729" stroke="black" stroke-width="35"/>
+<line x1="29.8956" y1="17.9553" x2="85.5064" y2="17.9553" stroke="black" stroke-width="35"/>
+<defs>
+<linearGradient id="paint0_linear" x1="122.264" y1="218.553" x2="122.722" y2="111.855" gradientUnits="userSpaceOnUse">
+<stop/>
+<stop offset="1" stop-opacity="0"/>
+</linearGradient>
+</defs>
 </svg>
