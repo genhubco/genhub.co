@@ -1,13 +1,19 @@
-<svg width="172" height="285" viewBox="0 0 172 285" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="172" height="285" fill="white"/>
-<path d="M85.4489 134.729C118.551 134.729 145.386 108.582 145.386 76.329C145.386 44.0756 118.551 17.929 85.4489 17.929" stroke="black" stroke-width="35"/>
-<path d="M85.4488 266.454C122.781 266.454 153.044 236.966 153.044 200.591C153.044 164.217 122.781 134.729 85.4488 134.729" stroke="url(#paint0_linear)" stroke-width="35"/>
-<path d="M85.4489 266.454C48.1169 266.454 17.8534 236.966 17.8534 200.591C17.8534 164.217 48.1169 134.729 85.4489 134.729" stroke="black" stroke-width="35"/>
-<line x1="29.8956" y1="17.9553" x2="85.5064" y2="17.9553" stroke="black" stroke-width="35"/>
+<svg width="285" height="285" viewBox="0 0 285 285" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<rect width="285" height="285" fill="white"/>
+<path d="M75.0523 120.477C62.8896 108.315 43.1698 108.315 31.007 120.477C18.8442 132.64 18.8442 152.36 31.007 164.523C43.1698 176.685 62.8896 176.685 75.0523 164.523" stroke="black" stroke-width="30"/>
+<path d="M144.307 95.2683C170.392 69.183 212.685 69.183 238.77 95.2683C264.855 121.354 264.855 163.646 238.77 189.732C212.685 215.817 170.392 215.817 144.307 189.732" stroke="black" stroke-width="30"/>
+<line x1="74.8744" y1="164.715" x2="144.421" y2="95.1675" stroke="black" stroke-width="30"/>
+<line x1="75.0044" y1="120.438" x2="144.426" y2="189.86" stroke="url(#paint0_linear)" stroke-width="30"/>
+</g>
 <defs>
-<linearGradient id="paint0_linear" x1="122.264" y1="218.553" x2="122.722" y2="111.855" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint0_linear" x1="145.518" y1="186.117" x2="92.0843" y2="131.546" gradientUnits="userSpaceOnUse">
 <stop/>
-<stop offset="1" stop-opacity="0"/>
+<stop offset="0.656017" stop-opacity="0"/>
+<stop offset="1"/>
 </linearGradient>
+<clipPath id="clip0">
+<rect width="285" height="285" fill="white"/>
+</clipPath>
 </defs>
 </svg>
