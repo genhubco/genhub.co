@@ -4,7 +4,7 @@ import { withRouter } from 'next/router'
 export default withRouter(({router}) => (
     <div className="header">
         <Link href="/">
-            <a className="logo"><img src="/static/NewLogo.svg"/></a>
+            <a className="logo"><img src="/static/logo.svg"/></a>
         </Link>
         {router.route !== "/demo" && <Link href="/demo">
             <button className="btn-primary">
