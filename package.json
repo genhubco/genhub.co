@@ -1,5 +1,5 @@
 {
-  "name": "forever23.co",
+  "name": "genhub.co",
   "version": "1.0.0",
   "description": "",
   "main": "index.html",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/forever23co/forever23.co.git"
+    "url": "git+https://github.com/genhubco/genhub.co.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/forever23co/forever23.co/issues"
+    "url": "https://github.com/genhubco/genhub.co/issues"
   },
-  "homepage": "https://github.com/forever23co/forever23.co#readme",
+  "homepage": "https://github.com/genhubco/genhub.co#readme",
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
     "next": "^8.0.1",
