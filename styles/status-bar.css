@@ -1,0 +1,28 @@
+.status-bar {
+    margin-bottom: 10px;
+}
+
+.status-bar-img {
+    height: 12px;
+    display: inline-block;
+    margin-right: 4px;
+}
+
+.status-bar-text {
+    font-family: "PT Sans", sans-serif;
+    vertical-align: bottom;
+    font-size: 14px;
+    display: inline;
+}
+
+.status-bar-loading {
+    color: #F1A54D;
+}
+
+.status-bar-success {
+    color: #7FE49B;
+}
+
+.status-bar-error {
+    color: #EE6868;
+}

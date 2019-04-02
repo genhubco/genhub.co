@@ -1,3 +1,5 @@
+import "../styles/card.css";
+
 export default (props) => (
     <div className="card">
         <div className="card-image">
