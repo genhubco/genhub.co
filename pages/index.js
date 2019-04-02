@@ -3,14 +3,14 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Card from "../components/Card";
 
-import "../styles/main.css";
+import "../styles/page.css";
 
 export default () => (
     <div>
         <Head/>
         <Header/>
         <div className="content-small">
-            <p className="homepage-title">Latest articles:</p>
+            <p className="small-title">Latest articles:</p>
             <Card
                 img="Article3s.svg"
                 title="Automating CRISPR: Part 2"

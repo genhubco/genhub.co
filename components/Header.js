@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { withRouter } from 'next/router'
+import { withRouter } from 'next/router';
+import "../styles/header.css";
 
 export default withRouter(({router}) => (
     <div className="header">
@@ -7,9 +8,9 @@ export default withRouter(({router}) => (
             <a className="logo"><img src="/static/applogo.svg"/></a>
         </Link>
         {router.route !== "/demo" && <Link href="/demo">
-            <button className="btn-primary">
+            <a className="link">
                 Demo
-            </button>
+            </a>
         </Link>}
     </div>
 ));
