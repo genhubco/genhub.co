@@ -18,7 +18,7 @@ export default (props) => {
     };
 
     return (
-        <div>
+        <div className="status-bar">
             <img className="status-bar-img" src={`/static/icons/${statuses[props.status].img}`} />
             <p className={classNames("status-bar-text", {
                 "status-bar-loading": props.status === "loading",

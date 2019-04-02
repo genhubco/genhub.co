@@ -56,6 +56,8 @@ export default class DemoPage extends React.Component {
                         defaultValue={defaultText}
                     />
                     <StatusBar status={this.state.status}/>
+                    <p className="small-title">Scores:</p>
+                    <p className="title">Coming soon...</p>
                 </div>
             </div>
         );
