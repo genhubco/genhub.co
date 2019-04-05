@@ -14,7 +14,8 @@ export default class DemoPage extends React.Component {
         super(props);
 
         this.state = {
-            status: "success"
+            status: "success",
+            message: "Compiled"
         };
 
         this.compileAndRank = this.compileAndRank.bind(this);
@@ -23,22 +24,32 @@ export default class DemoPage extends React.Component {
     async compileAndRank(value) {
         this.setState({
             status: "loading",
+            message: "Compiling..."
         });
         const url = "https://grna-scoring-service-git-master.genhub.now.sh/api/score";
         try {
             const res = await axios.post(url, value);
+            const status = res.status === 200 ? "success" : "error";
             this.setState({
-                status: res.status === 200 ? "success" : "error"
+                status,
+                message: "Compiled"
             });
         } catch (e) {
+            const errors = {
+                "invalid-input-pam": "Invalid PAM sequence",
+                "invalid-input-target": "Invalud target sequence",
+                "invalid-input-template": "Invalid template sequence",
+                "invalid-input-algo": "Invalid algorithm chosen"
+            }
             this.setState({
-                status: "error"
+                status: "error",
+                message: errors[e.response.data]
             });
         }
     }
 
     render() {
-        const defaultText = `target_seq = "ACTGTACCTGCACGGTACGT"\nscoring_algo = "all"`;
+        const defaultText = `pam = "AGG"\ntarget = "ACTGTACCTGCACGGTACGT"\ntemplate = "ACTGTACCTGCACGGTACAA"\nalgo = "deep_learning"`;
         return (
             <div>
                 <Head/>
@@ -55,7 +66,7 @@ export default class DemoPage extends React.Component {
                         onSave={this.compileAndRank}
                         defaultValue={defaultText}
                     />
-                    <StatusBar status={this.state.status}/>
+                    <StatusBar status={this.state.status} message={this.state.message}/>
                     <p className="small-title">Scores:</p>
                     <p className="title">Coming soon...</p>
                 </div>
