@@ -1,5 +1,4 @@
 import classNames from "classnames";
-import "../styles/status-bar.css";
 
 export default (props) => {
     const statuses = {
@@ -16,6 +15,36 @@ export default (props) => {
                 "status-bar-error": props.status === "error",
                 "status-bar-success": props.status === "success"
             })}>{props.message}</p>
+            <style jsx global>{`
+                .status-bar {
+                    margin-bottom: 10px;
+                }
+
+                .status-bar-img {
+                    height: 12px;
+                    display: inline-block;
+                    margin-right: 4px;
+                }
+
+                .status-bar-text {
+                    font-family: "PT Sans", sans-serif;
+                    vertical-align: bottom;
+                    font-size: 14px;
+                    display: inline;
+                }
+
+                .status-bar-loading {
+                    color: #F1A54D;
+                }
+
+                .status-bar-success {
+                    color: #7FE49B;
+                }
+
+                .status-bar-error {
+                    color: #EE6868;
+                }
+            `}</style>
         </div>
     );
 }

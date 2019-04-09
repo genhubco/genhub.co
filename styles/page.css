@@ -50,6 +50,11 @@
     margin: auto;
 }
 
+.text {
+    font-family: "PT Sans", sans-serif;
+    font-size: 14px;
+}
+
 .title {
     font-family: "PT Sans", sans-serif;
 }

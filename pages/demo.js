@@ -14,6 +14,7 @@ export default class DemoPage extends React.Component {
         super(props);
 
         this.state = {
+            results: {},
             status: "success",
             message: "Compiled"
         };
@@ -26,11 +27,12 @@ export default class DemoPage extends React.Component {
             status: "loading",
             message: "Compiling..."
         });
-        const url = "https://grna-scoring-service-git-master.genhub.now.sh/api/score";
+        const url = "https://services-git-master.genhub.now.sh/api/score";
         try {
             const res = await axios.post(url, value);
             const status = res.status === 200 ? "success" : "error";
             this.setState({
+                results: res.data,
                 status,
                 message: "Compiled"
             });
@@ -48,8 +50,21 @@ export default class DemoPage extends React.Component {
         }
     }
 
+    lerpColor(a, b, amount) {
+        const ah = parseInt(a.replace(/#/g, ''), 16),
+            ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
+            bh = parseInt(b.replace(/#/g, ''), 16),
+            br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
+            rr = ar + amount * (br - ar),
+            rg = ag + amount * (bg - ag),
+            rb = ab + amount * (bb - ab);
+
+        return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
+    };
+
     render() {
-        const defaultText = `pam = "AGG"\ntarget = "ACTGTACCTGCACGGTACGT"\ntemplate = "ACTGTACCTGCACGGTACAA"\nalgo = "deep_learning"`;
+        const defaultText = `pam = "AGG"\ntarget = "ACTGTACCTACACGGTACGT"\ntemplate = "ACTGTACCGGCTCGGTACGG"\nalgo = "deep_learning"`;
+        const color = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.deep_learning);
         return (
             <div>
                 <Head/>
@@ -67,9 +82,27 @@ export default class DemoPage extends React.Component {
                         defaultValue={defaultText}
                     />
                     <StatusBar status={this.state.status} message={this.state.message}/>
-                    <p className="small-title">Scores:</p>
-                    <p className="title">Coming soon...</p>
+                    {this.state.results.deep_learning &&
+                        <div>
+                            <p className="small-title">Deep learning:</p>
+                            <p className="text">
+                                On-target probability: <span className="specificity-result">
+                                {(this.state.results.deep_learning * 100).toFixed(2)} %
+                            </span></p>
+                        </div>
+                    }
+                    {this.state.results.scoring &&
+                        <div>
+                            <p className="small-title">Scores:</p>
+                            <p className="text">Coming soon...</p>
+                        </div>
+                    }
                 </div>
+                <style jsx global>{`
+                      .specificity-result {
+                          color: ${color};
+                      }
+                `}</style>
             </div>
         );
     }
