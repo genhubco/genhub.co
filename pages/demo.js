@@ -27,6 +27,7 @@ export default class DemoPage extends React.Component {
             status: "loading",
             message: "Compiling..."
         });
+
         const url = "https://services-git-master.genhub.now.sh/api/score";
         try {
             const res = await axios.post(url, value);
