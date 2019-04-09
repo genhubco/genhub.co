@@ -94,7 +94,7 @@ export default class DemoPage extends React.Component {
                     {this.state.results.scoring &&
                         <div>
                             <p className="small-title">Scores:</p>
-                            <p className="text">Coming soon...</p>
+                            <p className="text">{this.state.results.scoring}</p>
                         </div>
                     }
                 </div>
