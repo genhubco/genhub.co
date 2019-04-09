@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { withRouter } from 'next/router';
-import "../styles/header.css";
 
 export default withRouter(({router}) => (
     <div className="header">
@@ -12,5 +11,17 @@ export default withRouter(({router}) => (
                 Demo
             </a>
         </Link>}
+        <style jsx global>{`
+            .header {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .logo img {
+                height: 30px;
+                margin-left: 10px;
+            }
+        `}</style>
     </div>
 ));
