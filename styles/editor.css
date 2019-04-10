@@ -3,6 +3,10 @@
     border-radius: 5px;
 }
 
+.granit-editor:focus {
+    outline: none;
+}
+
 .granit-editor-highlight .string {
     color: #78C365;
 }
