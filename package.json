@@ -22,7 +22,7 @@
     "@zeit/next-css": "^1.0.1",
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
-    "granit": "0.0.19",
+    "granit": "0.0.23",
     "granit-utils": "0.0.4",
     "hash.js": "^1.1.7",
     "next": "^8.0.1",

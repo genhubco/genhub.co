@@ -1,6 +1,10 @@
-.granit-editor {
+.granit-editor-container {
     background-color: #f2f3f4;
     border-radius: 5px;
+}
+
+.granit-editor:focus {
+    outline: none;
 }
 
 .granit-editor-highlight .string {
