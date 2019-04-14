@@ -89,7 +89,7 @@ export default class DemoPage extends React.Component {
     }
 
     render() {
-        const defaultText = `pam = "AGG"\ntarget = "ACGTGCTCCTGCTCGTGTGG"\ntemplate = "ACGTGCTCCTGCTCGTGTGT"\nalgo = "all"`;
+        const defaultText = `pam = "CGG"\ntarget = "AGTCTGAGAAGGGTC"\ntemplate = "GAG"\nalgo = "all"`;
         const deepLearningColor = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.cnn_score);
         const scoringColor = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.cfd_score);
         return (
