@@ -62,9 +62,36 @@ export default class DemoPage extends React.Component {
         return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
     };
 
+    renderDeepLearning() {
+        if (this.state.results.deep_learning == null) {
+            return;
+        }
+        return (
+            <div>
+                <p className="text">
+                    CNN On-target probability: <span className="cnn-result">
+                        {(this.state.results.deep_learning * 100).toFixed(2)} %
+                    </span>
+                </p>
+            </div>
+        );
+    }
+
+    renderScoring() {
+        if (this.state.results.scoring == null) {
+            return;
+        }
+        return (
+            <div>
+                <p className="text">CFD score: <span className="cfd-result">{this.state.results.scoring.toFixed(2)}</span></p>
+            </div>
+        );
+    }
+
     render() {
-        const defaultText = `pam = "AGG"\ntarget = "ACTGTACCTACACGGTACGT"\ntemplate = "ACTGTACCGGCTCGGTACGG"\nalgo = "deep_learning"`;
-        const color = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.deep_learning);
+        const defaultText = `pam = "AGG"\ntarget = "ACGTGCTCCTGCTCGTGTGG"\ntemplate = "ACGTGCTCCTGCTCGTGTGT"\nalgo = "all"`;
+        const deepLearningColor = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.deep_learning);
+        const scoringColor = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.scoring);
         return (
             <div>
                 <Head/>
@@ -82,25 +109,15 @@ export default class DemoPage extends React.Component {
                         defaultValue={defaultText}
                     />
                     <StatusBar status={this.state.status} message={this.state.message}/>
-                    {this.state.results.deep_learning &&
-                        <div>
-                            <p className="small-title">Deep learning:</p>
-                            <p className="text">
-                                On-target probability: <span className="specificity-result">
-                                {(this.state.results.deep_learning * 100).toFixed(2)} %
-                            </span></p>
-                        </div>
-                    }
-                    {this.state.results.scoring &&
-                        <div>
-                            <p className="small-title">Scores:</p>
-                            <p className="text">{this.state.results.scoring}</p>
-                        </div>
-                    }
+                    {this.renderDeepLearning()}
+                    {this.renderScoring()}
                 </div>
                 <style jsx global>{`
-                      .specificity-result {
-                          color: ${color};
+                      .cnn-result {
+                          color: ${deepLearningColor};
+                      }
+                      .cfd-result {
+                          color: ${scoringColor};
                       }
                 `}</style>
             </div>
