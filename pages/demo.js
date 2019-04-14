@@ -63,14 +63,14 @@ export default class DemoPage extends React.Component {
     };
 
     renderDeepLearning() {
-        if (this.state.results.deep_learning == null) {
+        if (this.state.results.cnn_score == null) {
             return;
         }
         return (
             <div>
                 <p className="text">
                     CNN On-target probability: <span className="cnn-result">
-                        {(this.state.results.deep_learning * 100).toFixed(2)} %
+                        {(this.state.results.cnn_score * 100).toFixed(2)} %
                     </span>
                 </p>
             </div>
@@ -78,20 +78,20 @@ export default class DemoPage extends React.Component {
     }
 
     renderScoring() {
-        if (this.state.results.scoring == null) {
+        if (this.state.results.cfd_score == null) {
             return;
         }
         return (
             <div>
-                <p className="text">CFD score: <span className="cfd-result">{this.state.results.scoring.toFixed(2)}</span></p>
+                <p className="text">CFD score: <span className="cfd-result">{this.state.results.cfd_score.toFixed(2)}</span></p>
             </div>
         );
     }
 
     render() {
-        const defaultText = `pam = "AGG"\ntarget = "ACGTGCTCCTGCTCGTGTGG"\ntemplate = "ACGTGCTCCTGCTCGTGTGT"\nalgo = "all"`;
-        const deepLearningColor = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.deep_learning);
-        const scoringColor = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.scoring);
+        const defaultText = `pam = "CGG"\ntarget = "AGTCTGAGAAGGGTC"\ntemplate = "GAG"\nalgo = "all"`;
+        const deepLearningColor = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.cnn_score);
+        const scoringColor = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.cfd_score);
         return (
             <div>
                 <Head/>
