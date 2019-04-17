@@ -1,13 +1,14 @@
 import React from "react";
+import { highlightToml, keysMap, lifeCycleMap } from "granit-utils";
+import Editor from "granit";
+import { post } from "axios";
+import { parse } from "toml";
+
 import Head from "../components/Head";
 import Header from "../components/Header";
 import StatusBar from "../components/StatusBar";
 import "../styles/page.css";
 import "../styles/editor.css";
-
-import { highlightToml, keysMap, lifeCycleMap } from "granit-utils";
-import Editor from "granit";
-import axios from "axios";
 
 export default class DemoPage extends React.Component {
     constructor(props) {
@@ -27,21 +28,19 @@ export default class DemoPage extends React.Component {
             status: "loading",
             message: "Compiling..."
         });
-        const url = "https://api.genhub.co/score";
+        const url = "https://api-bi5yp7fls.now.sh/score";
         try {
-            const res = await axios.post(url, value);
-            const status = res.status === 200 ? "success" : "error";
+            const parsedJson = parse(value);
+            const res = await post(url, JSON.stringify(parsedJson));
             this.setState({
-                results: res.data,
-                status,
+                results: res.data[0],
+                status: "success",
                 message: "Compiled"
             });
         } catch (e) {
             const errors = {
-                "invalid-input-pam": "Invalid PAM sequence",
-                "invalid-input-target": "Invalud target sequence",
-                "invalid-input-template": "Invalid template sequence",
-                "invalid-input-algo": "Invalid algorithm chosen"
+                "invalid-input-algo": "Invalid algorithm chosen. Available: 'cnn', 'cfd' and 'all'",
+                "invalid-input-inputs": "Invalid inputs format"
             }
             this.setState({
                 status: "error",
@@ -89,7 +88,7 @@ export default class DemoPage extends React.Component {
     }
 
     render() {
-        const defaultText = `pam = "CGG"\ntarget = "AGTCTGAGAAGGGTC"\ntemplate = "GAG"\nalgo = "all"`;
+        const defaultText = `algo = "all"\n\n[[inputs]]\npam = "CGG"\ntarget = "AGTCTGAGAAGGGTC"\ngrna = "GAG"`;
         const deepLearningColor = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.cnn_score);
         const scoringColor = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.cfd_score);
         return (
