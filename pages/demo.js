@@ -7,6 +7,7 @@ import { parse } from "toml";
 import Head from "../components/Head";
 import Header from "../components/Header";
 import StatusBar from "../components/StatusBar";
+import Table from "../components/Table";
 import "../styles/page.css";
 import "../styles/editor.css";
 
@@ -15,7 +16,7 @@ export default class DemoPage extends React.Component {
         super(props);
 
         this.state = {
-            results: {},
+            results: [],
             status: "success",
             message: "Compiled"
         };
@@ -28,20 +29,23 @@ export default class DemoPage extends React.Component {
             status: "loading",
             message: "Compiling..."
         });
-        const url = "https://api.genhub.co/score";
+        const url = "https://api.genhub.co/search";
         try {
             const parsedToml = parse(value);
+            parsedToml.numItems = 10;
             const res = await post(url, JSON.stringify(parsedToml));
             this.setState({
-                results: res.data[0],
+                results: res.data,
                 status: "success",
                 message: "Compiled"
             });
         } catch (e) {
             const errors = {
-                "invalid-input-algo": "Invalid algorithm chosen. Available: 'cnn', 'cfd' and 'all'",
-                "invalid-input-inputs": "Invalid inputs format"
-            }
+                "invalid-input-algo": "Invalid algorithm chosen",
+                "invalid-input-pam": "Invalid pam sequence",
+                "invalid-input-grna": "Invalid guide rna",
+                "invalid-input-gene": "Invalid gene name specified"
+            };
             const message = e.response ? errors[e.response.data] : "Oops, an unexpected error occured, sorry about that.";
             this.setState({
                 status: "error",
@@ -88,10 +92,51 @@ export default class DemoPage extends React.Component {
         );
     }
 
+    formatResultsForTable(data) {
+        if (!data.length) {
+            return {
+                headers: [],
+                results: [],
+            };
+        };
+        const headersMap = {
+            match: "Match",
+            cnn_score: "CNN",
+            cfd_score: "CFD"
+        };
+        const headers = Object.keys(data[0]).map(item => ({
+            key: item,
+            display: headersMap[item]
+        }));
+        const fixedData = data.map(item => ({
+            match: (
+                <span>
+                    <span style={{ color: "#a7afb5"}}>{item.match.slice(0, 3)}</span>
+                    {item.match.slice(3, item.match.length)}
+                </span>
+            ),
+            cnn_score: item.cnn_score != null ? (
+                <span style={{ color: this.lerpColor("0xEE6868", "0x7FE49B", item.cnn_score) }}>{item.cnn_score.toFixed(2)}</span>
+            ) : null,
+            cfd_score: item.cfd_score != null ? (
+                <span style={{ color: this.lerpColor("0xEE6868", "0x7FE49B", item.cfd_score) }}>{item.cfd_score.toFixed(2)}</span>
+            ) : null,
+        }))
+        return {
+            headers,
+            results: fixedData
+        };
+    }
+
     render() {
-        const defaultText = `algo = "all"\n\n[[inputs]]\npam = "CGG"\ntarget = "AGTCTGAGAAGGGTC"\ngrna = "GAG"`;
-        const deepLearningColor = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.cnn_score);
-        const scoringColor = this.lerpColor("0xEE6868", "0x7FE49B", this.state.results.cfd_score);
+        const defaultText = "# Algorithms available: \"cnn\", \"cfd\", \"all\"\n" +
+                            "algo = \"all\"\n" +
+                            "# Name of the gene you are targeting\n" +
+                            "gene = \"EMX1\"\n" +
+                            "# PAM sequence\n" +
+                            "pam = \"CGG\"\n" +
+                            "# Your guide RNA\n" +
+                            "grna = \"GAGCGTCGTCG\"";
         return (
             <div>
                 <Head/>
@@ -109,17 +154,8 @@ export default class DemoPage extends React.Component {
                         defaultValue={defaultText}
                     />
                     <StatusBar status={this.state.status} message={this.state.message}/>
-                    {this.renderDeepLearning()}
-                    {this.renderScoring()}
+                    <Table data={this.formatResultsForTable(this.state.results)} />
                 </div>
-                <style jsx global>{`
-                      .cnn-result {
-                          color: ${deepLearningColor};
-                      }
-                      .cfd-result {
-                          color: ${scoringColor};
-                      }
-                `}</style>
             </div>
         );
     }
