@@ -42,9 +42,10 @@ export default class DemoPage extends React.Component {
                 "invalid-input-algo": "Invalid algorithm chosen. Available: 'cnn', 'cfd' and 'all'",
                 "invalid-input-inputs": "Invalid inputs format"
             }
+            const message = e.response ? errors[e.response.data] : "Oops, an unexpected error occured, sorry about that.";
             this.setState({
                 status: "error",
-                message: errors[e.response.data]
+                message
             });
         }
     }
