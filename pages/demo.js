@@ -28,7 +28,7 @@ export default class DemoPage extends React.Component {
             status: "loading",
             message: "Compiling..."
         });
-        const url = "https://api-bi5yp7fls.now.sh/score";
+        const url = "https://api.genhub.co/score";
         try {
             const parsedJson = parse(value);
             const res = await post(url, JSON.stringify(parsedJson));
