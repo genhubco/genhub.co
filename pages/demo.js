@@ -30,8 +30,8 @@ export default class DemoPage extends React.Component {
         });
         const url = "https://api.genhub.co/score";
         try {
-            const parsedJson = parse(value);
-            const res = await post(url, JSON.stringify(parsedJson));
+            const parsedToml = parse(value);
+            const res = await post(url, JSON.stringify(parsedToml));
             this.setState({
                 results: res.data[0],
                 status: "success",
