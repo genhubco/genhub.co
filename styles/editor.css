@@ -11,6 +11,10 @@
     color: #78C365;
 }
 
+.granit-editor-highlight .comment {
+    color: #a7afb5;
+}
+
 .granit-editor-unsaved-indicator {
     background: #4BA7DB;
 }
