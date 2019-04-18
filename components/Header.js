@@ -7,7 +7,7 @@ export default withRouter(({router}) => (
             <a className="logo"><img src="/static/applogo.svg"/></a>
         </Link>
         {router.route !== "/demo" && <Link href="/demo">
-            <a className="link">
+            <a className="link btn-link">
                 Demo
             </a>
         </Link>}

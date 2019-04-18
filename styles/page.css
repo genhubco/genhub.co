@@ -36,6 +36,9 @@
     color: #007fff;
     text-decoration: none;
     font-family: "PT Sans", sans-serif;
+}
+
+.btn-link {
     margin-top: 10px;
     margin-right: 10px;
 }
@@ -53,6 +56,12 @@
 .text {
     font-family: "PT Sans", sans-serif;
     font-size: 14px;
+}
+
+.desc {
+    font-family: "PT Sans", sans-serif;
+    font-size: 14px;
+    color: #a7afb5;
 }
 
 .title {
