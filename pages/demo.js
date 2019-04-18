@@ -17,6 +17,7 @@ export default class DemoPage extends React.Component {
         super(props);
 
         this.state = {
+            config: {},
             results: [],
             status: "success",
             message: "Compiled"
@@ -36,6 +37,7 @@ export default class DemoPage extends React.Component {
             parsedToml.numItems = 10;
             const res = await post(url, JSON.stringify(parsedToml));
             this.setState({
+                config: parsedToml,
                 results: res.data,
                 status: "success",
                 message: "Compiled"
@@ -47,11 +49,18 @@ export default class DemoPage extends React.Component {
                 "invalid-input-grna": "Invalid guide rna",
                 "invalid-input-gene": "Invalid gene name specified"
             };
-            const message = e.response ? errors[e.response.data] : "Oops, an unexpected error occured, sorry about that.";
-            this.setState({
-                status: "error",
-                message
-            });
+            if (e.name == "SyntaxError") {
+                this.setState({
+                    status: "error",
+                    message: "Failed to parse toml file"
+                });
+            } else {
+                const message = e.response ? errors[e.response.data] : "Oops, an unexpected error occured, sorry about that";
+                this.setState({
+                    status: "error",
+                    message
+                });
+            }
         }
     }
 
@@ -113,7 +122,15 @@ export default class DemoPage extends React.Component {
             match: (
                 <span>
                     <span style={{ color: "#a7afb5"}}>{item.match.slice(0, 3)}</span>
-                    {item.match.slice(3, item.match.length)}
+                    {item.match.slice(3, item.match.length).split("").map((letter, i) => {
+                        if (!this.state.config.grna) {
+                            return letter;
+                        }
+                        if (letter !== this.state.config.grna[i]) {
+                            return (<span key={`key-${i}`} style={{ color: "#EE6868" }}>{letter}</span>);
+                        }
+                        return letter;
+                    })}
                 </span>
             ),
             cnn_score: item.cnn_score != null ? (
@@ -143,7 +160,7 @@ export default class DemoPage extends React.Component {
                 <Head/>
                 <Header/>
                 <div className="content-big">
-                    <p className="small-title">Write commands for the run:</p>
+                    <p className="small-title">Write your config:</p>
                     <Editor
                         keysMap={keysMap}
                         lifeCycleMap={lifeCycleMap}
@@ -155,6 +172,7 @@ export default class DemoPage extends React.Component {
                         defaultValue={defaultText}
                     />
                     <StatusBar status={this.state.status} message={this.state.message}/>
+                    <p className="desc">All the data used by the algorithms can be found <a target="_blank" href="https://data.genhub.co" className="link">here</a>.</p>
                     <Table data={this.formatResultsForTable(this.state.results)} />
                 </div>
             </div>
