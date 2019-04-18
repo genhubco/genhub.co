@@ -3,6 +3,7 @@ import { highlightToml, keysMap, lifeCycleMap } from "granit-utils";
 import Editor from "granit";
 import { post } from "axios";
 import { parse } from "toml";
+import config from "../vars.json";
 
 import Head from "../components/Head";
 import Header from "../components/Header";
@@ -29,7 +30,7 @@ export default class DemoPage extends React.Component {
             status: "loading",
             message: "Compiling..."
         });
-        const url = "https://api.genhub.co/search";
+        const url = config.api.search;
         try {
             const parsedToml = parse(value);
             parsedToml.numItems = 10;
