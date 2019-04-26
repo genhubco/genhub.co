@@ -5,6 +5,7 @@ export default () => (
         <a target="_blank" href="https://angel.co/genhubco/jobs" className="link btn-link">jobs</a>
         <style jsx global>{`
             .footer {
+                padding-top: 20px;
                 padding-bottom: 10px;
                 text-align: center;
             }

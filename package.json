@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/genhubco/genhub.co#readme",
   "dependencies": {
-    "@zeit/next-css": "^1.0.1",
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
     "granit": "0.0.23",
@@ -28,6 +27,7 @@
     "next": "^8.0.1",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
+    "react-markdown": "^4.0.8",
     "toml": "^3.0.0"
   }
 }

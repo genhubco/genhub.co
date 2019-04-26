@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import classnames from "classnames";
 import { withRouter } from 'next/router';
 
 export default withRouter(({router}) => (
@@ -6,11 +7,22 @@ export default withRouter(({router}) => (
         <Link href="/">
             <a className="logo"><img src="/static/applogo.svg"/></a>
         </Link>
-        {router.route !== "/demo" && <Link href="/demo">
-            <a className="link btn-link">
-                Demo
-            </a>
-        </Link>}
+        <div>
+            <Link href="/docs?doc=api">
+                <a className={classnames("internal-link btn-link", {
+                    "internal-link-active": router.route === "/docs"
+                })}>
+                    docs
+                </a>
+            </Link>
+            <Link href="/demo">
+                <a className={classnames("internal-link btn-link", {
+                    "internal-link-active": router.route === "/demo"
+                })}>
+                    demo
+                </a>
+            </Link>
+        </div>
         <style jsx global>{`
             .header {
                 width: 100%;
