@@ -1,16 +1,13 @@
 import React from "react";
 import { highlightToml, keysMap, lifeCycleMap } from "granit-utils";
 import Editor from "granit";
-import { post } from "axios";
+import { post, CancelToken } from "axios";
 import { parse } from "toml";
 import config from "../vars.json";
 
-import Head from "../components/Head";
-import Header from "../components/Header";
 import StatusBar from "../components/StatusBar";
 import Table from "../components/Table";
-import "../styles/page.css";
-import "../styles/editor.css";
+import Page from "../components/Page";
 
 export default class DemoPage extends React.Component {
     constructor(props) {
@@ -24,6 +21,11 @@ export default class DemoPage extends React.Component {
         };
 
         this.compileAndRank = this.compileAndRank.bind(this);
+        this.signal = CancelToken.source();
+    }
+
+    componentWillUnmount() {
+        this.signal.cancel('Api is being canceled');
     }
 
     async compileAndRank(value) {
@@ -156,26 +158,22 @@ export default class DemoPage extends React.Component {
                             "# Your guide RNA\n" +
                             "grna = \"GAGCGTCGTCG\"";
         return (
-            <div>
-                <Head/>
-                <Header/>
-                <div className="content-big">
-                    <p className="small-title">Write your config:</p>
-                    <Editor
-                        keysMap={keysMap}
-                        lifeCycleMap={lifeCycleMap}
-                        highlight={highlightToml}
-                        width={750}
-                        height={200}
-                        padding={20}
-                        onSave={this.compileAndRank}
-                        defaultValue={defaultText}
-                    />
-                    <StatusBar status={this.state.status} message={this.state.message}/>
-                    <p className="desc">All the data used by the algorithms can be found <a target="_blank" href="https://data.genhub.co" className="link">here</a>.</p>
-                    <Table data={this.formatResultsForTable(this.state.results)} />
-                </div>
-            </div>
+            <Page>
+                <p className="small-title">Write your config:</p>
+                <Editor
+                    keysMap={keysMap}
+                    lifeCycleMap={lifeCycleMap}
+                    highlight={highlightToml}
+                    width={750}
+                    height={200}
+                    padding={20}
+                    onSave={this.compileAndRank}
+                    defaultValue={defaultText}
+                />
+                <StatusBar status={this.state.status} message={this.state.message}/>
+                <p className="desc">All the data used by the algorithms can be found <a target="_blank" href="https://data.genhub.co" className="link">here</a>.</p>
+                <Table data={this.formatResultsForTable(this.state.results)} />
+            </Page>
         );
     }
 }
