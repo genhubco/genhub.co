@@ -21,8 +21,8 @@
   "dependencies": {
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
-    "granit": "0.0.23",
-    "granit-utils": "0.0.6",
+    "granit": "0.0.26",
+    "granit-utils": "0.0.7",
     "hash.js": "^1.1.7",
     "next": "^8.0.1",
     "react": "^16.8.2",
