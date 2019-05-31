@@ -45,19 +45,13 @@ export default class DemoPage extends React.Component {
                 message: "Compiled"
             });
         } catch (e) {
-            const errors = {
-                "invalid-input-algo": "Invalid algorithm chosen",
-                "invalid-input-pam": "Invalid pam sequence",
-                "invalid-input-grna": "Invalid guide rna",
-                "invalid-input-gene": "Invalid gene name specified"
-            };
             if (e.name == "SyntaxError") {
                 this.setState({
                     status: "error",
                     message: "Failed to parse toml file"
                 });
             } else {
-                const message = e.response ? errors[e.response.data] : "Oops, an unexpected error occured, sorry about that";
+                const message = e.response ? e.response.data.message : "Oops, an unexpected error occured, sorry about that";
                 this.setState({
                     status: "error",
                     message
