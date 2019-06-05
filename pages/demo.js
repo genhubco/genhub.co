@@ -7,6 +7,7 @@ import config from "../vars.json";
 
 import StatusBar from "../components/StatusBar";
 import Table from "../components/Table";
+import CrisprTargetMap from "../components/CrisprTargetMap";
 import Page from "../components/Page";
 
 export default class DemoPage extends React.Component {
@@ -15,7 +16,9 @@ export default class DemoPage extends React.Component {
 
         this.state = {
             config: {},
-            results: [],
+            results: {
+                targets: []
+            },
             status: "success",
             message: "Compiled"
         };
@@ -166,7 +169,8 @@ export default class DemoPage extends React.Component {
                 />
                 <StatusBar status={this.state.status} message={this.state.message}/>
                 <p className="desc">All the data used by the algorithms can be found <a target="_blank" href="https://data.genhub.co" className="link">here</a>.</p>
-                <Table data={this.formatResultsForTable(this.state.results)} />
+                <CrisprTargetMap data={this.state.results}/>
+                <Table data={this.formatResultsForTable(this.state.results.targets)} />
             </Page>
         );
     }
