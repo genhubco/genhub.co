@@ -1,99 +1,124 @@
 import { get } from "axios";
 import Router from "next/router";
-import ReactMarkdown from "react-markdown";
 
 import Page from "../components/Page";
 import Sidebar from "../components/Sidebar";
 
-const Docs = ({content, st}) => (
-    <Page contentSize="big">
-        <Sidebar param="doc" options={[{
+const Docs = ({content}) => (
+    <Page content="big">
+        <Sidebar params={{ section: "project", item: "doc" }} options={[{
             name: "api",
-            display: "api"
+            display: "API"
+        }, {
+            name: "search",
+            display: "search",
+            section: "api"
+        }, {
+            name: "score",
+            display: "score",
+            section: "api"
+        }, {
+            name: "auth",
+            display: "auth",
+            section: "api"
         }, {
             name: "data",
-            display: "data"
+            display: "DATA"
+        }, {
+            name: "datasets",
+            display: "datasets",
+            section: "data"
+        }, {
+            name: "models",
+            display: "models",
+            section: "data"
         }]}>
-            <ReactMarkdown className="markdown">
-                {content}
-            </ReactMarkdown>
+            <div className="doc-wrapper" dangerouslySetInnerHTML={{ __html: content }} />
         </Sidebar>
         <style jsx global>{`
-            .markdown {
+            .doc-wrapper {
                 font-family: "PT Sans", sans-serif;
             }
 
-            .markdown hr {
+            .doc-wrapper hr {
                 border: 1px solid #f2f3f4;
             }
 
-            .markdown a {
+            .doc-wrapper a {
                 text-decoration: none;
                 color: #007fff;
             }
 
-            .markdown blockquote {
+            .doc-wrapper blockquote {
                 color: #91a3b0;
                 border-left: 5px solid #f2f3f4;
                 padding-left: 10px;
                 margin-left: 0;
             }
 
-            .markdown ul, ol {
+            .doc-wrapper ul, ol {
                 padding-left: 30px;
             }
 
-            .markdown p {
+            .doc-wrapper p {
                 margin-top: 10px;
                 margin-bottom: 10px;
             }
 
-            .markdown code {
+            .doc-wrapper code {
                 font-family: "Source Code Pro", monospace;
                 background-color: #f2f3f4;
                 border-radius: 5px;
                 padding: 4px;
             }
 
-            .markdown pre {
+            .doc-wrapper pre {
                 padding: 10px;
                 background-color: #f2f3f4;
                 border-radius: 5px;
             }
 
-            .markdown pre code {
+            .doc-wrapper pre code {
                 background-color: transparent;
                 border-radius: 0;
                 padding: 0;
             }
 
-            .markdown table {
+            .doc-wrapper table {
                 border: 1px solid #e7e9eb;
                 padding: 10px;
                 border-radius: 5px;
             }
 
-            .markdown td, th {
+            .doc-wrapper td, th {
                 padding: 10px;
             }
 
-            .markdown td {
+            .doc-wrapper td {
                 border-top: 1px solid #f2f3f4;
             }
 
-            .markdown img {
+            .doc-wrapper img {
                 max-width: 100%;
             }
         `}</style>
     </Page>
 );
 
-Docs.getInitialProps = async ({query, res}) => {
+Docs.getInitialProps = async ({ query, res }) => {
     try {
-        const contentRes = await get(`https://raw.githubusercontent.com/genhubco/${query.doc}/master/docs/index.md`);
-        return { content: contentRes.data };
+        const { project, doc } = query;
+        const projects = {
+            "api": process.env.API_DOCS_URL,
+            "data": process.env.DATA_DOCS_URL
+        };
+        console.log(`${projects[project]}${doc}.html`);
+        const contentRes = await get(`${projects[project]}${doc}.html`);
+        const regex = /<body>(.*?)<\/body>/s;
+        const content = contentRes.data.match(regex);
+        return { content: content[1] };
     } catch (e) {
-        return { content: "## Document Not Found" };
+        return { content: "<h2>Document not found.</h2>" };
     }
 };
 
