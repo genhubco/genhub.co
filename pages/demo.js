@@ -3,7 +3,6 @@ import { highlightToml, keysMap, lifeCycleMap } from "granit-utils";
 import Editor from "granit";
 import { post, CancelToken } from "axios";
 import { parse } from "toml";
-import config from "../vars.json";
 
 import StatusBar from "../components/StatusBar";
 import Table from "../components/Table";
@@ -36,7 +35,7 @@ export default class DemoPage extends React.Component {
             status: "loading",
             message: "Compiling..."
         });
-        const url = config.api.search;
+        const url = process.env.SEARCH_URL;
         try {
             const parsedToml = parse(value);
             parsedToml.numItems = 10;

@@ -2,7 +2,7 @@ import Card from "../components/Card";
 import Page from "../components/Page";
 
 export default () => (
-    <Page contentSize="small">
+    <Page content="small">
         <p className="small-title">Latest articles:</p>
         <Card
             img="Article3s.svg"

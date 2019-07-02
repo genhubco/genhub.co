@@ -3,19 +3,25 @@ import Head from "./Head";
 import Header from "./Header";
 import Footer from "./Footer";
 
-export default ({contentSize = "medium", children}) => (
+export default ({content = "medium", header = true, footer = true, children}) => (
     <div>
         <Head/>
-        <Header/>
-        <div className={classnames({
-            "content-small": contentSize === "small",
-            "content-medium": contentSize === "medium",
-            "content-big": contentSize === "big",
+        {header && <Header/>}
+        <div className={classnames("page", {
+            "content-center": content === "center",
+            "content-tiny": content === "tiny",
+            "content-small": content === "small",
+            "content-medium": content === "medium",
+            "content-big": content === "big",
         })}>
             {children}
         </div>
-        <Footer/>
+        {footer && <Footer/>}
         <style jsx global>{`
+            body {
+                margin: 0;
+            }
+
             .btn-primary {
                 font-weight: bold;
                 font-family: "PT Sans", sans-serif;
@@ -74,6 +80,18 @@ export default ({contentSize = "medium", children}) => (
                 display: inline-block;
                 margin-top: 10px;
                 margin-right: 10px;
+            }
+
+            .content-center {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+            }
+
+            .content-tiny {
+                width: 400px;
+                margin: auto;
             }
 
             .content-small {

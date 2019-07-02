@@ -1,7 +1,7 @@
 import Page from "../components/Page";
 
 export default () => (
-    <Page contentSize="big">
+    <Page content="big">
         <h1>Privacy Policy</h1>
         <p>Effective date: June 05, 2019</p>
         <p>GenHub ("us", "we", or "our") operates the https://genhub.co website (the "Service").</p>
