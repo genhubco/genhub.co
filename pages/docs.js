@@ -1,11 +1,14 @@
 import { get } from "axios";
 import Router from "next/router";
+import { decode } from "jsonwebtoken";
+import { parseCookies, setCookie, destroyCookie } from "nookies";
 
 import Page from "../components/Page";
+import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 
-const Docs = ({content}) => (
-    <Page content="big">
+const Docs = ({content, user}) => (
+    <Page content="big" header={<Header user={user}/>}>
         <Sidebar params={{ section: "project", item: "doc" }} options={[{
             name: "api",
             display: "API"
@@ -105,20 +108,23 @@ const Docs = ({content}) => (
     </Page>
 );
 
-Docs.getInitialProps = async ({ query, res }) => {
+Docs.getInitialProps = async (ctx) => {
+    const cookies = parseCookies(ctx);
+    const token = cookies[process.env.TOKEN_COOKIE_NAME];
+    const user = decode(token);
     try {
+        const { query } = ctx;
         const { project, doc } = query;
         const projects = {
             "api": process.env.API_DOCS_URL,
             "data": process.env.DATA_DOCS_URL
         };
-        console.log(`${projects[project]}${doc}.html`);
         const contentRes = await get(`${projects[project]}${doc}.html`);
         const regex = /<body>(.*?)<\/body>/s;
         const content = contentRes.data.match(regex);
-        return { content: content[1] };
+        return { content: content[1], user };
     } catch (e) {
-        return { content: "<h2>Document not found.</h2>" };
+        return { content: "<h2>Document not found.</h2>", user };
     }
 };
 

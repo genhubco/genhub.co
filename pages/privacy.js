@@ -1,7 +1,10 @@
+import { decode } from "jsonwebtoken";
+import { parseCookies, setCookie, destroyCookie } from "nookies";
 import Page from "../components/Page";
+import Header from "../components/Header";
 
-export default () => (
-    <Page content="big">
+const Privacy = ({ user }) => (
+    <Page content="big" header={<Header user={user}/>}>
         <h1>Privacy Policy</h1>
         <p>Effective date: June 05, 2019</p>
         <p>GenHub ("us", "we", or "our") operates the https://genhub.co website (the "Service").</p>
@@ -79,3 +82,12 @@ export default () => (
         `}</style>
     </Page>
 );
+
+Privacy.getInitialProps = async (ctx) => {
+    const cookies = parseCookies(ctx);
+    const token = cookies[process.env.TOKEN_COOKIE_NAME];
+    const user = decode(token);
+    return { user };
+};
+
+export default Privacy;

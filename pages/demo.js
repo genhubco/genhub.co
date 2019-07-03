@@ -3,13 +3,23 @@ import { highlightToml, keysMap, lifeCycleMap } from "granit-utils";
 import Editor from "granit";
 import { post, CancelToken } from "axios";
 import { parse } from "toml";
+import { decode } from "jsonwebtoken";
+import { parseCookies, setCookie, destroyCookie } from "nookies";
 
 import StatusBar from "../components/StatusBar";
+import Header from "../components/Header";
 import Table from "../components/Table";
 import CrisprTargetMap from "../components/CrisprTargetMap";
 import Page from "../components/Page";
 
 export default class DemoPage extends React.Component {
+    static async getInitialProps(ctx) {
+        const cookies = parseCookies(ctx);
+        const token = cookies[process.env.TOKEN_COOKIE_NAME];
+        const user = decode(token);
+        return { user };
+    }
+
     constructor(props) {
         super(props);
 
@@ -154,7 +164,7 @@ export default class DemoPage extends React.Component {
                             "# Your guide RNA\n" +
                             "grna = \"GAGCGTCGTCG\"";
         return (
-            <Page>
+            <Page header={<Header user={this.props.user} />}>
                 <p className="small-title">Write your config:</p>
                 <Editor
                     keysMap={keysMap}

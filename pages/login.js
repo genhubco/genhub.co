@@ -41,7 +41,7 @@ class Login extends React.Component {
         const githubURL = "https://github.com/login/oauth/authorize?client_id=" + process.env.GITHUB_CLIENT_ID + "&" +
                           "scope=user user:email";
         return (
-            <Page content="center" header={false} footer={false}>
+            <Page content="center" header={null} footer={null}>
                 <div className="login-wrapper">
                     <div className="login-content">
                         <Link href="/">
