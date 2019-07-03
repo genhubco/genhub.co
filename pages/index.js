@@ -1,8 +1,13 @@
+import { decode } from "jsonwebtoken";
+import { parseCookies, setCookie, destroyCookie } from "nookies";
+
 import Card from "../components/Card";
 import Page from "../components/Page";
+import Header from "../components/Header";
 
-export default () => (
-    <Page content="small">
+
+const Index = ({ user }) => (
+    <Page content="small" header={<Header user={user}/>}>
         <p className="small-title">Latest articles:</p>
         <Card
             img="Article3s.svg"
@@ -24,3 +29,12 @@ export default () => (
         />
     </Page>
 );
+
+Index.getInitialProps = async (ctx) => {
+    const cookies = parseCookies(ctx);
+    const token = cookies[process.env.TOKEN_COOKIE_NAME];
+    const user = decode(token);
+    return { user };
+};
+
+export default Index;

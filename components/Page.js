@@ -3,10 +3,10 @@ import Head from "./Head";
 import Header from "./Header";
 import Footer from "./Footer";
 
-export default ({content = "medium", header = true, footer = true, children}) => (
+export default ({content = "medium", header = <Header/>, footer = <Footer/>, children}) => (
     <div>
         <Head/>
-        {header && <Header/>}
+        {header}
         <div className={classnames("page", {
             "content-center": content === "center",
             "content-tiny": content === "tiny",
@@ -16,7 +16,7 @@ export default ({content = "medium", header = true, footer = true, children}) =>
         })}>
             {children}
         </div>
-        {footer && <Footer/>}
+        {footer}
         <style jsx global>{`
             body {
                 margin: 0;
@@ -78,7 +78,6 @@ export default ({content = "medium", header = true, footer = true, children}) =>
 
             .btn-link {
                 display: inline-block;
-                margin-top: 10px;
                 margin-right: 10px;
             }
 
