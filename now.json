@@ -1,5 +1,10 @@
 {
     "alias": ["genhub.co"],
     "version": 2,
-    "builds": [{ "src": "next.config.js", "use": "@now/next" }]
+    "builds": [{ "src": "next.config.js", "use": "@now/next" }],
+    "build": {
+        "env": {
+            "ZEIT_API_TOKEN": "@zeit-api-token"
+        }
+    }
 }

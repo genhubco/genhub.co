@@ -1,18 +1,17 @@
+import classnames from "classnames";
+
 function map(input_start, input_end, output_start, output_end, input) {
     const output = output_start + ((output_end - output_start) / (input_end - input_start)) * (input - input_start);
     return output;
 }
 
-export default class DemoPage extends React.Component {
+export default class CrisprTargetMap extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             show: false,
-            position: {
-                left: 0,
-                top: 0
-            },
+            position: { left: 0, top: 0 },
             info: {}
         };
     }
@@ -32,15 +31,18 @@ export default class DemoPage extends React.Component {
     }
 
     render() {
-        const data = { ...this.props.data };
-        if (!data.targets.length) {
+        const className = this.props.className;
+
+        let targets = this.props.data.targets;
+        const data = this.props.data;
+        if (!targets.length) {
             return null;
         }
-        data.targets = data.targets.length > 5 ? data.targets.slice(0, 5) : data.targets;
+        targets = targets.length > 5 ? targets.slice(0, 5) : targets;
         return (
-            <div className="crispr-target-map">
-                <svg viewBox={`0 0 100 ${(data.targets.length * 3) + 2}`} xmlns="http://www.w3.org/2000/svg">
-                    {data.targets.map((item, i) => (
+            <div className={classnames("crispr-target-map", className)}>
+                <svg viewBox={`0 0 100 ${(targets.length * 3) + 2}`} xmlns="http://www.w3.org/2000/svg">
+                    {targets.map((item, i) => (
                         <g
                             key={`key-${i}`}
                             transform={`translate(${map(0, data.end - data.start, 10, 90, item.position)}, ${i * 3})`}
@@ -50,8 +52,8 @@ export default class DemoPage extends React.Component {
                                 const padding = map(0, 100, 0, 748, 10);
                                 const absoluteX = map(10, 90, padding, 748 - padding, viewBoxX);
 
-                                const realY = map(0, 100, 0, 748, (data.targets.length * 3) + 2);
-                                const absoluteY = map(0, (data.targets.length * 3) + 2, 0, realY, i * 3);
+                                const realY = map(0, 100, 0, 748, (targets.length * 3) + 2);
+                                const absoluteY = map(0, (targets.length * 3) + 2, 0, realY, i * 3);
 
                                 this.setState({
                                     show: true,
@@ -68,15 +70,15 @@ export default class DemoPage extends React.Component {
                         </g>
                     ))}
 
-                    <line x1="0" y1={(data.targets.length * 3) + 1} x2="100" y2={(data.targets.length * 3) + 1} style={{
+                    <line x1="0" y1={(targets.length * 3) + 1} x2="100" y2={(targets.length * 3) + 1} style={{
                         stroke: "rgb(0,0,0)",
                         strokeWidth: 0.1
                     }} />
                     <line
                         onMouseOver={(e) => {
                             const absoluteX = 748 / 2;
-                            const realY = map(0, 100, 0, 748, (data.targets.length * 3) + 2);
-                            const absoluteY = map(0, (data.targets.length * 3) + 2, 0, realY, (data.targets.length * 3) + 1);
+                            const realY = map(0, 100, 0, 748, (targets.length * 3) + 2);
+                            const absoluteY = map(0, (targets.length * 3) + 2, 0, realY, (targets.length * 3) + 1);
                             this.setState({
                                 show: true,
                                 position: {
@@ -88,9 +90,9 @@ export default class DemoPage extends React.Component {
                         }}
                         onMouseOut={() => { this.setState({ show: false }); }}
                         x1="10"
-                        y1={(data.targets.length * 3) + 1}
+                        y1={(targets.length * 3) + 1}
                         x2="90"
-                        y2={(data.targets.length * 3) + 1}
+                        y2={(targets.length * 3) + 1}
                         strokeLinecap="round"
                         className="gene-sequence"
                         style={{
@@ -107,7 +109,6 @@ export default class DemoPage extends React.Component {
                         padding: 20px 0;
                         border-radius: 5px;
                         border: 1px solid #f2f3f4;
-                        margin-bottom: 10px;
                     }
 
                     .target-info {

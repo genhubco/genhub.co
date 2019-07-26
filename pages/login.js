@@ -1,16 +1,25 @@
-import React from "react";
 import Link from "next/link";
 import { post } from "axios";
 import { withRouter } from "next/router";
-import { parseCookies, setCookie, destroyCookie } from "nookies";
+import { setCookie } from "nookies";
 
 import Page from "../components/Page";
 import Footer from "../components/Footer";
 
+function getEnv() {
+    const branches = {
+        "master": "prod",
+        "staging": "stag"
+    };
+    const currentEnv = branches[process.env["NOW_GITHUB_COMMIT_REF"]];
+    const env = currentEnv || "dev";
+    return env;
+}
+
 class Login extends React.Component {
     static async getInitialProps(ctx) {
         try {
-            const { res } = ctx;
+            const { res, router } = ctx;
             if (!ctx.query) {
                 return {};
             }
@@ -18,7 +27,8 @@ class Login extends React.Component {
             if (!provider || !code) {
                 return {};
             }
-            const response = await post(process.env.AUTH_URL, { provider, code });
+            const env = getEnv();
+            const response = await post(process.env.LOGIN_URL, { provider, code, env });
             setCookie(ctx, process.env.TOKEN_COOKIE_NAME, response.data.token);
             if (res) {
                 res.writeHead(302, { Location: "/" });
@@ -26,20 +36,25 @@ class Login extends React.Component {
                 return {};
             }
 
-            Router.push("/");
-            return {};
+            router.push("/");
+            return { error: "" };
         } catch (e) {
+            console.log(e);
             return { error: "Failed to authenticate. Please try another method." };
         }
     }
 
     render () {
+        const env = getEnv();
+        const redirect_uri_google = "https://mocks.genhub.now.sh/callback/" + env + "?provider=google";
+        const redirect_uri_github = "https://mocks.genhub.now.sh/callback/" + env + "?provider=github";
         const googleURL = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + process.env.GOOGLE_CLIENT_ID + "&" +
-                          "redirect_uri=" + process.env.GOOGLE_REDIRECT_URI + "&" +
+                          "redirect_uri=" + redirect_uri_google + "&" +
                           "response_type=code&" +
                           "scope=email profile";
         const githubURL = "https://github.com/login/oauth/authorize?client_id=" + process.env.GITHUB_CLIENT_ID + "&" +
-                          "scope=user user:email";
+                          "scope=user user:email" + "&" +
+                          "redirect_uri=" + redirect_uri_github;
         return (
             <Page content="center" header={null} footer={null}>
                 <div className="login-wrapper">
@@ -47,7 +62,7 @@ class Login extends React.Component {
                         <Link href="/">
                             <a className="logo"><img src="/static/applogo.svg"/></a>
                         </Link>
-                        <p className="small-title">Log in via:</p>
+                        <p className="text">Log in via:</p>
                         <div className="login-content-buttons">
                             <a
                                 className="google-login-button"
@@ -60,7 +75,7 @@ class Login extends React.Component {
                                 <div className="github-login-button-logo"><img src="/static/github-logo.svg" /></div>
                             </a>
                         </div>
-                        <p className="error-text">{this.props.error}</p>
+                        <p className="error">{this.props.error}</p>
                     </div>
                     <Footer />
                 </div>
@@ -79,6 +94,7 @@ class Login extends React.Component {
                     }
 
                     .login-content-buttons {
+                        margin-top: 10px;
                         display: flex;
                         justify-content: center;
                     }
@@ -88,7 +104,6 @@ class Login extends React.Component {
                     }
 
                     .github-login-button, .google-login-button {
-                        outline: none;
                         font-size: 14px;
                         width: 160px;
                         border: 1px solid #dddfe2;
@@ -108,12 +123,6 @@ class Login extends React.Component {
 
                     .github-login-button img, .google-login-button-logo img {
                         height: 20px;
-                    }
-
-                    .error-text {
-                        color: #EE6868;
-                        font-family: "PT Sans", sans-serif;
-                        font-size: 12px;
                     }
                 `}</style>
             </Page>

@@ -1,75 +1,24 @@
-import React from "react";
 import { highlightToml, keysMap, lifeCycleMap } from "granit-utils";
 import Editor from "granit";
-import { post, CancelToken } from "axios";
+import { post } from "axios";
 import { parse } from "toml";
 import { decode } from "jsonwebtoken";
-import { parseCookies, setCookie, destroyCookie } from "nookies";
+import { parseCookies } from "nookies";
 
 import StatusBar from "../components/StatusBar";
 import Header from "../components/Header";
 import Table from "../components/Table";
 import CrisprTargetMap from "../components/CrisprTargetMap";
 import Page from "../components/Page";
+import sharedState from "../components/SharedState";
 
 export default class DemoPage extends React.Component {
     static async getInitialProps(ctx) {
         const cookies = parseCookies(ctx);
         const token = cookies[process.env.TOKEN_COOKIE_NAME];
-        const user = decode(token);
-        return { user };
-    }
+        const authUser = decode(token);
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            config: {},
-            results: {
-                targets: []
-            },
-            status: "success",
-            message: "Compiled"
-        };
-
-        this.compileAndRank = this.compileAndRank.bind(this);
-        this.signal = CancelToken.source();
-    }
-
-    componentWillUnmount() {
-        this.signal.cancel('Api is being canceled');
-    }
-
-    async compileAndRank(value) {
-        this.setState({
-            status: "loading",
-            message: "Compiling..."
-        });
-        const url = process.env.SEARCH_URL;
-        try {
-            const parsedToml = parse(value);
-            parsedToml.numItems = 10;
-            const res = await post(url, JSON.stringify(parsedToml));
-            this.setState({
-                config: parsedToml,
-                results: res.data,
-                status: "success",
-                message: "Compiled"
-            });
-        } catch (e) {
-            if (e.name == "SyntaxError") {
-                this.setState({
-                    status: "error",
-                    message: "Failed to parse toml file"
-                });
-            } else {
-                const message = e.response ? e.response.data.message : "Oops, an unexpected error occured, sorry about that";
-                this.setState({
-                    status: "error",
-                    message
-                });
-            }
-        }
+        return { authUser };
     }
 
     lerpColor(a, b, amount) {
@@ -84,33 +33,9 @@ export default class DemoPage extends React.Component {
         return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
     };
 
-    renderDeepLearning() {
-        if (this.state.results.cnn_score == null) {
-            return;
-        }
-        return (
-            <div>
-                <p className="text">
-                    CNN On-target probability: <span className="cnn-result">
-                        {(this.state.results.cnn_score * 100).toFixed(2)} %
-                    </span>
-                </p>
-            </div>
-        );
-    }
-
-    renderScoring() {
-        if (this.state.results.cfd_score == null) {
-            return;
-        }
-        return (
-            <div>
-                <p className="text">CFD score: <span className="cfd-result">{this.state.results.cfd_score.toFixed(2)}</span></p>
-            </div>
-        );
-    }
-
-    formatResultsForTable(data) {
+    formatResultsForTable(state) {
+        const data = state.result.targets;
+        const config = state.config;
         if (!data.length) {
             return {
                 headers: [],
@@ -131,10 +56,10 @@ export default class DemoPage extends React.Component {
                 <span>
                     <span style={{ color: "#a7afb5"}}>{item.match.slice(0, 3)}</span>
                     {item.match.slice(3, item.match.length).split("").map((letter, i) => {
-                        if (!this.state.config.grna) {
+                        if (!config.grna) {
                             return letter;
                         }
-                        if (letter !== this.state.config.grna[i]) {
+                        if (letter !== config.grna[i]) {
                             return (<span key={`key-${i}`} style={{ color: "#EE6868" }}>{letter}</span>);
                         }
                         return letter;
@@ -148,10 +73,7 @@ export default class DemoPage extends React.Component {
                 <span style={{ color: this.lerpColor("0xEE6868", "0x7FE49B", item.cfd_score) }}>{item.cfd_score.toFixed(2)}</span>
             ) : null,
         }))
-        return {
-            headers,
-            results: fixedData
-        };
+        return { headers, results: fixedData };
     }
 
     render() {
@@ -163,9 +85,9 @@ export default class DemoPage extends React.Component {
                             "pam = \"CGG\"\n" +
                             "# Your guide RNA\n" +
                             "grna = \"GAGCGTCGTCG\"";
-        return (
-            <Page header={<Header user={this.props.user} />}>
-                <p className="small-title">Write your config:</p>
+        const EditorWithMap = sharedState(({ state, setState }) => (
+            <div>
+                <p className="text">Write your config:</p>
                 <Editor
                     keysMap={keysMap}
                     lifeCycleMap={lifeCycleMap}
@@ -173,13 +95,43 @@ export default class DemoPage extends React.Component {
                     width={750}
                     height={200}
                     padding={20}
-                    onSave={this.compileAndRank}
+                    onSave={async (value) => {
+                        setState({ status: "loading", message: "• Compiling..." });
+                        try {
+                            const parsedToml = parse(value);
+                            parsedToml.numItems = 10;
+                            const res = await post(process.env.SEARCH_URL, JSON.stringify(parsedToml));
+                            setState({ config: parsedToml, result: res.data, status: "success", message: "✓ Compiled" });
+                        } catch (e) {
+                            if (e.name == "SyntaxError") {
+                                setState({ status: "error", message: "× Failed to parse toml file." });
+                            } else {
+                                setState({ status: "error", message: "× Oops, an unexpected error occured, sorry about that." });
+                            }
+                        }
+                    }}
                     defaultValue={defaultText}
                 />
-                <StatusBar status={this.state.status} message={this.state.message}/>
-                <p className="desc">All the data used by the algorithms can be found <a target="_blank" href="https://data.genhub.co" className="link">here</a>.</p>
-                <CrisprTargetMap data={this.state.results}/>
-                <Table data={this.formatResultsForTable(this.state.results.targets)} />
+            </div>
+        ), ({ state, setState }) => (
+            <div>
+                <StatusBar status={state.status} message={state.message}/>
+                <CrisprTargetMap data={state.result}/>
+                <Table data={this.formatResultsForTable(state)} />
+            </div>
+        ));
+        return (
+            <Page header={<Header user={this.props.authUser} />}>
+                <EditorWithMap initialState={{ status: "success", message: "✓ Compiled", result: { targets: [] }, config: parse(defaultText) }}/>
+                <style>{`
+                    .crispr-target-map {
+                        margin: 20px 0;
+                    }
+
+                    .rank-table-container {
+                        margin-bottom: 20px;
+                    }
+                `}</style>
             </Page>
         );
     }
