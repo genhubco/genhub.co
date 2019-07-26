@@ -1,16 +1,13 @@
 import Link from "next/link";
 import { post } from "axios";
-import { withRouter } from "next/router";
+import { useRouter } from "next/router";
 import { setCookie } from "nookies";
 
 import Page from "../components/Page";
 import Footer from "../components/Footer";
 
 function getEnv() {
-    const branches = {
-        "master": "prod",
-        "staging": "stag"
-    };
+    const branches = { master: "prod", staging: "stag" };
     const currentEnv = branches[process.env["NOW_GITHUB_COMMIT_REF"]];
     const env = currentEnv || "dev";
     return env;
@@ -19,13 +16,15 @@ function getEnv() {
 class Login extends React.Component {
     static async getInitialProps(ctx) {
         try {
-            const { res, router } = ctx;
+            const defaultProps = { error: "" };
+            const { res } = ctx;
+            const router = useRouter();
             if (!ctx.query) {
-                return {};
+                return defaultProps;
             }
             const { provider, code } = ctx.query;
             if (!provider || !code) {
-                return {};
+                return defaultProps;
             }
             const env = getEnv();
             const response = await post(process.env.LOGIN_URL, { provider, code, env });
@@ -33,11 +32,11 @@ class Login extends React.Component {
             if (res) {
                 res.writeHead(302, { Location: "/" });
                 res.end();
-                return {};
+                return defaultProps;
             }
 
             router.push("/");
-            return { error: "" };
+            return defaultProps;
         } catch (e) {
             console.log(e);
             return { error: "Failed to authenticate. Please try another method." };
@@ -130,4 +129,4 @@ class Login extends React.Component {
     }
 }
 
-export default withRouter(Login);
+export default Login;
