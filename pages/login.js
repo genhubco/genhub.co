@@ -7,9 +7,11 @@ import Page from "../components/Page";
 import Footer from "../components/Footer";
 
 function getEnv() {
+    console.log("branch", process.env["NOW_GITHUB_COMMIT_REF"]);
     const branches = { master: "prod", staging: "stag" };
     const currentEnv = branches[process.env["NOW_GITHUB_COMMIT_REF"]];
     const env = currentEnv || "dev";
+    console.log("env", env);
     return env;
 }
 
