@@ -1,24 +1,20 @@
 import { decode } from "jsonwebtoken";
 import ms from "ms";
-import { parse } from "toml";
+import toml from "toml";
 import { get, post } from "axios";
 import { parseCookies } from "nookies";
-import { highlightToml, keysMap, lifeCycleMap } from "granit-utils";
-import Editor from "granit";
-import Error from 'next/error';
+import Error from "next/error";
 import Link from "next/link";
 
 import Page from "../components/Page";
+import EditorWithMapAndTable from "../components/EditorWithMapAndTable";
 import Interval from "../components/Interval";
 import Header from "../components/Header";
 import Nav from "../components/Nav";
 import ImageUpload from "../components/ImageUpload";
-import Textarea from "../components/Textarea";
+import TextareaWithPreview from "../components/TextareaWithPreview";
 import Button from "../components/Button";
-import StatusBar from "../components/StatusBar";
-import CrisprTargetMap from "../components/CrisprTargetMap";
-import Table from "../components/Table";
-import sharedState from "../components/SharedState";
+import WithState from "../components/WithState";
 
 class Project extends React.Component {
     static async getInitialProps(ctx) {
@@ -53,116 +49,155 @@ class Project extends React.Component {
         }
     }
 
-    lerpColor(a, b, amount) {
-        const ah = parseInt(a.replace(/#/g, ''), 16),
-            ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
-            bh = parseInt(b.replace(/#/g, ''), 16),
-            br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
-            rr = ar + amount * (br - ar),
-            rg = ag + amount * (bg - ag),
-            rb = ab + amount * (bb - ab);
-
-        return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
-    };
-
-    formatResultsForTable(state) {
-        const data = state.result.targets;
-        const config = state.config;
-        if (!data.length) {
-            return {
-                headers: [],
-                results: [],
-            };
-        };
-        const headersMap = {
-            match: "Match",
-            cnn_score: "CNN",
-            cfd_score: "CFD"
-        };
-        const headers = Object.keys(data[0]).map(item => ({
-            key: item,
-            display: headersMap[item]
-        }));
-        const fixedData = data.map(item => ({
-            match: (
-                <span>
-                    <span style={{ color: "#a7afb5"}}>{item.match.slice(0, 3)}</span>
-                    {item.match.slice(3, item.match.length).split("").map((letter, i) => {
-                        if (!config.grna) {
-                            return letter;
-                        }
-                        if (letter !== config.grna[i]) {
-                            return (<span key={`key-${i}`} style={{ color: "#EE6868" }}>{letter}</span>);
-                        }
-                        return letter;
-                    })}
-                </span>
-            ),
-            cnn_score: item.cnn_score != null ? (
-                <span style={{ color: this.lerpColor("0xEE6868", "0x7FE49B", item.cnn_score) }}>{item.cnn_score.toFixed(2)}</span>
-            ) : null,
-            cfd_score: item.cfd_score != null ? (
-                <span style={{ color: this.lerpColor("0xEE6868", "0x7FE49B", item.cfd_score) }}>{item.cfd_score.toFixed(2)}</span>
-            ) : null,
-        }))
-        return {
-            headers,
-            results: fixedData
-        };
-    }
-
     renderConfig() {
         const { project, user, authUser, token } = this.props;
-        const EditorWithMapAndTable = sharedState(({ state, setState }) => (
-            <div>
-                <p className="desc">Write your config:</p>
-                <Editor
-                    defaultValue={project.config}
-                    keysMap={keysMap}
-                    lifeCycleMap={lifeCycleMap}
-                    highlight={highlightToml}
-                    width={750}
-                    height={200}
-                    padding={20}
+        return (
+            <div className="project-config">
+                <EditorWithMapAndTable
+                    initialState={{ status: "success", message: "✓ Compiled", predictions: JSON.parse(project.predictions), config: project.config }}
                     onSave={async (value) => {
-                        setState({ status: "loading", message: "• Compiling..." });
                         try {
-                            const parsedToml = parse(value);
+                            const parsedToml = toml.parse(value);
                             parsedToml.numItems = 10;
                             const res = await post(process.env.SEARCH_URL, JSON.stringify(parsedToml));
                             const { created_at, updated_at, user, ...rest } = project;
-                            const newProject = { ...rest, config: value };
-                            await post(process.env.PROJECTS_URL + ".set", newProject, { headers: { Authorization: "Bearer " + token } });
-                            setState({ status: "success", message: "✓ Compiled", result: res.data, config: parsedToml });
+                            const newProject = { ...rest, config: value, predictions: JSON.stringify(res.data) };
+                            await post(process.env.PROJECTS_URL + ".update", newProject, {
+                                headers: { Authorization: "Bearer " + token }
+                            });
+                            return { status: "success", message: "✓ Compiled", predictions: res.data };
                         } catch (e) {
                             console.log(e);
                             if (e.name == "SyntaxError") {
-                                setState({ status: "error", message: "× Failed to parse toml file." });
+                                return { status: "error", message: "× Failed to parse toml file." };
                             } else {
-                                setState({ status: "error", message: "× Oops, an unexpected error occured, sorry about that." });
+                                return { status: "error", message: "× Invalid config." };
                             }
                         }
                     }}
-                    editable={authUser.id === user.id}
                 />
             </div>
-        ), ({ state, setState }) => (
-            <div className="search-results">
-                <StatusBar status={state.status} message={state.message}/>
-                <CrisprTargetMap className="project-crispr-target-map" data={state.result} />
-                <Table data={this.formatResultsForTable(state)} />
-            </div>
-        ));
-        return (
-            <div className="project-config">
-                <EditorWithMapAndTable initialState={{ status: "success", message: "✓ Compiled", result: { targets: [] }, config: parse(project.config) }}/>
-                <style jsx global>{`
-                    .project-crispr-target-map {
-                        margin: 20px 0;
+        );
+    }
+
+    renderResult(item) {
+        const { authUser, user, token } = this.props;
+        return (<WithState key={item.id} initialState={item} initialData={item} render={({ state, setState, getData, setData }) => (
+            <div className="project-result">
+                <div className="project-result-header">
+                    <Link href={`/profile?id=${state.user.id}&tab=projects`}>
+                        <a className="internal-link">
+                            <img className="project-result-header-user" src={`${process.env.AVATAR_URL}?id=${state.user.email_sha256}&size=20`} /> {state.user.username}
+                        </a>
+                    </Link>
+                    <span className="desc">
+                        <Interval every={5000} render={(time) => {
+                            if (!time) {
+                                return null;
+                            }
+
+                            const data = getData();
+                            const hasUpdated = data.updated_at != null;
+                            let diff = hasUpdated ? time - data.updated_at : time - data.created_at ;
+                            const text = diff < 0 ? "just now" : ms(diff, { long: true }) + " ago";
+                            return hasUpdated ? "Updated " + text : "Created " + text;
+                        }} />
+                    </span>
+                </div>
+                <div className="project-result-content">
+                    <div className="project-result-left">
+                        <ImageUpload
+                            initialValue={state.image}
+                            editable={authUser && authUser.id === user.id}
+                            onAdd={async (base64) => {
+                                try {
+                                    const base64String = base64.split(",")[1];
+                                    const imageName = "result.png";
+                                    const { data } = await post("https://api.zeit.co/v9/now/deployments", {
+                                        name: process.env.RESULT_IMAGES_NOW_NAME,
+                                        version: 2,
+                                        files: [{ file: imageName, data: base64String, encoding: "base64" }]
+                                    }, {
+                                        headers: {
+                                            Authorization: `Bearer ${process.env.ZEIT_API_TOKEN}`,
+                                            "Content-Type": "application/octet-stream"
+                                        }
+                                    });
+                                    const url = `https://${data.url}/${imageName}`;
+                                    const { id, project, desc, ...rest } = getData();
+                                    const newResult = { id, project, desc, image: url };
+                                    await post(process.env.RESULTS_URL + ".update", newResult, {
+                                        headers: { Authorization: `Bearer ${token}` }
+                                    });
+                                    setData({ image: url, updated_at: Date.now() });
+                                    return { value: url, error: "" };
+                                } catch (e) {
+                                    console.log(e);
+                                    return { error: "Failed to upload the image." };
+                                }
+                            }}
+                            onRemove={async () => {
+                                try {
+                                    const { id, project, desc, ...rest } = getData();
+                                    const newResult = { id, project, desc, image: "" };
+                                    await post(process.env.RESULTS_URL + ".update", newResult, {
+                                        headers: { Authorization: `Bearer ${token}` }
+                                    });
+                                    setData({ image: "", updated_at: Date.now() });
+                                    return { value: "", error: "" };
+                                } catch (e) {
+                                    console.log(e);
+                                    return { error: "Failed to remove the image." };
+                                }
+                            }}
+                        />
+                    </div>
+                    <div className="project-result-right">
+                        <TextareaWithPreview
+                            placeholder={authUser && authUser.id === user.id ? "Add some comments..." : "No comments yet..."}
+                            initialValue={state.desc}
+                            editable={authUser && authUser.id === user.id}
+                            onSave={async (value) => {
+                                try {
+                                    const { id, project, image, ...rest } = getData();
+                                    const newResult = { id, project, image, desc: value };
+                                    await post(process.env.RESULTS_URL + ".update", newResult, {
+                                        headers: { Authorization: "Bearer " + token }
+                                    });
+                                    setData({ desc: value, updated_at: Date.now() });
+                                    return { value, lastSavedValue: value, editMode: false, error: "" };
+                                } catch (e) {
+                                    console.log(e);
+                                    return { error: "Failed to update the comment." };
+                                }
+                            }}
+                        />
+                    </div>
+                </div>
+                <style jsx>{`
+                    .project-result {
+                        margin-bottom: 15px;
+                    }
+
+                    .project-result-content {
+                        display: flex;
+                    }
+
+                    .project-result-left {
+                        margin-right: 10px;
+                    }
+
+                    .project-result-header {
+                        margin-bottom: 5px;
+                    }
+
+                    .project-result-header-user {
+                        vertical-align: bottom;
+                        border-radius: 50%;
                     }
                 `}</style>
             </div>
-        );
+        )} />);
     }
 
     renderResults() {
@@ -179,32 +214,37 @@ class Project extends React.Component {
                 `}</style>
             </div>
         );
-        const ResultsWithHeader = sharedState(({ state, setState }) => (
-            <div className="project-results-header">
-                <span className="text">Total {results.length} results</span>
-                <div>
-                    {
-                        state.error ?
-                        <span className="error button-with-error-span"> {state.error} </span> :
-                        null
-                    }
-                    <Button onClick={async () => {
-                        try {
-                            const newResult = { id: null, image: "", desc: "", project: project.id };
-                            const response = await post(process.env.RESULTS_URL + ".set", newResult, {
-                                headers: { Authorization: "Bearer " + token }
-                            });
-                            const userResponse = await get(process.env.PROFILE_URL + `.get?id=${response.data.user}`);
-                            const newResultData = {
-                                ...response.data,
-                                user: userResponse.data
-                            };
-                            setState({ results: [ ...state.results, newResultData], error: "" });
-                        } catch (e) {
-                            console.log(e);
-                            setState({ error: "Failed to add new result." });
+        return (<WithState initialState={{ results, error: "" }} render={({ state, setState }) => (
+            <div className="project-results">
+                <div className="project-results-header">
+                    <span className="text">Total {state.results.length} results</span>
+                    {(authUser && authUser.id === user.id) && <div>
+                        {
+                            state.error ?
+                            <span className="error button-with-error-span"> {state.error} </span> :
+                            null
                         }
-                    }} className="btn-primary">add new result +</Button>
+                        <Button onClick={async () => {
+                            try {
+                                const newResult = { image: "", desc: "", project: project.id };
+                                const response = await post(process.env.RESULTS_URL + ".create", newResult, {
+                                    headers: { Authorization: "Bearer " + token }
+                                });
+                                const userResponse = await get(process.env.PROFILE_URL + `.get?id=${response.data.user}`);
+                                const newResultData = {
+                                    ...response.data,
+                                    user: userResponse.data
+                                };
+                                setState({ results: [newResultData, ...state.results], error: "" });
+                            } catch (e) {
+                                console.log(e);
+                                setState({ error: "Failed to add new result." });
+                            }
+                        }} className="btn-primary">add new result +</Button>
+                    </div>}
+                </div>
+                <div>
+                    {!state.results.length ? noResults : state.results.map((item, i) => this.renderResult(item))}
                 </div>
                 <style jsx>{`
                     .project-results-header {
@@ -221,123 +261,7 @@ class Project extends React.Component {
                     }
                 `}</style>
             </div>
-        ), ({ state, setState }) => (
-            !state.results.length ? noResults : state.results.map((item, i) => (
-                <div key={item.id} className="project-result">
-                    <div className="project-result-header">
-                        <Link href={`/profile?id=${item.user.id}&tab=projects`}>
-                            <a className="internal-link">
-                                <img className="project-result-header-user" src={`${process.env.AVATAR_URL}?id=${item.user.email_sha256}&size=20`} /> {item.user.username}
-                            </a>
-                        </Link>
-                        <span className="desc">
-                            <Interval every={5000} render={(time) => {
-                                if (!time) {
-                                    return null;
-                                }
-
-                                return item.updated_at ?
-                                "updated " + ms(time - item.updated_at, { long: true }) + " ago" :
-                                "added "  + ms(time - item.created_at, { long: true }) + " ago";
-                            }} />
-                        </span>
-                    </div>
-                    <div className="project-result-content">
-                        <div className="project-result-left">
-                            <ImageUpload
-                                initialValue={item.image}
-                                onAdd={async (base64) => {
-                                    try {
-                                        const base64String = base64.split(",")[1];
-                                        const imageName = "result.png";
-                                        const { data } = await post("https://api.zeit.co/v9/now/deployments", {
-                                            name: process.env.RESULT_IMAGES_NOW_NAME,
-                                            version: 2,
-                                            files: [{ file: imageName, data: base64String, encoding: "base64" }]
-                                        }, {
-                                            headers: {
-                                                Authorization: `Bearer ${process.env.ZEIT_API_TOKEN}`,
-                                                "Content-Type": "application/octet-stream"
-                                            }
-                                        });
-                                        const url = `https://${data.url}/${imageName}`;
-                                        const { created_at, updated_at, user, ...rest } = item;
-                                        const newResult = { ...rest, image: url };
-                                        await post(process.env.RESULTS_URL + ".set", newResult, {
-                                            headers: { Authorization: `Bearer ${token}` }
-                                        });
-                                        return { url, error: "" };
-                                    } catch (e) {
-                                        return { error: "Failed to upload the image." };
-                                    }
-                                }}
-                                onRemove={async () => {
-                                    try {
-                                        const { created_at, updated_at, user, ...rest } = item;
-                                        const newResult = { ...rest, image: "" };
-                                        await post(process.env.RESULTS_URL + ".set", newResult, {
-                                            headers: {
-                                                Authorization: `Bearer ${token}`
-                                            }
-                                        });
-                                        return { url: "", error: "" };
-                                    } catch (e) {
-                                        return { error: "Failed to remove the image." };
-                                    }
-                                }}
-                            />
-                        </div>
-                        <div className="project-result-right">
-                            <Textarea
-                                placeholder={authUser.id === user.id ? "Add some comments..." : "No comments yet..."}
-                                initialValue={item.desc}
-                                editable={authUser.id === user.id}
-                                onSave={async (value) => {
-                                    try {
-                                        const { created_at, updated_at, user, ...rest } = item;
-                                        const newResult = { ...rest, desc: value };
-                                        await post(process.env.RESULTS_URL + ".set", newResult, {
-                                            headers: { Authorization: "Bearer " + token }
-                                        });
-                                        return { value, lastSavedValue: value, readMode: true, error: "" };
-                                    } catch (e) {
-                                        console.log(e);
-                                        return { error: "Failed to update the comment." };
-                                    }
-                                }}
-                            />
-                        </div>
-                    </div>
-                    <style jsx>{`
-                        .project-result {
-                            margin-bottom: 15px;
-                        }
-
-                        .project-result-content {
-                            display: flex;
-                        }
-
-                        .project-result-left {
-                            margin-right: 10px;
-                        }
-
-                        .project-result-header {
-                            margin-bottom: 5px;
-                        }
-
-                        .project-result-header-user {
-                            vertical-align: bottom;
-                            border-radius: 50%;
-                        }
-                    `}</style>
-                </div>
-            ))
-        ));
-        return (
-            <div className="project-results">
-                <ResultsWithHeader initialState={{ results, error: "" }}/>
-            </div>
-        );
+        )}/>);
     }
 
     render() {

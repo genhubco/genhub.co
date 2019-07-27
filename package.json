@@ -21,7 +21,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
-    "granit": "0.0.26",
+    "granit": "0.0.29",
     "granit-utils": "0.0.7",
     "jsonwebtoken": "^8.5.1",
     "next": "^8.1.0",

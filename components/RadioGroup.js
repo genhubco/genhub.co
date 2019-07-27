@@ -1,6 +1,6 @@
 import classnames from "classnames";
 
-export default class Input extends React.Component {
+export default class RadioGroup extends React.Component {
     constructor(props) {
         super(props);
 

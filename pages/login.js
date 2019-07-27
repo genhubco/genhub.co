@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { post } from "axios";
-import { useRouter } from "next/router";
+import Router from 'next/router'
 import { setCookie } from "nookies";
 
 import Page from "../components/Page";
@@ -18,7 +18,6 @@ class Login extends React.Component {
         try {
             const defaultProps = { error: "" };
             const { res } = ctx;
-            const router = useRouter();
             if (!ctx.query) {
                 return defaultProps;
             }
@@ -35,7 +34,7 @@ class Login extends React.Component {
                 return defaultProps;
             }
 
-            router.push("/");
+            Router.push("/");
             return defaultProps;
         } catch (e) {
             console.log(e);
@@ -93,7 +92,7 @@ class Login extends React.Component {
                     }
 
                     .login-content-buttons {
-                        margin-top: 10px;
+                        margin: 10px 0;
                         display: flex;
                         justify-content: center;
                     }

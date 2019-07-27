@@ -1,20 +1,21 @@
 import classnames from "classnames";
 import Button from "./Button";
 
-export default class Textarea extends React.Component {
+export default class TextareaWithPreview extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             value: props.initialValue,
             lastSavedValue: props.initialValue,
-            readMode: true,
+            editMode: false,
             error: ""
         };
 
         this.onChange = this.onChange.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.onSave = this.onSave.bind(this);
+        this.enableEdit = this.enableEdit.bind(this);
     }
 
     onChange(e) {
@@ -22,8 +23,12 @@ export default class Textarea extends React.Component {
         this.setState({ value });
     }
 
+    enableEdit() {
+        this.setState({ editMode: true })
+    }
+
     onCancel() {
-        this.setState({ value: this.state.lastSavedValue, readMode: true, error: "" });
+        this.setState({ value: this.state.lastSavedValue, editMode: false, error: "" });
     }
 
     async onSave() {
@@ -33,28 +38,28 @@ export default class Textarea extends React.Component {
     }
 
     render() {
-        const { className, editable } = this.props;
-        const { value, lastSavedValue, readMode, error } = this.state;
+        const { className, editable, placeholder } = this.props;
+        const { value, lastSavedValue, editMode, error } = this.state;
         return (
             <div className={classnames("textarea-container", className)}>
                 <textarea
-                    placeholder={this.props.placeholder}
+                    placeholder={placeholder}
                     className={classnames("textarea", {
-                        "textarea-preview": readMode
+                        "textarea-preview": !editMode
                     })}
                     value={value}
                     onChange={this.onChange}
-                    readOnly={readMode && this.props.editable}
+                    readOnly={!editMode && editable}
                 />
                 <div className="textarea-controls">
                 {error && <p className="textarea-error error">{error}</p>}
                 {
-                    this.state.readMode && this.props.editable ?
-                    <Button onClick={() => this.setState({ readMode: false })} className="small-btn-primary">edit ≠</Button> :
+                    editable && (!editMode ?
+                    <Button onClick={this.enableEdit} className="small-btn-primary">edit ≠</Button> :
                     [
                         <Button key="item-1" onClick={this.onCancel} className="small-btn-primary">cancel</Button>,
                         <Button key="item-2" onClick={this.onSave} className="small-btn-primary">save changes</Button>
-                    ]
+                    ])
                 }
                 </div>
                 <style jsx>{`

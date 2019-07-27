@@ -1,11 +1,11 @@
-const api = "https://api-cfm8tie1l.now.sh/";
+const api = "https://api-mej7lm7z8.now.sh/";
 const data = "https://data-o6m8znu9c.now.sh/";
 
 module.exports = {
     target: "serverless",
     env: {
-        TOKEN_COOKIE_NAME: "jwt-token-genhub-h4t98g4987tfg8944e",
-        RESULT_IMAGES_NOW_NAME: "images-genhub-h4t98g4987tfg8944e",
+        TOKEN_COOKIE_NAME: "jwt-token-genhub-h4t98g4987tfg8944ea",
+        RESULT_IMAGES_NOW_NAME: "images-genhub-h4t98g4987tfg8944ea",
         LOGIN_URL: api + "login",
         PROFILE_URL: api + "profile",
         PROJECTS_URL: api + "projects",

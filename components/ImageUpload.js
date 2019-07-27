@@ -13,10 +13,9 @@ async function getBase64(file) {
 export default class ImageUpload extends React.Component {
     constructor(props) {
         super(props);
-        this._isMounted = false;
+        this._isMounted = true;
         this.state = {
-            url: props.initialValue,
-            error: "",
+            value: props.initialValue,
             loading: false
         };
 
@@ -28,48 +27,49 @@ export default class ImageUpload extends React.Component {
         this._isMounted = true;
     }
 
-
     componentWillUnmount() {
         this._isMounted = false;
     }
 
     async uploadImage(e) {
         this.setState({ loading: true });
-        const { onAdd } = this.props;
         const file = e.target.files[0];
         if (this._isMounted) {
             const base64 = await getBase64(file);
-            const newState = await onAdd(base64);
+            const newState = await this.props.onAdd(base64);
             this.setState({ ...newState, loading: false });
         }
     }
 
     async removeImage() {
-        const newState = await this.props.onRemove();
-        this.setState(newState);
+        this.setState({ loading: true });
+        if (this._isMounted) {
+            const newState = await this.props.onRemove();
+            this.setState({ ...newState, loading: false });
+        }
     }
 
     render() {
-        const { className } = this.props;
-        const { url, loading, error } = this.state;
+        const { className, editable } = this.props;
+        const { loading, value, error } = this.state;
         return (
             <div className={classnames("image-upload", className)}>
                 <div className="image-upload-image-container">
                     {
-                        url ?
-                        <img className="image-upload-image" src={url} /> :
+                        value ?
+                        <img className="image-upload-image" src={value} /> :
                         <img className="image-upload-placeholder" src="/static/image-placeholder.svg" />
                     }
                 </div>
                 {
-                    url ?
+                    editable && (value ?
                     <Button onClick={this.removeImage} className="small-btn-primary">remove image -</Button> :
                     <label className={classnames("small-btn-primary", {
                         "image-upload-btn-disabled": loading
                     })}>
                         <input className="image-upload-input" type="file" onChange={this.uploadImage} />
                         {loading ? "..." : "add image +"}
-                    </label>
+                    </label>)
                 }
                 <span className="error">{error}</span>
                 <style jsx>{`

@@ -14,7 +14,7 @@ export default (props) => {
                 "status-bar-error": props.status === "error",
                 "status-bar-success": props.status === "success"
             })}>{props.message}</p>
-            <p className="desc">All the data used by the algorithms can be found <a target="_blank" href="https://data.genhub.co" className="link">here</a>.</p>
+            <p className="desc">Available genes can be found <a target="_blank" href="https://data.genhub.co/datasets/genes/" className="link">here</a>.</p>
             <style jsx global>{`
                 .status-bar {
                     display: flex;
