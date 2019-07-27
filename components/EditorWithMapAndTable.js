@@ -1,6 +1,5 @@
 import { highlightToml, keysMap, lifeCycleMap } from "granit-utils";
 import Editor from "granit";
-import { post } from "axios";
 import { parse } from "toml";
 
 import StatusBar from "../components/StatusBar";

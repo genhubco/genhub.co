@@ -1,5 +1,5 @@
 import { decode } from "jsonwebtoken";
-import { withRouter, useRouter } from "next/router";
+import Router, { withRouter } from "next/router";
 import { post } from "axios";
 import toml from "toml";
 import { parseCookies, setCookie, destroyCookie } from "nookies";
@@ -23,8 +23,7 @@ class NewProject extends React.Component {
             res.writeHead(302, { Location: '/login' });
             res.end();
         } else if (!authUser && !ctx.res) {
-            const router = useRouter();
-            router.push("/login");
+            Router.push("/login");
         }
 
         return { authUser, token };

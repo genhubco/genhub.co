@@ -1,6 +1,5 @@
 import Link from "next/link";
 import classnames from "classnames";
-import { get } from "axios";
 import { withRouter } from "next/router";
 
 export default withRouter(({ router, user }) => {

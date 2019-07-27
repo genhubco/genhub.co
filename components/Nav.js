@@ -20,7 +20,12 @@ export default withRouter(({ options, render, center, router }) => (
             ))}
         </div>
         <div className="nav-content">
-            {render(router.query.tab)}
+            {options.includes(router.query.tab) ? render(router.query.tab) : (
+                <div className="nav-tab-not-found">
+                    <h3 className="title">Not Found</h3>
+                    <p className="text">The page you are looking for doesn’t exist.</p>
+                </div>
+            )}
         </div>
         <style jsx>{`
             .nav {
@@ -61,6 +66,10 @@ export default withRouter(({ options, render, center, router }) => (
 
             .nav-content {
                 padding: 30px 0;
+            }
+
+            .nav-tab-not-found {
+                text-align: center;
             }
         `}</style>
     </div>

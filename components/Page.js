@@ -3,7 +3,7 @@ import Head from "./Head";
 import Header from "./Header";
 import Footer from "./Footer";
 
-export default ({content = "medium", header = <Header/>, footer = <Footer/>, children}) => (
+export default ({ content = "medium", header = <Header/>, footer = <Footer/>, children }) => (
     <div>
         <Head/>
         {header}
