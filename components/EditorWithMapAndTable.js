@@ -73,6 +73,7 @@ export default class EditorWithMapAndTable extends React.Component {
             <div>
                 <p className="text">Write your config:</p>
                 <Editor
+                    editable={this.props.editable}
                     initialValue={config}
                     keysMap={keysMap}
                     lifeCycleMap={lifeCycleMap}
