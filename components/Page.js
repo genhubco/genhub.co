@@ -3,7 +3,7 @@ import Head from "./Head";
 import Header from "./Header";
 import Footer from "./Footer";
 
-export default ({content = "medium", header = <Header/>, footer = <Footer/>, children}) => (
+export default ({ content = "medium", header = <Header/>, footer = <Footer/>, children }) => (
     <div>
         <Head/>
         {header}
@@ -15,70 +15,101 @@ export default ({content = "medium", header = <Header/>, footer = <Footer/>, chi
             "content-big": content === "big",
         })}>
             {children}
+            {footer}
         </div>
-        {footer}
         <style jsx global>{`
             body {
                 margin: 0;
             }
 
+            *:focus {
+                outline: 1px solid #007fff;
+            }
+
             .btn-primary {
-                font-weight: bold;
                 font-family: "PT Sans", sans-serif;
-                letter-spacing: 1px;
                 margin-right: 10px;
-                height: 35px;
-                width: 100px;
-                background-color: #fff;
-                border: 2px solid #000;
-                font-size: 14px;
-                color: #000;
+                height: 30px;
+                min-width: 100px;
+                background-color: white;
+                border: 1px solid #dddfe2;
+                font-size: 12px;
+                border-radius: 5px;
+                cursor: pointer;
+                padding: 0;
+            }
+
+            .btn-primary:last-child {
+                margin-right: 0;
+            }
+
+            .btn-primary:hover {
+                background-color: #f2f3f4;
+            }
+
+            .small-btn-primary {
+                font-family: "PT Sans", sans-serif;
+                margin-right: 10px;
+                padding: 1px 7px 1px;
+                height: 18px;
+                min-width: 70px;
+                background-color: white;
+                border: 1px solid #dddfe2;
+                font-size: 12px;
                 border-radius: 5px;
                 cursor: pointer;
             }
 
-            .btn-primary:hover {
-                color: #007fff;
-                border: 2px solid #007fff;
+            .small-btn-primary:last-child {
+                margin-right: 0;
             }
 
-            .btn-primary:active {
-                outline: none;
-            }
-
-            .btn-primary:focus {
-                outline: none;
-            }
-
-            .description {
-                margin: 8px 0;
-                color: #a7afb5;
-                font-family: "PT Sans", sans-serif;
+            .small-btn-primary:hover {
+                background-color: #f2f3f4;
             }
 
             .link {
+                margin-right: 10px;
+                font-size: 14px;
                 color: #007fff;
                 text-decoration: none;
                 font-family: "PT Sans", sans-serif;
+                border: none;
+                background: none;
+                cursor: pointer;
+                padding: 0;
+            }
+
+            .link:hover {
+                font-weight: bold;
+            }
+
+            .link:last-child {
+                margin-right: 0;
             }
 
             .internal-link {
-                color: #7d8791;
+                margin-right: 10px;
+                color: black;
                 text-decoration: none;
+                font-size: 14px;
                 font-family: "PT Sans", sans-serif;
+                border: none;
+                background: none;
+                cursor: pointer;
+                padding: 0;
             }
 
             .internal-link:hover {
-                color: black;
+                font-weight: bold;
+            }
+
+            .internal-link:last-child {
+                margin-right: 0;
             }
 
             .internal-link-active {
-                color: black;
-            }
-
-            .btn-link {
-                display: inline-block;
-                margin-right: 10px;
+                font-weight: bold;
             }
 
             .content-center {
@@ -111,32 +142,31 @@ export default ({content = "medium", header = <Header/>, footer = <Footer/>, chi
             .text {
                 font-family: "PT Sans", sans-serif;
                 font-size: 14px;
+                margin: 0;
+            }
+
+            .error {
+                margin: 0;
+                color: #EE6868;
+                font-family: "PT Sans", sans-serif;
+                font-size: 12px;
             }
 
             .desc {
                 font-family: "PT Sans", sans-serif;
                 font-size: 14px;
                 color: #a7afb5;
+                margin: 0;
             }
 
             .title {
                 font-family: "PT Sans", sans-serif;
-            }
-
-            .small-title {
-                color: #a7afb5;
-                font-family: "PT Sans", sans-serif;
-                font-size: 16px;
-                margin: 0 0 10px 0;
+                margin: 0;
             }
 
             .granit-editor-container {
                 background-color: #f2f3f4;
                 border-radius: 5px;
-            }
-
-            .granit-editor:focus {
-                outline: none;
             }
 
             .granit-editor-highlight .string {

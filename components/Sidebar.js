@@ -3,11 +3,18 @@ import Link from 'next/link';
 import classnames from "classnames";
 
 export default withRouter(({children, router, options, params}) => (
-    <div>
+    <div className="side-bar-container">
         <div className="side-bar">
             {options.map((item, i) => (
                 item.section ?
-                <Link key={`option-${i}`} href={`${router.route}?${params.section}=${item.section}&${params.item}=${item.name}`}>
+                <Link key={`option-${i}`} href={{
+                    pathname: router.route,
+                    query: {
+                        ...router.query,
+                        [params.section]: item.section,
+                        [params.item]: item.name
+                    }
+                }}>
                     <a className={classnames("option internal-link", {
                         "internal-link-active": router.query[params.item] === item.name
                     })}>{item.display}</a>

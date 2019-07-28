@@ -1,69 +1,82 @@
-import React from "react";
 import Link from "next/link";
 import { post } from "axios";
 import { withRouter } from "next/router";
-import { parseCookies, setCookie, destroyCookie } from "nookies";
+import { setCookie } from "nookies";
 
 import Page from "../components/Page";
 import Footer from "../components/Footer";
 
 class Login extends React.Component {
-    static async getInitialProps(ctx) {
-        try {
-            const { res } = ctx;
-            if (!ctx.query) {
-                return {};
-            }
-            const { provider, code } = ctx.query;
-            if (!provider || !code) {
-                return {};
-            }
-            const response = await post(process.env.AUTH_URL, { provider, code });
-            setCookie(ctx, process.env.TOKEN_COOKIE_NAME, response.data.token);
-            if (res) {
-                res.writeHead(302, { Location: "/" });
-                res.end();
-                return {};
-            }
+    static async getInitialProps({ query }) {
+        return query;
+    }
 
-            Router.push("/");
-            return {};
-        } catch (e) {
-            return { error: "Failed to authenticate. Please try another method." };
+    constructor(props) {
+        super(props);
+        this.state = { redirect_uri_base: null, error: "" };
+    }
+
+    async componentDidMount() {
+        const { provider, code, router } = this.props;
+        const location = window.location.origin + window.location.pathname + "?provider=";
+        const redirect_uri_base = process.env.PROXY_REDIRECT_URL + "?to=" + location;
+
+        if (provider && code) {
+            try {
+                const redirect_uri = redirect_uri_base + provider;
+                const { data } = await post(process.env.LOGIN_URL, { provider, code, redirect_uri });
+                setCookie({}, process.env.TOKEN_COOKIE_NAME, data.token);
+                router.push("/");
+            } catch (e) {
+                this.setState({ redirect_uri_base, error: "Authentication failed. Please try another method." });
+            }
+        } else {
+            this.setState({ redirect_uri_base, error: "" });
         }
     }
 
     render () {
+        const { redirect_uri_base } = this.state;
         const googleURL = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + process.env.GOOGLE_CLIENT_ID + "&" +
-                          "redirect_uri=" + process.env.GOOGLE_REDIRECT_URI + "&" +
+                          "redirect_uri=" + redirect_uri_base + "google&" +
                           "response_type=code&" +
                           "scope=email profile";
         const githubURL = "https://github.com/login/oauth/authorize?client_id=" + process.env.GITHUB_CLIENT_ID + "&" +
-                          "scope=user user:email";
+                          "scope=user user:email" + "&" +
+                          "redirect_uri=" + redirect_uri_base + "github";
         return (
             <Page content="center" header={null} footer={null}>
-                <div className="login-wrapper">
-                    <div className="login-content">
-                        <Link href="/">
-                            <a className="logo"><img src="/static/applogo.svg"/></a>
-                        </Link>
-                        <p className="small-title">Log in via:</p>
-                        <div className="login-content-buttons">
-                            <a
-                                className="google-login-button"
-                                href={googleURL}>
-                                <div className="google-login-button-logo"><img src="/static/google-logo.svg" /></div>
-                            </a>
-                            <a
-                                className="github-login-button"
-                                href={githubURL}>
-                                <div className="github-login-button-logo"><img src="/static/github-logo.svg" /></div>
-                            </a>
+                {
+                    redirect_uri_base ? (
+                        <div className="login-wrapper">
+                            <div className="login-content">
+                                <Link href="/">
+                                    <a className="logo"><img src="/static/applogo.svg"/></a>
+                                </Link>
+                                <p className="text">Log in via:</p>
+                                <div className="login-content-buttons">
+                                    <a
+                                        className="google-login-button"
+                                        href={googleURL}>
+                                        <div className="google-login-button-logo"><img src="/static/google-logo.svg" /></div>
+                                    </a>
+                                    <a
+                                        className="github-login-button"
+                                        href={githubURL}>
+                                        <div className="github-login-button-logo"><img src="/static/github-logo.svg" /></div>
+                                    </a>
+                                </div>
+                                <p className="error">{this.state.error}</p>
+                            </div>
+                            <Footer />
                         </div>
-                        <p className="error-text">{this.props.error}</p>
-                    </div>
-                    <Footer />
-                </div>
+                    ) : (
+                        <div className="login-placeholder">
+                            <p className="text">Processing request. Please wait...</p>
+                        </div>
+                    )
+                }
+
                 <style jsx global>{`
                     .logo img {
                         height: 40px;
@@ -76,9 +89,11 @@ class Login extends React.Component {
                         border: 1px solid rgba(200,200,200,0.30);
                         text-align: center;
                         padding: 15px 0;
+                        margin-bottom: 30px;
                     }
 
                     .login-content-buttons {
+                        margin: 10px 0;
                         display: flex;
                         justify-content: center;
                     }
@@ -88,7 +103,6 @@ class Login extends React.Component {
                     }
 
                     .github-login-button, .google-login-button {
-                        outline: none;
                         font-size: 14px;
                         width: 160px;
                         border: 1px solid #dddfe2;
@@ -108,12 +122,6 @@ class Login extends React.Component {
 
                     .github-login-button img, .google-login-button-logo img {
                         height: 20px;
-                    }
-
-                    .error-text {
-                        color: #EE6868;
-                        font-family: "PT Sans", sans-serif;
-                        font-size: 12px;
                     }
                 `}</style>
             </Page>

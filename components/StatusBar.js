@@ -9,23 +9,17 @@ export default (props) => {
 
     return (
         <div className="status-bar">
-            <img className="status-bar-img" src={`/static/icons/${statuses[props.status]}`} />
-            <p className={classNames("status-bar-text", {
+            <p className={classNames("status-bar-text text", {
                 "status-bar-loading": props.status === "loading",
                 "status-bar-error": props.status === "error",
                 "status-bar-success": props.status === "success"
             })}>{props.message}</p>
+            <p className="desc">Available genes can be found <a target="_blank" href="https://data.genhub.co/datasets/genes/" className="link">here</a>.</p>
             <style jsx global>{`
                 .status-bar {
-                    margin-bottom: 10px;
+                    display: flex;
+                    justify-content: space-between;
                 }
-
-                .status-bar-img {
-                    height: 12px;
-                    display: inline-block;
-                    margin-right: 4px;
-                }
-
                 .status-bar-text {
                     font-family: "PT Sans", sans-serif;
                     vertical-align: bottom;

@@ -1,7 +1,5 @@
-import React from "react";
 import Link from "next/link";
 import classnames from "classnames";
-import { get } from "axios";
 import { withRouter } from "next/router";
 
 export default withRouter(({ router, user }) => {
@@ -11,29 +9,29 @@ export default withRouter(({ router, user }) => {
                 <a className="header-logo"><img src="/static/applogo.svg"/></a>
             </Link>
             <div className="header-links">
-                <Link href="/docs?project=api&doc=search">
-                    <a className={classnames("internal-link btn-link", {
+                <Link href="/docs?project=api&doc=auth">
+                    <a className={classnames("internal-link", {
                         "internal-link-active": router.route === "/docs"
                     })}>
                         docs
                     </a>
                 </Link>
                 <Link href="/demo">
-                    <a className={classnames("internal-link btn-link", {
+                    <a className={classnames("internal-link", {
                         "internal-link-active": router.route === "/demo"
                     })}>
                         demo
                     </a>
                 </Link>
                 {
-                    user ?
-                    <Link href={`/profile?id=${user.id}`}>
+                    user && user.id ?
+                    <Link href={`/profile?id=${user.id}&tab=projects`}>
                         <a className="header-avatar-link">
-                            <img src={`${process.env.AVATAR_URL}?id=${user.id}&size=20`} />
+                            <img src={`${process.env.AVATAR_URL}?id=${user.email_sha256}&size=20`} />
                         </a>
                     </Link> :
                     <Link href="/login">
-                        <a className={classnames("internal-link btn-link", {
+                        <a className={classnames("internal-link", {
                             "internal-link-active": router.route === "/login"
                         })}>
                             login
@@ -43,7 +41,7 @@ export default withRouter(({ router, user }) => {
             </div>
             <style jsx global>{`
                 .header {
-                    margin-top: 10px;
+                    padding-top: 10px;
                     width: 100%;
                     display: flex;
                     justify-content: space-between;
@@ -61,7 +59,7 @@ export default withRouter(({ router, user }) => {
                 .header-avatar-link {
                     display: inline-block;
                     height: 20px;
-                    vertical-align: bottom;
+                    vertical-align: middle;
                 }
 
                 .header-avatar-link img {
