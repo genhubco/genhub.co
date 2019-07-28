@@ -49,17 +49,15 @@ export default class TextareaWithPreview extends React.Component {
                     })}
                     value={value}
                     onChange={this.onChange}
-                    readOnly={!editMode && editable}
+                    readOnly={!editMode || !editable}
                 />
                 <div className="textarea-controls">
                 {error && <p className="textarea-error error">{error}</p>}
                 {
-                    editable && (!editMode ?
-                    <Button onClick={this.enableEdit} className="small-btn-primary">edit ≠</Button> :
-                    [
+                    editable && (editMode ? [
                         <Button key="item-1" onClick={this.onCancel} className="small-btn-primary">cancel</Button>,
                         <Button key="item-2" onClick={this.onSave} className="small-btn-primary">save changes</Button>
-                    ])
+                    ] : <Button onClick={this.enableEdit} className="small-btn-primary">edit ≠</Button>)
                 }
                 </div>
                 <style jsx>{`
