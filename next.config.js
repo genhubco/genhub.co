@@ -1,4 +1,4 @@
-const api = "https://api-mej7lm7z8.now.sh/";
+const api = "https://api-io3i6v3cn.now.sh/";
 const data = "https://data-o6m8znu9c.now.sh/";
 
 module.exports = {
@@ -15,6 +15,7 @@ module.exports = {
         DATA_DOCS_URL: data + "docs/",
         SEARCH_URL: data + "search",
         SCORE_URL: data + "score",
+        PROXY_REDIRECT_URL: "https://proxy.genhub.now.sh/redirect",
         GOOGLE_CLIENT_ID: "862067484080-upmf5o3qh3bmaeq7loub8imclm0ceebf.apps.googleusercontent.com",
         GITHUB_CLIENT_ID: "21e31307f46eb37b341b",
         ZEIT_API_TOKEN: process.env.ZEIT_API_TOKEN

@@ -1,84 +1,82 @@
 import Link from "next/link";
 import { post } from "axios";
-import Router from 'next/router'
+import { withRouter } from "next/router";
 import { setCookie } from "nookies";
 
 import Page from "../components/Page";
 import Footer from "../components/Footer";
 
-function getEnv() {
-    console.log("branch", process.env["NOW_GITHUB_COMMIT_REF"]);
-    const branches = { master: "prod", staging: "stag" };
-    const currentEnv = branches[process.env["NOW_GITHUB_COMMIT_REF"]];
-    const env = currentEnv || "dev";
-    console.log("env", env);
-    return env;
-}
-
 class Login extends React.Component {
-    static async getInitialProps(ctx) {
-        try {
-            const defaultProps = { error: "" };
-            const { res } = ctx;
-            if (!ctx.query) {
-                return defaultProps;
-            }
-            const { provider, code } = ctx.query;
-            if (!provider || !code) {
-                return defaultProps;
-            }
-            const env = getEnv();
-            const response = await post(process.env.LOGIN_URL, { provider, code, env });
-            setCookie(ctx, process.env.TOKEN_COOKIE_NAME, response.data.token);
-            if (res) {
-                res.writeHead(302, { Location: "/" });
-                res.end();
-                return defaultProps;
-            }
+    static async getInitialProps({ query }) {
+        return query;
+    }
 
-            Router.push("/");
-            return defaultProps;
-        } catch (e) {
-            console.log(e);
-            return { error: "Failed to authenticate. Please try another method." };
+    constructor(props) {
+        super(props);
+        this.state = { redirect_uri_base: null, error: "" };
+    }
+
+    async componentDidMount() {
+        const { provider, code, router } = this.props;
+        const location = window.location.origin + window.location.pathname + "?provider=";
+        const redirect_uri_base = process.env.PROXY_REDIRECT_URL + "?to=" + location;
+
+        if (provider && code) {
+            try {
+                const redirect_uri = redirect_uri_base + provider;
+                const { data } = await post(process.env.LOGIN_URL, { provider, code, redirect_uri });
+                setCookie({}, process.env.TOKEN_COOKIE_NAME, data.token);
+                router.push("/");
+            } catch (e) {
+                this.setState({ redirect_uri_base, error: "Authentication failed. Please try another method." });
+            }
+        } else {
+            this.setState({ redirect_uri_base, error: "" });
         }
     }
 
     render () {
-        const env = getEnv();
-        const redirect_uri_google = "https://mocks.genhub.now.sh/callback/" + env + "?provider=google";
-        const redirect_uri_github = "https://mocks.genhub.now.sh/callback/" + env + "?provider=github";
+        const { redirect_uri_base } = this.state;
         const googleURL = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + process.env.GOOGLE_CLIENT_ID + "&" +
-                          "redirect_uri=" + redirect_uri_google + "&" +
+                          "redirect_uri=" + redirect_uri_base + "google&" +
                           "response_type=code&" +
                           "scope=email profile";
         const githubURL = "https://github.com/login/oauth/authorize?client_id=" + process.env.GITHUB_CLIENT_ID + "&" +
                           "scope=user user:email" + "&" +
-                          "redirect_uri=" + redirect_uri_github;
+                          "redirect_uri=" + redirect_uri_base + "github";
         return (
             <Page content="center" header={null} footer={null}>
-                <div className="login-wrapper">
-                    <div className="login-content">
-                        <Link href="/">
-                            <a className="logo"><img src="/static/applogo.svg"/></a>
-                        </Link>
-                        <p className="text">Log in via:</p>
-                        <div className="login-content-buttons">
-                            <a
-                                className="google-login-button"
-                                href={googleURL}>
-                                <div className="google-login-button-logo"><img src="/static/google-logo.svg" /></div>
-                            </a>
-                            <a
-                                className="github-login-button"
-                                href={githubURL}>
-                                <div className="github-login-button-logo"><img src="/static/github-logo.svg" /></div>
-                            </a>
+                {
+                    redirect_uri_base ? (
+                        <div className="login-wrapper">
+                            <div className="login-content">
+                                <Link href="/">
+                                    <a className="logo"><img src="/static/applogo.svg"/></a>
+                                </Link>
+                                <p className="text">Log in via:</p>
+                                <div className="login-content-buttons">
+                                    <a
+                                        className="google-login-button"
+                                        href={googleURL}>
+                                        <div className="google-login-button-logo"><img src="/static/google-logo.svg" /></div>
+                                    </a>
+                                    <a
+                                        className="github-login-button"
+                                        href={githubURL}>
+                                        <div className="github-login-button-logo"><img src="/static/github-logo.svg" /></div>
+                                    </a>
+                                </div>
+                                <p className="error">{this.state.error}</p>
+                            </div>
+                            <Footer />
                         </div>
-                        <p className="error">{this.props.error}</p>
-                    </div>
-                    <Footer />
-                </div>
+                    ) : (
+                        <div className="login-placeholder">
+                            <p className="text">Processing request. Please wait...</p>
+                        </div>
+                    )
+                }
+
                 <style jsx global>{`
                     .logo img {
                         height: 40px;
@@ -91,6 +89,7 @@ class Login extends React.Component {
                         border: 1px solid rgba(200,200,200,0.30);
                         text-align: center;
                         padding: 15px 0;
+                        margin-bottom: 30px;
                     }
 
                     .login-content-buttons {
@@ -130,4 +129,4 @@ class Login extends React.Component {
     }
 }
 
-export default Login;
+export default withRouter(Login);
