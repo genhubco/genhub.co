@@ -54,6 +54,7 @@ class Project extends React.Component {
         return (
             <div className="project-config">
                 <EditorWithMapAndTable
+                    editable={authUser && authUser.id === user.id}
                     initialState={{ status: "success", message: "✓ Compiled", predictions: JSON.parse(project.predictions), config: project.config }}
                     onSave={async (value) => {
                         try {
