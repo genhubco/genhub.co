@@ -98,6 +98,9 @@ class Profile extends React.Component {
 
     renderSettings() {
         const { authUser, token, router } = this.props;
+        if (!authUser) {
+            return null;
+        }
         return (
             <div className="settings-container">
                 <WithState initialState={{ usernameError: "" }} initialData={{ username: "" }} render={({ state, setState, setData, getData }) => (

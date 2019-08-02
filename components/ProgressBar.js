@@ -1,7 +1,4 @@
-function map(input_start, input_end, output_start, output_end, input) {
-    const output = output_start + ((output_end - output_start) / (input_end - input_start)) * (input - input_start);
-    return output;
-}
+import { map } from "./Animation";
 
 export default ({ progress, width }) => (
     <div className="progress-bar-container">
@@ -19,7 +16,7 @@ export default ({ progress, width }) => (
                 border-radius: 7px;
                 height: 7px;
                 background: #007fff;
-                width: ${map(0, 1, 0, width, progress)}px;
+                width: ${map(progress, 0, 1, 0, width)}px;
             }
         `}</style>
     </div>
