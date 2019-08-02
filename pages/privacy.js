@@ -4,7 +4,7 @@ import Page from "../components/Page";
 import Header from "../components/Header";
 
 const Privacy = ({ authUser }) => (
-    <Page content="big" header={<Header user={authUser}/>}>
+    <Page contentClassName="content-big" header={<Header user={authUser}/>}>
         <h1>Privacy Policy</h1>
         <p>Effective date: June 05, 2019</p>
         <p>GenHub ("us", "we", or "our") operates the https://genhub.co website (the "Service").</p>

@@ -34,6 +34,7 @@ export default class EditorWithMapAndTable extends React.Component {
             };
         };
         const headersMap = {
+            position: "Position",
             match: "Match",
             cnn_score: "CNN",
             cfd_score: "CFD"
@@ -43,6 +44,7 @@ export default class EditorWithMapAndTable extends React.Component {
             display: headersMap[item]
         }));
         const fixedData = data.map(item => ({
+            position: (<span>{item.position}</span>),
             match: (
                 <span>
                     <span style={{ color: "#a7afb5"}}>{item.match.slice(0, 3)}</span>
@@ -71,7 +73,7 @@ export default class EditorWithMapAndTable extends React.Component {
         const { config, predictions, status, message } = this.state;
         return (
             <div>
-                <p className="text">Write your config:</p>
+                <p className="text">{this.props.editable ? "Write your config:" : "Config:"}</p>
                 <Editor
                     editable={this.props.editable}
                     initialValue={config}

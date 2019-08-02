@@ -3,27 +3,38 @@ import Head from "./Head";
 import Header from "./Header";
 import Footer from "./Footer";
 
-export default ({ content = "medium", header = <Header/>, footer = <Footer/>, children }) => (
-    <div>
+export default ({ className, contentClassName = "content-medium", header = <Header/>, footer = <Footer/>, children }) => (
+    <div className={classnames("page", className)}>
         <Head/>
         {header}
-        <div className={classnames("page", {
-            "content-center": content === "center",
-            "content-tiny": content === "tiny",
-            "content-small": content === "small",
-            "content-medium": content === "medium",
-            "content-big": content === "big",
-        })}>
+        <div className={classnames("content", contentClassName)}>
             {children}
-            {footer}
         </div>
+        {footer}
         <style jsx global>{`
+            html {
+                margin: 0;
+                height: 100%;
+            }
+
+            #__next {
+                margin: 0;
+                height: 100%;
+            }
+
             body {
                 margin: 0;
+                height: 100%;
             }
 
             *:focus {
                 outline: 1px solid #007fff;
+            }
+
+            .page {
+                display: flex;
+                flex-flow: column;
+                height: 100vh;
             }
 
             .btn-primary {
@@ -112,29 +123,42 @@ export default ({ content = "medium", header = <Header/>, footer = <Footer/>, ch
                 font-weight: bold;
             }
 
-            .content-center {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 100vh;
-            }
-
             .content-tiny {
                 width: 400px;
-                margin: auto;
+                margin: 0 auto auto auto;
             }
 
             .content-small {
                 width: 500px;
-                margin: auto;
+                margin: 0 auto auto auto;
             }
 
             .content-medium {
                 width: 750px;
-                margin: auto;
+                margin: 0 auto auto auto;
             }
 
             .content-big {
+                width: 1000px;
+                margin: 0 auto auto auto;
+            }
+
+            .content-tiny-center {
+                width: 400px;
+                margin: auto;
+            }
+
+            .content-small-center {
+                width: 500px;
+                margin: auto;
+            }
+
+            .content-medium-center {
+                width: 750px;
+                margin: auto;
+            }
+
+            .content-big-center {
                 width: 1000px;
                 margin: auto;
             }
@@ -160,6 +184,7 @@ export default ({ content = "medium", header = <Header/>, footer = <Footer/>, ch
             }
 
             .title {
+                font-weight: normal;
                 font-family: "PT Sans", sans-serif;
                 margin: 0;
             }

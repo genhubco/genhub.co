@@ -1,4 +1,4 @@
-const api = "https://api-io3i6v3cn.now.sh/";
+const api = "https://api-kpc9q1dny.now.sh/";
 const data = "https://data-o6m8znu9c.now.sh/";
 
 module.exports = {

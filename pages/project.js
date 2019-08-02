@@ -88,7 +88,7 @@ class Project extends React.Component {
                 <div className="project-result-header">
                     <Link href={`/profile?id=${state.user.id}&tab=projects`}>
                         <a className="internal-link">
-                            <img className="project-result-header-user" src={`${process.env.AVATAR_URL}?id=${state.user.email_sha256}&size=20`} /> {state.user.username}
+                            <img className="project-result-header-user" src={`${process.env.AVATAR_URL}?id=${state.user.email_sha256}&size=17`} /> {state.user.username}
                         </a>
                     </Link>
                     <span className="desc">
@@ -155,7 +155,7 @@ class Project extends React.Component {
                     </div>
                     <div className="project-result-right">
                         <TextareaWithPreview
-                            placeholder={authUser && authUser.id === user.id ? "Add some comments..." : "No comments yet..."}
+                            placeholder={(authUser && authUser.id === user.id) ? "Add some comments..." : "No comments yet..."}
                             initialValue={state.desc}
                             editable={authUser && authUser.id === user.id}
                             onSave={async (value) => {
@@ -193,7 +193,7 @@ class Project extends React.Component {
                     }
 
                     .project-result-header-user {
-                        vertical-align: bottom;
+                        vertical-align: text-bottom;
                         border-radius: 50%;
                     }
                 `}</style>
@@ -276,7 +276,9 @@ class Project extends React.Component {
                     <h3 className="title">{project.title}</h3>
                     <div className="project-header-user">
                         <Link href={`/profile?id=${user.id}&tab=projects`}>
-                            <a className="internal-link">{user.username} <img className="project-header-user-img" src={`${process.env.AVATAR_URL}?id=${user.email_sha256}&size=20`} /></a>
+                            <a className="internal-link">
+                                <span>{user.username}</span> <img className="project-header-user-img" src={`${process.env.AVATAR_URL}?id=${user.email_sha256}&size=17`} />
+                            </a>
                         </Link>
                     </div>
                 </div>
@@ -299,7 +301,7 @@ class Project extends React.Component {
                     }
 
                     .project-header-user-img {
-                        vertical-align: bottom;
+                        vertical-align: text-bottom;
                         border-radius: 50%;
                     }
                 `}</style>

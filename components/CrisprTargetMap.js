@@ -1,9 +1,5 @@
 import classnames from "classnames";
-
-function map(input_start, input_end, output_start, output_end, input) {
-    const output = output_start + ((output_end - output_start) / (input_end - input_start)) * (input - input_start);
-    return output;
-}
+import { map } from "./Animation";
 
 export default class CrisprTargetMap extends React.Component {
     constructor(props) {
@@ -45,15 +41,15 @@ export default class CrisprTargetMap extends React.Component {
                     {targets.map((item, i) => (
                         <g
                             key={`key-${i}`}
-                            transform={`translate(${map(0, data.end - data.start, 10, 90, item.position)}, ${i * 3})`}
+                            transform={`translate(${map(item.position, 0, data.end - data.start, 10, 90)}, ${i * 3})`}
                             className="target-pin"
                             onMouseOver={() => {
-                                const viewBoxX = map(0, data.end - data.start, 10, 90, item.position);
-                                const padding = map(0, 100, 0, 748, 10);
-                                const absoluteX = map(10, 90, padding, 748 - padding, viewBoxX);
+                                const viewBoxX = map(item.position, 0, data.end - data.start, 10, 90);
+                                const padding = map(10, 0, 100, 0, 748);
+                                const absoluteX = map(viewBoxX, 10, 90, padding, 748 - padding);
 
-                                const realY = map(0, 100, 0, 748, (targets.length * 3) + 2);
-                                const absoluteY = map(0, (targets.length * 3) + 2, 0, realY, i * 3);
+                                const realY = map((targets.length * 3) + 2, 0, 100, 0, 748);
+                                const absoluteY = map(i * 3, 0, (targets.length * 3) + 2, 0, realY);
 
                                 this.setState({
                                     show: true,
@@ -77,8 +73,8 @@ export default class CrisprTargetMap extends React.Component {
                     <line
                         onMouseOver={(e) => {
                             const absoluteX = 748 / 2;
-                            const realY = map(0, 100, 0, 748, (targets.length * 3) + 2);
-                            const absoluteY = map(0, (targets.length * 3) + 2, 0, realY, (targets.length * 3) + 1);
+                            const realY = map((targets.length * 3) + 2, 0, 100, 0, 748);
+                            const absoluteY = map((targets.length * 3) + 1, 0, (targets.length * 3) + 2, 0, realY);
                             this.setState({
                                 show: true,
                                 position: {

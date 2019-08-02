@@ -74,6 +74,7 @@ export default class TextareaWithPreview extends React.Component {
 
                     .textarea-preview {
                         resize: none;
+                        cursor: auto;
                     }
 
                     .textarea::placeholder {

@@ -13,7 +13,7 @@ async function getBase64(file) {
 export default class ImageUpload extends React.Component {
     constructor(props) {
         super(props);
-        this._isMounted = true;
+        this.mounted = true;
         this.state = {
             value: props.initialValue,
             loading: false
@@ -24,17 +24,17 @@ export default class ImageUpload extends React.Component {
     }
 
     componentDidMount() {
-        this._isMounted = true;
+        this.mounted = true;
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
+        this.mounted = false;
     }
 
     async uploadImage(e) {
         this.setState({ loading: true });
         const file = e.target.files[0];
-        if (this._isMounted) {
+        if (this.mounted) {
             const base64 = await getBase64(file);
             const newState = await this.props.onAdd(base64);
             this.setState({ ...newState, loading: false });
@@ -43,7 +43,7 @@ export default class ImageUpload extends React.Component {
 
     async removeImage() {
         this.setState({ loading: true });
-        if (this._isMounted) {
+        if (this.mounted) {
             const newState = await this.props.onRemove();
             this.setState({ ...newState, loading: false });
         }

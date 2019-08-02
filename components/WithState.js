@@ -3,7 +3,7 @@ import classnames from "classnames";
 export default class WithState extends React.Component {
     constructor(props) {
         super(props);
-        this._isMounted = true;
+        this.mounted = true;
         this.state = props.initialState;
         this.data = props.initialData;
         this.safeSetState = this.safeSetState.bind(this);
@@ -12,11 +12,11 @@ export default class WithState extends React.Component {
     }
 
     componentDidMount() {
-        this._isMounted = true;
+        this.mounted = true;
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
+        this.mounted = false;
     }
 
     setData(data) {
@@ -29,7 +29,7 @@ export default class WithState extends React.Component {
     }
 
     safeSetState(newState) {
-        if (!this._isMounted) {
+        if (!this.mounted) {
             return;
         }
         this.setState(newState);

@@ -107,7 +107,7 @@ class NewProject extends React.Component {
                     <h3 className="title">New Project</h3>
                     <div className="new-project-header-user">
                         <Link href={`/profile?id=${authUser.id}&tab=projects`}>
-                            <a className="internal-link">{authUser.username} <img className="new-project-header-user-image" src={`${process.env.AVATAR_URL}?id=${authUser.email_sha256}&size=20`} /></a>
+                            <a className="internal-link">{authUser.username} <img className="new-project-header-user-image" src={`${process.env.AVATAR_URL}?id=${authUser.email_sha256}&size=17`} /></a>
                         </Link>
                     </div>
                 </div>
@@ -116,7 +116,7 @@ class NewProject extends React.Component {
                 </div>
                 <style jsx>{`
                     .new-project-header-user-image {
-                        vertical-align: bottom;
+                        vertical-align: text-bottom;
                         border-radius: 50%;
                     }
 
