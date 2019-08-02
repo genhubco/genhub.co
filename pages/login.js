@@ -52,7 +52,7 @@ class Login extends React.Component {
                         <div className="login-wrapper">
                             <div className="login-content">
                                 <Link href="/">
-                                    <a className="logo"><img src="/static/applogo.svg"/></a>
+                                    <a className="login-logo"><img src="/static/applogo.svg"/></a>
                                 </Link>
                                 <p className="text">Log in via:</p>
                                 <div className="login-content-buttons">
@@ -78,9 +78,14 @@ class Login extends React.Component {
                 }
 
                 <style jsx global>{`
-                    .logo img {
-                        height: 40px;
+                    .login-logo {
+                        display: inline-block;
+                        height: 30px;
                         margin-bottom: 30px;
+                    }
+
+                    .login-logo img {
+                        height: 30px;
                     }
 
                     .login-placeholder {
