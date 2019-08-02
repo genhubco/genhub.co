@@ -53,7 +53,7 @@ const Index = ({ authUser }) => {
             `}</style>
         </div>,
         <div className="step">
-            <p className="text step-title">2. Get the matches and specificity score</p>
+            <p className="text step-title">2. Get the matches and on-target score</p>
             <div className="mini-table-container">
                 <table className="mini-table">
                     <tbody>

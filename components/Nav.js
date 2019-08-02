@@ -9,13 +9,12 @@ export default withRouter(({ options, render, center, router }) => (
         })}>
             {options.map((option, i) => (
                 <Link key={`option-${i}`} href={{ pathname: router.route, query: { ...router.query, tab: option }}} >
-                    <div
-                        className={classnames("nav-option", {
-                            "selected": router.query.tab == option
-                        })}>
-                        <a className="nav-option-span">{option}</a>
+                    <a className={classnames("nav-option", {
+                        "selected": router.query.tab == option
+                    })}>
+                        <span className="nav-option-span">{option}</span>
                         {router.query.tab == option ? <div className="nav-option-indicator" /> : null}
-                    </div>
+                    </a>
                 </Link>
             ))}
         </div>
@@ -41,6 +40,8 @@ export default withRouter(({ options, render, center, router }) => (
             }
 
             .nav-option {
+                color: black;
+                text-decoration: none;
                 margin-right: 15px;
                 cursor: pointer;
                 display: inline-block;
