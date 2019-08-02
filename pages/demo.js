@@ -41,7 +41,7 @@ export default class DemoPage extends React.Component {
         }
         return (
             <Page header={<Header user={authUser} />}>
-                <EditorWithMapAndTable initialState={{ status: "success", message: "✓ Compiled", predictions, config }} onSave={async (value) => {
+                <EditorWithMapAndTable editable={true} initialState={{ status: "success", message: "✓ Compiled", predictions, config }} onSave={async (value) => {
                     try {
                         const parsedToml = parse(value);
                         parsedToml.numItems = 10;

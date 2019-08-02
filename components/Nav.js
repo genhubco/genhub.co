@@ -43,13 +43,12 @@ export default withRouter(({ options, render, center, router }) => (
             .nav-option {
                 margin-right: 15px;
                 cursor: pointer;
-                color: #7d8791;
                 display: inline-block;
                 vertical-align: top;
             }
 
             .nav-option:hover {
-                color: black;
+                color: #007fff;
             }
 
             .selected {

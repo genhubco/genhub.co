@@ -2,9 +2,9 @@ import Link from "next/link";
 import { post } from "axios";
 import { withRouter } from "next/router";
 import { setCookie } from "nookies";
+import { decode } from "jsonwebtoken";
 
 import Page from "../components/Page";
-import Footer from "../components/Footer";
 
 class Login extends React.Component {
     static async getInitialProps({ query }) {
@@ -25,8 +25,9 @@ class Login extends React.Component {
             try {
                 const redirect_uri = redirect_uri_base + provider;
                 const { data } = await post(process.env.LOGIN_URL, { provider, code, redirect_uri });
+                const authUser = decode(data.token);
                 setCookie({}, process.env.TOKEN_COOKIE_NAME, data.token);
-                router.push("/");
+                router.push(`/profile?id=${authUser.id}&tab=projects`);
             } catch (e) {
                 this.setState({ redirect_uri_base, error: "Authentication failed. Please try another method." });
             }
@@ -45,7 +46,7 @@ class Login extends React.Component {
                           "scope=user user:email" + "&" +
                           "redirect_uri=" + redirect_uri_base + "github";
         return (
-            <Page content="center" header={null} footer={null}>
+            <Page contentClassName="content-small-center" header={null}>
                 {
                     redirect_uri_base ? (
                         <div className="login-wrapper">
@@ -68,7 +69,6 @@ class Login extends React.Component {
                                 </div>
                                 <p className="error">{this.state.error}</p>
                             </div>
-                            <Footer />
                         </div>
                     ) : (
                         <div className="login-placeholder">
@@ -83,13 +83,17 @@ class Login extends React.Component {
                         margin-bottom: 30px;
                     }
 
+                    .login-placeholder {
+                        text-align: center;
+                    }
+
                     .login-content {
                         width: 400px;
                         border-radius: 5px;
                         border: 1px solid rgba(200,200,200,0.30);
                         text-align: center;
                         padding: 15px 0;
-                        margin-bottom: 30px;
+                        margin: 0 auto 30px auto;
                     }
 
                     .login-content-buttons {

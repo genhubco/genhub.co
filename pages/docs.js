@@ -12,7 +12,7 @@ const Docs = ({ content, authUser, status }) => {
         return (<Error statusCode={status} />);
     }
     return (
-        <Page content="big" header={<Header user={authUser}/>}>
+        <Page contentClassName="content-big" header={<Header user={authUser}/>}>
             <Sidebar params={{ section: "project", item: "doc" }} options={[{
                 name: "api",
                 display: "API"
@@ -25,12 +25,12 @@ const Docs = ({ content, authUser, status }) => {
                 display: "avatar",
                 section: "api"
             }, {
-                name: "score",
-                display: "score",
-                section: "api"
-            }, {
                 name: "projects",
                 display: "projects",
+                section: "api"
+            }, {
+                name: "results",
+                display: "results",
                 section: "api"
             }, {
                 name: "data",

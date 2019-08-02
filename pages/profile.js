@@ -28,6 +28,7 @@ class Profile extends React.Component {
             const [projectsRes, userRes] = await Promise.all([projectsPromise, userPromise]);
             const projects = projectsRes.data;
             const user = userRes.data;
+            projects.sort((a, b) => b.created_at - a.created_at);
             return { user, projects, token, authUser, now: Date.now() };
         } catch(e) {
             console.log(e);
@@ -36,24 +37,16 @@ class Profile extends React.Component {
         }
     }
 
-    getDataByUser(withAuthUserFn, noAuthUser) {
-        const { user, authUser } = this.props;
-        if (authUser && authUser.id === user.id) {
-            return withAuthUserFn(authUser);
-        }
-        return noAuthUser;
-    }
-
     renderProjects() {
-        const { projects, user, now } = this.props;
+        const { projects, authUser, user, now } = this.props;
         if (!projects.length) {
             return (
                 <div className="no-user-projects-container">
                     <p className="desc">
                         No projects found.
-                        {this.getDataByUser(() => (<Link href="/new-project">
+                        {authUser && <Link href="/new-project">
                             <span><a className="internal-link"> Create new project</a>?</span>
-                        </Link>), null)}
+                        </Link>}
                     </p>
                     <style jsx>{`
                         .no-user-projects-container {
@@ -67,9 +60,9 @@ class Profile extends React.Component {
             <div>
                 <div className="user-projects-header">
                     <span className="text">Total {projects.length} projects</span>
-                    {this.getDataByUser(() => (<Link href="/new-project">
+                    {authUser && <Link href="/new-project">
                         <a className="internal-link">create new project +</a>
-                    </Link>), null)}
+                    </Link>}
                 </div>
                 {projects.map((item, i) => (
                     <div key={item.id} className="user-project-container">
@@ -150,16 +143,16 @@ class Profile extends React.Component {
             return <Error statusCode={status} />;
         }
         return (
-            <Page content="medium" header={<Header user={authUser}/>}>
+            <Page header={<Header user={authUser}/>}>
                 <div className="profile">
                     <img className="profile-avatar" src={`${process.env.AVATAR_URL}?id=${user.email_sha256}&size=100`}/>
                     <div className="profile-info">
                         <p className="text">{user.username}</p>
-                        {this.getDataByUser((aUser) => (<p className="desc profile-email">{aUser.email} (Private)</p>), null)}
-                        {this.getDataByUser(() => (<Button onClick={() => {
+                        {authUser && <p className="desc profile-email">{authUser.email} (Private)</p>}
+                        {authUser && <Button onClick={() => {
                             destroyCookie({}, process.env.TOKEN_COOKIE_NAME);
                             router.push("/");
-                        }} className="small-btn-primary log-out-btn">log out</Button>), null)}
+                        }} className="small-btn-primary log-out-btn">log out</Button>}
                     </div>
                     <style jsx>{`
                         .profile {
@@ -186,7 +179,7 @@ class Profile extends React.Component {
                     `}</style>
                 </div>
                 <Nav
-                    options={this.getDataByUser(() => (["projects", "settings"]), ["projects"])}
+                    options={authUser ? ["projects", "settings"] : ["projects"]}
                     render={(option) => {
                         if (option === "projects") {
                             return this.renderProjects();

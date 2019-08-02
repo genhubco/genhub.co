@@ -3,23 +3,23 @@ import classnames from "classnames";
 export default class Button extends React.Component {
     constructor(props) {
         super(props);
-        this._isMounted = false;
+        this.mounted = false;
         this.state = { loading: false };
         this.onClick = this.onClick.bind(this);
     }
 
     componentDidMount() {
-        this._isMounted = true;
+        this.mounted = true;
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
+        this.mounted = false;
     }
 
     async onClick(e) {
         this.setState({ loading: true });
         await this.props.onClick(e);
-        if (this._isMounted) {
+        if (this.mounted) {
             this.setState({ loading: false });
         }
     }
