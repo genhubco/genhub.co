@@ -155,7 +155,7 @@ class Project extends React.Component {
                     </div>
                     <div className="project-result-right">
                         <TextareaWithPreview
-                            placeholder={authUser && authUser.id === user.id ? "Add some comments..." : "No comments yet..."}
+                            placeholder={(authUser && authUser.id === user.id) ? "Add some comments..." : "No comments yet..."}
                             initialValue={state.desc}
                             editable={authUser && authUser.id === user.id}
                             onSave={async (value) => {

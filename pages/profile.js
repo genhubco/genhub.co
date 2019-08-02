@@ -39,32 +39,19 @@ class Profile extends React.Component {
 
     renderProjects() {
         const { projects, authUser, user, now } = this.props;
-        if (!projects.length) {
-            return (
-                <div className="no-user-projects-container">
-                    <p className="desc">
-                        No projects found.
-                        {authUser && <Link href="/new-project">
-                            <span><a className="internal-link"> Create new project</a>?</span>
-                        </Link>}
-                    </p>
-                    <style jsx>{`
-                        .no-user-projects-container {
-                            text-align: center;
-                        }
-                    `}</style>
-                </div>
-            );
-        }
         return (
             <div>
                 <div className="user-projects-header">
                     <span className="text">Total {projects.length} projects</span>
-                    {authUser && <Link href="/new-project">
+                    {(authUser && authUser.id === user.id) && <Link href="/new-project">
                         <a className="internal-link">create new project +</a>
                     </Link>}
                 </div>
-                {projects.map((item, i) => (
+                {!projects.length ? (
+                    <div className="no-user-projects-container">
+                        <p className="desc">No projects found.</p>
+                    </div>
+                ) : projects.map((item, i) => (
                     <div key={item.id} className="user-project-container">
                         <Link href={`/project?id=${item.id}&user=${item.user}&tab=config`}>
                             <a className="internal-link">{item.title}</a>
@@ -90,6 +77,10 @@ class Profile extends React.Component {
                         border-radius: 5px;
                         padding: 10px;
                         margin-bottom: 10px;
+                    }
+
+                    .no-user-projects-container {
+                        text-align: center;
                     }
                 `}</style>
             </div>
@@ -151,8 +142,8 @@ class Profile extends React.Component {
                     <img className="profile-avatar" src={`${process.env.AVATAR_URL}?id=${user.email_sha256}&size=100`}/>
                     <div className="profile-info">
                         <p className="text">{user.username}</p>
-                        {authUser && <p className="desc profile-email">{authUser.email} (Private)</p>}
-                        {authUser && <Button onClick={() => {
+                        {(authUser && authUser.id === user.id) && <p className="desc profile-email">{authUser.email} (Private)</p>}
+                        {(authUser && authUser.id === user.id) && <Button onClick={() => {
                             destroyCookie({}, process.env.TOKEN_COOKIE_NAME);
                             router.push("/");
                         }} className="small-btn-primary log-out-btn">log out</Button>}
@@ -182,7 +173,7 @@ class Profile extends React.Component {
                     `}</style>
                 </div>
                 <Nav
-                    options={authUser ? ["projects", "settings"] : ["projects"]}
+                    options={(authUser && authUser.id === user.id) ? ["projects", "settings"] : ["projects"]}
                     render={(option) => {
                         if (option === "projects") {
                             return this.renderProjects();
