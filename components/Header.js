@@ -9,13 +9,6 @@ export default withRouter(({ router, user }) => {
                 <a className="header-logo"><img src="/static/applogo.svg"/></a>
             </Link>
             <div className="header-links">
-                <Link href="/blog">
-                    <a className={classnames("internal-link", {
-                        "internal-link-active": router.route === "/blog"
-                    })}>
-                        blog
-                    </a>
-                </Link>
                 <Link href="/docs?project=api&doc=auth">
                     <a className={classnames("internal-link", {
                         "internal-link-active": router.route === "/docs"

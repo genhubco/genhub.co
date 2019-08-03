@@ -13,11 +13,11 @@ export function map(x, x1, x2, y1, y2) {
 }
 
 export function smooth(t) {
-    return t * t * (3 - 2 * t);
+    return x * x * (3 - 2 * x);
 }
 
-export function smoother(t) {
-    return t * t * t * (t * (6 * t - 15) + 10);
+export function smoother(x) {
+    return x * x * x * (x * (6 * x - 15) + 10);
 }
 
 export function sin(x, offset) {
