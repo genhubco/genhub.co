@@ -178,73 +178,116 @@ const Index = ({ authUser }) => {
         <Page className="page-full-screen" contentClassName="content-medium-center" header={<Header user={authUser}/>}>
             <div>
                 <h2 className="title landing-title">Genetic engineering in 4 steps:</h2>
-                <Animation
-                    initialState={{ y: 7, scale1: 0.7, scale2: 0.3, scale3: 0.6, scale4: 0.99, x1: -51, x2: 169.4, x3: 426, x4: 205 }}
-                    onFrame={async ({ state, map, lerp, flatsqsin, start, sleep }) => {
+                <div className="animation-container" style={{ overflow: "hidden", position: "relative" }}>
+                    <Animation initialValue={{
+                        position: "absolute",
+                        zIndex: 7,
+                        height: 324,
+                        width: 375,
+                        transform: `scale(0.7) translate3d(${-51 * (1 / 0.7).toFixed(2)}px, ${7 * (1 / 0.7).toFixed(2)}px, 0px)`,
+                        transformOrigin: "center"
+                    }} onFrame={async ({ map, flatsqsin, start }) => {
                         const interval = 4000;
                         const relativeTime = Date.now() - start;
                         const now = relativeTime + interval;
                         const r1 = flatsqsin((now / interval), 11, 0, 0.01);
                         const r2 = flatsqsin((now / interval), 11, Math.PI / 2, 0.01);
-                        const x1 = map(r1, 1, -1, -60, 750 - cardWidth + 60);
-                        const scale1 = map(r2, -1, 1, 0.3, 1);
+                        const x = map(r1, 1, -1, -60, 750 - cardWidth + 60);
+                        const scale = map(r2, -1, 1, 0.3, 1);
+                        const y = 7;
 
-                        const r3 = flatsqsin((now / interval), 11, Math.PI / 2, 0.01);
-                        const r4 = flatsqsin((now / interval), 11, Math.PI, 0.01);
-                        const x2 = map(r3, 1, -1, -60, 750 - cardWidth + 60);
-                        const scale2 = map(r4, -1, 1, 0.3, 1);
-
-                        const r5 = flatsqsin((now / interval), 11, Math.PI, 0.01);
-                        const r6 = flatsqsin((now / interval), 11, Math.PI + Math.PI / 2, 0.01);
-                        const x3 = map(r5, 1, -1, -60, 750 - cardWidth + 60);
-                        const scale3 = map(r6, -1, 1, 0.3, 1);
-
-                        const r7 = flatsqsin((now / interval), 11, Math.PI + Math.PI / 2, 0.01);
-                        const r8 = flatsqsin((now / interval), 11, 2 * Math.PI, 0.01);
-                        const x4 = map(r7, 1, -1, -60, 750 - cardWidth + 60);
-                        const scale4 = map(r8, -1, 1, 0.3, 1);
-
-                        return { x1, scale1, x2, scale2, x3, scale3, x4, scale4 };
+                        return {
+                            position: "absolute",
+                            zIndex: Math.round(scale * 10),
+                            height: 324,
+                            width: 375,
+                            transformOrigin: "center",
+                            transform: `scale(${scale.toFixed(3)}) translate3d(${(x * (1 / scale)).toFixed(1)}px, ${(y * (1 / scale)).toFixed(0)}px, 0px)`
+                        };
                     }}
-                    render={({ x1, scale1, x2, scale2, x3, scale3, x4, scale4, y }) => {
-                        return (
-                            <div className="animation-container" style={{ overflow: "hidden", position: "relative" }}>
-                                <div style={{
-                                    position: "absolute",
-                                    zIndex: Math.round(scale1 * 10),
-                                    height: 324,
-                                    width: 375,
-                                    transformOrigin: "center",
-                                    transform: `scale(${scale1}) translate3d(${x1 * (1 / scale1)}px, ${y * (1 / scale1)}px, 0px)`}}
-                                >{els[3]}</div>
-                                <div style={{
-                                    position: "absolute",
-                                    zIndex: Math.round(scale2 * 10),
-                                    height: 324,
-                                    width: 375,
-                                    transformOrigin: "center",
-                                    transform: `scale(${scale2}) translate3d(${x2 * (1 / scale2)}px, ${y * (1 / scale2)}px, 0px)`}}
-                                >{els[2]}</div>
-                                <div style={{
-                                    position: "absolute",
-                                    zIndex: Math.round(scale3 * 10),
-                                    height: 324,
-                                    width: 375,
-                                    transformOrigin: "center",
-                                    transform: `scale(${scale3}) translate3d(${x3 * (1 / scale3)}px, ${y * (1 / scale3)}px, 0px)`}}
-                                >{els[1]}</div>
-                                <div style={{
-                                    position: "absolute",
-                                    zIndex: Math.round(scale4 * 10),
-                                    height: 324,
-                                    width: 375,
-                                    transformOrigin: "center",
-                                    transform: `scale(${scale4}) translate3d(${x4 * (1 / scale4)}px, ${y * (1 / scale4)}px, 0px)`}}
-                                >{els[0]}</div>
-                            </div>
-                        );
+                    >{els[3]}</Animation>
+                    <Animation initialValue={{
+                        position: "absolute",
+                        zIndex: 3,
+                        height: 324,
+                        width: 375,
+                        transform: `scale(0.3) translate3d(${169.4 * (1 / 0.3).toFixed(2)}px, ${7 * (1 / 0.3).toFixed(2)}px, 0px)`,
+                        transformOrigin: "center"
+                    }} onFrame={async ({ map, flatsqsin, start }) => {
+                        const interval = 4000;
+                        const relativeTime = Date.now() - start;
+                        const now = relativeTime + interval;
+                        const r1 = flatsqsin((now / interval), 11, Math.PI / 2, 0.01);
+                        const r2 = flatsqsin((now / interval), 11, Math.PI, 0.01);
+                        const x = map(r1, 1, -1, -60, 750 - cardWidth + 60);
+                        const scale = map(r2, -1, 1, 0.3, 1);
+                        const y = 7;
+
+                        return {
+                            position: "absolute",
+                            zIndex: Math.round(scale * 10),
+                            height: 324,
+                            width: 375,
+                            transformOrigin: "center",
+                            transform: `scale(${scale.toFixed(3)}) translate3d(${(x * (1 / scale)).toFixed(1)}px, ${(y * (1 / scale)).toFixed(0)}px, 0px)`
+                        };
                     }}
-                />
+                    >{els[2]}</Animation>
+                    <Animation initialValue={{
+                        position: "absolute",
+                        zIndex: 6,
+                        height: 324,
+                        width: 375,
+                        transform: `scale(0.6) translate3d(${426 * (1 / 0.6).toFixed(2)}px, ${7 * (1 / 0.6).toFixed(2)}px, 0px)`,
+                        transformOrigin: "center"
+                    }} onFrame={async ({ map, flatsqsin, start }) => {
+                        const interval = 4000;
+                        const relativeTime = Date.now() - start;
+                        const now = relativeTime + interval;
+                        const r1 = flatsqsin((now / interval), 11, Math.PI, 0.01);
+                        const r2 = flatsqsin((now / interval), 11, Math.PI + Math.PI / 2, 0.01);
+                        const x = map(r1, 1, -1, -60, 750 - cardWidth + 60);
+                        const scale = map(r2, -1, 1, 0.3, 1);
+                        const y = 7;
+
+                        return {
+                            position: "absolute",
+                            zIndex: Math.round(scale * 10),
+                            height: 324,
+                            width: 375,
+                            transformOrigin: "center",
+                            transform: `scale(${scale.toFixed(3)}) translate3d(${(x * (1 / scale)).toFixed(1)}px, ${(y * (1 / scale)).toFixed(0)}px, 0px)`
+                        };
+                    }}
+                    >{els[1]}</Animation>
+                    <Animation initialValue={{
+                        position: "absolute",
+                        zIndex: 10,
+                        height: 324,
+                        width: 375,
+                        transform: `scale(0.99) translate3d(${205 * (1 / 0.99).toFixed(2)}px, ${7 * (1 / 0.99).toFixed(2)}px, 0px)`,
+                        transformOrigin: "center"
+                    }}  onFrame={async ({ map, flatsqsin, start }) => {
+                        const interval = 4000;
+                        const relativeTime = Date.now() - start;
+                        const now = relativeTime + interval;
+                        const r1 = flatsqsin((now / interval), 11, Math.PI + Math.PI / 2, 0.01);
+                        const r2 = flatsqsin((now / interval), 11, 2 * Math.PI, 0.01);
+                        const x = map(r1, 1, -1, -60, 750 - cardWidth + 60);
+                        const scale = map(r2, -1, 1, 0.3, 1);
+                        const y = 7;
+
+                        return {
+                            position: "absolute",
+                            zIndex: Math.round(scale * 10),
+                            height: 324,
+                            width: 375,
+                            transformOrigin: "center",
+                            transform: `scale(${scale.toFixed(3)}) translate3d(${(x * (1 / scale)).toFixed(1)}px, ${(y * (1 / scale)).toFixed(0)}px, 0px)`
+                        };
+                    }}
+                    >{els[0]}</Animation>
+                </div>
                 <p className="desc landing-info">
                     Check out the
                     <Link href="/demo"><span><a className="internal-link"> demo </a></span></Link>

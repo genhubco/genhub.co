@@ -77,9 +77,8 @@ export default class Animation extends React.Component {
         super(props);
         this.mounted = false;
         this.start = 0;
+        this.ref = null;
         this.frameId = null;
-        this.state = props.initialState;
-
         this.onFrame = this.onFrame.bind(this);
     }
 
@@ -97,11 +96,11 @@ export default class Animation extends React.Component {
     }
 
     async onFrame() {
-        if (!this.mounted) {
+        if (!this.mounted || !this.ref) {
             return;
         }
 
-        const res = await this.props.onFrame({
+        const styles = await this.props.onFrame({
             state: this.state,
             sleep,
             lerp,
@@ -117,11 +116,20 @@ export default class Animation extends React.Component {
             flatsqcos,
             start: this.start
         });
-        this.setState(res);
+        Object.keys(styles).forEach(key => {
+            if (styles[key] === this.ref.style[key]) {
+                return;
+            }
+            this.ref.style[key] = styles[key];
+        });
         this.frameId = window.requestAnimationFrame(this.onFrame);
     }
 
     render() {
-        return this.props.render(this.state);
+        return (
+            <div className="animation" style={this.props.initialValue} ref={(n) => this.ref = n}>
+                {this.props.children}
+            </div>
+        )
     }
 }
