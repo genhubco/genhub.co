@@ -25,7 +25,7 @@ export default withRouter(({ router, user }) => {
                 </Link>
                 {
                     user && user.id ?
-                    <Link href={`/profile?id=${user.id}&tab=projects`}>
+                    <Link href={`/profile-projects?id=${user.id}`}>
                         <a className="header-avatar-link">
                             <img src={`${process.env.AVATAR_URL}?id=${user.email_sha256}&size=20`} />
                         </a>

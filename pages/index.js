@@ -322,7 +322,7 @@ Index.getInitialProps = async (ctx) => {
     const authUser = decode(token);
 
     if (authUser && ctx.res) {
-        ctx.res.writeHead(302, { Location: `/profile?id=${authUser.id}&tab=projects` });
+        ctx.res.writeHead(302, { Location: `/profile-projects?id=${authUser.id}` });
         ctx.res.end();
     }
 
