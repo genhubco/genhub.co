@@ -9,12 +9,17 @@ export default (props) => {
 
     return (
         <div className="status-bar">
-            <p className={classNames("status-bar-text text", {
-                "status-bar-loading": props.status === "loading",
-                "status-bar-error": props.status === "error",
-                "status-bar-success": props.status === "success"
-            })}>{props.message}</p>
-            <p className="desc">Available genes can be found <a target="_blank" href="https://data.genhub.co/datasets/genes/" className="link">here</a>.</p>
+            <div>
+                <p className={classNames("status-bar-text text", {
+                    "status-bar-loading": props.status === "loading",
+                    "status-bar-error": props.status === "error",
+                    "status-bar-success": props.status === "success"
+                })}>{props.message}</p>
+                <span className="desc"> Press (⌘ + s) or (ctrl + s) to save. </span>
+            </div>
+            <div>
+                <p className="desc">Available genes can be found <a target="_blank" href="https://data.genhub.co/datasets/genes/" className="link">here</a>.</p>
+            </div>
             <style jsx global>{`
                 .status-bar {
                     display: flex;
@@ -22,9 +27,7 @@ export default (props) => {
                 }
                 .status-bar-text {
                     font-family: "PT Sans", sans-serif;
-                    vertical-align: bottom;
                     font-size: 14px;
-                    display: inline;
                 }
 
                 .status-bar-loading {

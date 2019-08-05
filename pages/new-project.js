@@ -41,7 +41,7 @@ class NewProject extends React.Component {
                             error={state.titleError}
                             initialValue=""
                             desc="Set title for your new project:"
-                            prefix="genhub.co/projects/"
+                            prefix={`genhub.co/${authUser.username}/`}
                         />
                         <RadioGroup
                             initialValue="public"
@@ -73,7 +73,7 @@ class NewProject extends React.Component {
                                 const { data } = await post(process.env.PROJECTS_URL + ".create", newInputs, {
                                     headers: { Authorization: `Bearer ${this.props.token}` }
                                 });
-                                router.push({ pathname: "/project", query: { id: data.id, user: authUser.id, tab: "config" } });
+                                router.push({ pathname: "/project-config", query: { id: data.id, user: authUser.id } });
                                 setState({ titleError: "" });
                             } catch (e) {
                                 console.log(e);
@@ -106,7 +106,7 @@ class NewProject extends React.Component {
                 <div className="new-project-header">
                     <h3 className="title">New Project</h3>
                     <div className="new-project-header-user">
-                        <Link href={`/profile?id=${authUser.id}&tab=projects`}>
+                        <Link href={`/profile-projects?id=${authUser.id}`}>
                             <a className="internal-link">{authUser.username} <img className="new-project-header-user-image" src={`${process.env.AVATAR_URL}?id=${authUser.email_sha256}&size=17`} /></a>
                         </Link>
                     </div>

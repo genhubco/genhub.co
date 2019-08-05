@@ -14,7 +14,7 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import WithState from "../components/WithState";
 
-class Profile extends React.Component {
+class ProfileSettings extends React.Component {
     static async getInitialProps(ctx) {
         const { id } = ctx.query;
 
@@ -23,68 +23,14 @@ class Profile extends React.Component {
         const authUser = decode(token);
 
         try {
-            const projectsPromise = get(process.env.PROJECTS_URL + `.list?user=${id}`);
-            const userPromise = get(process.env.PROFILE_URL + `.get?id=${id}`);
-            const [projectsRes, userRes] = await Promise.all([projectsPromise, userPromise]);
-            const projects = projectsRes.data;
+            const userRes = await get(process.env.PROFILE_URL + `.get?id=${id}`);
             const user = userRes.data;
-            projects.sort((a, b) => b.created_at - a.created_at);
-            return { user, projects, token, authUser, now: Date.now() };
+            return { user, token, authUser };
         } catch(e) {
             console.log(e);
             const status = e.response ? e.response.status : 500;
             return { status };
         }
-    }
-
-    renderProjects() {
-        const { projects, authUser, user, now } = this.props;
-        return (
-            <div>
-                <div className="user-projects-header">
-                    <span className="text">Total {projects.length} projects</span>
-                    {(authUser && authUser.id === user.id) && <Link href="/new-project">
-                        <a className="internal-link">create new project +</a>
-                    </Link>}
-                </div>
-                {!projects.length ? (
-                    <div className="no-user-projects-container">
-                        <p className="desc">No projects found.</p>
-                    </div>
-                ) : projects.map((item, i) => (
-                    <div key={item.id} className="user-project-container">
-                        <Link href={`/project?id=${item.id}&user=${item.user}&tab=config`}>
-                            <a className="internal-link">{item.title}</a>
-                        </Link>
-                        <p className="desc">{
-                            item.updated_at ?
-                            `Updated ${ms(now - item.updated_at, { long: true })} ago` :
-                            `Created ${ms(now - item.created_at, { long: true })} ago`
-                        }</p>
-                    </div>
-                ))}
-                <style jsx>{`
-                    .user-projects-header {
-                        display: flex;
-                        justify-content: space-between;
-                        border-bottom: 1px solid #f2f3f4;
-                        padding-bottom: 5px;
-                        margin-bottom: 10px;
-                    }
-
-                    .user-project-container {
-                        border: 1px solid #f2f3f4;
-                        border-radius: 5px;
-                        padding: 10px;
-                        margin-bottom: 10px;
-                    }
-
-                    .no-user-projects-container {
-                        text-align: center;
-                    }
-                `}</style>
-            </div>
-        )
     }
 
     renderSettings() {
@@ -101,7 +47,7 @@ class Profile extends React.Component {
                             error={state.usernameError}
                             initialValue={authUser.username}
                             desc="Change username:"
-                            prefix="genhub.co/profile/"
+                            prefix="genhub.co/"
                         />
                         <Button onClick={async () => {
                             try {
@@ -110,7 +56,7 @@ class Profile extends React.Component {
                                     headers: { "Authorization": "Bearer " + token }
                                 });
                                 setCookie({}, process.env.TOKEN_COOKIE_NAME, response.data.token);
-                                router.push({ pathname: "/profile", query: { ...router.query, tab: "projects" }});
+                                router.push({ pathname: "/profile-projects", query: { id: authUser.id }});
                                 setState({ usernameError: "" });
                             } catch (e) {
                                 console.log(e);
@@ -173,18 +119,20 @@ class Profile extends React.Component {
                     `}</style>
                 </div>
                 <Nav
-                    options={(authUser && authUser.id === user.id) ? ["projects", "settings"] : ["projects"]}
-                    render={(option) => {
-                        if (option === "projects") {
-                            return this.renderProjects();
-                        } else if (option === "settings") {
-                            return this.renderSettings();
-                        }
-                    }}
-                />
+                    options={
+                        (authUser && authUser.id === user.id) ?
+                        [
+                            { display: "projects", href: { pathname: "/profile-projects", query: { id: user.id }}},
+                            { display: "settings", href: { pathname: "/profile-settings", query: { id: user.id } }}
+                        ] :
+                        [{ display: "projects", href: { pathname: "/profile-projects", query: { id: user.id }}}]
+                    }
+                >
+                    {this.renderSettings()}
+                </Nav>
             </Page>
         );
     }
 }
 
-export default withRouter(Profile);
+export default withRouter(ProfileSettings);

@@ -2,41 +2,34 @@ import { withRouter } from 'next/router';
 import classnames from "classnames";
 import Link from 'next/link';
 
-export default withRouter(({ options, render, center, router }) => (
+export default withRouter(({ options, className, router, children }) => (
     <div className="nav">
-        <div className={classnames("nav-options", {
-            "nav-options-center": center
-        })}>
-            {options.map((option, i) => (
-                <Link key={`option-${i}`} href={{ pathname: router.route, query: { ...router.query, tab: option }}} >
+        <div className={classnames("nav-options", className)}>
+            {options.map(({ display, href }, i) => (
+                <Link key={`option-${i}`} href={href} >
                     <a className={classnames("nav-option", {
-                        "selected": router.query.tab == option
+                        "selected": router.route == href.pathname
                     })}>
-                        <span className="nav-option-span">{option}</span>
-                        {router.query.tab == option ? <div className="nav-option-indicator" /> : null}
+                        <span className="nav-option-span">{display}</span>
+                        {router.route == href.pathname ? <div className="nav-option-indicator" /> : null}
                     </a>
                 </Link>
             ))}
         </div>
         <div className="nav-content">
-            {options.includes(router.query.tab) ? render(router.query.tab) : (
-                <div className="nav-tab-not-found">
-                    <h3 className="title">Not Found</h3>
-                    <p className="text">The page you are looking for doesn’t exist.</p>
-                </div>
-            )}
+            {children}
         </div>
         <style jsx>{`
             .nav {
                 font-family: "PT Sans", sans-serif;
             }
 
-            .nav-options-center {
-                text-align: center;
-            }
-
             .nav-options {
                 border-bottom: 1px solid #f2f3f4;
+            }
+
+            .nav-content {
+                padding: 30px 0;
             }
 
             .nav-option {
@@ -62,14 +55,6 @@ export default withRouter(({ options, render, center, router }) => (
                 margin: 0 auto 3px;
                 background: #007fff;
                 border-radius: 50%;
-            }
-
-            .nav-content {
-                padding: 30px 0;
-            }
-
-            .nav-tab-not-found {
-                text-align: center;
             }
         `}</style>
     </div>

@@ -27,7 +27,7 @@ class Login extends React.Component {
                 const { data } = await post(process.env.LOGIN_URL, { provider, code, redirect_uri });
                 const authUser = decode(data.token);
                 setCookie({}, process.env.TOKEN_COOKIE_NAME, data.token);
-                router.push(`/profile?id=${authUser.id}&tab=projects`);
+                router.push({ pathname: "/profile-projects", query: { id: authUser.id }});
             } catch (e) {
                 this.setState({ redirect_uri_base, error: "Authentication failed. Please try another method." });
             }

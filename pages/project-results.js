@@ -16,7 +16,7 @@ import TextareaWithPreview from "../components/TextareaWithPreview";
 import Button from "../components/Button";
 import WithState from "../components/WithState";
 
-class Project extends React.Component {
+class ProjectConfig extends React.Component {
     static async getInitialProps(ctx) {
         const projectUserId = ctx.query.user;
         const projectId = ctx.query.id;
@@ -29,9 +29,9 @@ class Project extends React.Component {
             const projectPromise = get(process.env.PROJECTS_URL + `.get?id=${projectId}`);
             const resultsPromise = get(process.env.RESULTS_URL + `.list?project=${projectId}`);
             const userPromise = get(process.env.PROFILE_URL + `.get?id=${projectUserId}`);
-            const [projectRes, resultsRes, userRes] = await Promise.all([projectPromise, resultsPromise, userPromise]);
-            const project = projectRes.data;
+            const [resultsRes, projectRes, userRes] = await Promise.all([resultsPromise, projectPromise, userPromise]);
             const results = resultsRes.data;
+            const project = projectRes.data;
             const user = userRes.data;
 
             const resultUsersPromises = results.map(item => get(process.env.PROFILE_URL + `.get?id=${item.user}`));
@@ -41,7 +41,7 @@ class Project extends React.Component {
             mappedUsers.forEach((item, i) => { results[i].user = item; });
             results.sort((a, b) => b.created_at - a.created_at);
 
-            return { user, project, results, token, authUser };
+            return { user, results, project, token, authUser };
         } catch (e) {
             console.log(e);
             const status = e.response ? e.response.status : 500;
@@ -49,44 +49,12 @@ class Project extends React.Component {
         }
     }
 
-    renderConfig() {
-        const { project, user, authUser, token } = this.props;
-        return (
-            <div className="project-config">
-                <EditorWithMapAndTable
-                    editable={authUser && authUser.id === user.id}
-                    initialState={{ status: "success", message: "✓ Compiled", predictions: JSON.parse(project.predictions), config: project.config }}
-                    onSave={async (value) => {
-                        try {
-                            const parsedToml = toml.parse(value);
-                            parsedToml.numItems = 10;
-                            const res = await post(process.env.SEARCH_URL, JSON.stringify(parsedToml));
-                            const { created_at, updated_at, user, ...rest } = project;
-                            const newProject = { ...rest, config: value, predictions: JSON.stringify(res.data) };
-                            await post(process.env.PROJECTS_URL + ".update", newProject, {
-                                headers: { Authorization: "Bearer " + token }
-                            });
-                            return { status: "success", message: "✓ Compiled", predictions: res.data };
-                        } catch (e) {
-                            console.log(e);
-                            if (e.name == "SyntaxError") {
-                                return { status: "error", message: "× Failed to parse toml file." };
-                            } else {
-                                return { status: "error", message: "× Invalid config." };
-                            }
-                        }
-                    }}
-                />
-            </div>
-        );
-    }
-
     renderResult(item) {
         const { authUser, user, token } = this.props;
         return (<WithState key={item.id} initialState={item} initialData={item} render={({ state, setState, getData, setData }) => (
             <div className="project-result">
                 <div className="project-result-header">
-                    <Link href={`/profile?id=${state.user.id}&tab=projects`}>
+                    <Link href={`/profile-projects?id=${state.user.id}`}>
                         <a className="internal-link">
                             <img className="project-result-header-user" src={`${process.env.AVATAR_URL}?id=${state.user.email_sha256}&size=17`} /> {state.user.username}
                         </a>
@@ -275,7 +243,7 @@ class Project extends React.Component {
                 <div className="project-header">
                     <h3 className="title">{project.title}</h3>
                     <div className="project-header-user">
-                        <Link href={`/profile?id=${user.id}&tab=projects`}>
+                        <Link href={`/profile-projects?id=${user.id}`}>
                             <a className="internal-link">
                                 <span>{user.username}</span> <img className="project-header-user-img" src={`${process.env.AVATAR_URL}?id=${user.email_sha256}&size=17`} />
                             </a>
@@ -283,15 +251,13 @@ class Project extends React.Component {
                     </div>
                 </div>
                 <Nav
-                    options={["config", "results"]}
-                    render={(option) => {
-                        if (option === "config") {
-                            return this.renderConfig();
-                        } else if (option === "results") {
-                            return this.renderResults();
-                        }
-                    }}
-                />
+                options={[
+                    { display: "config", href: { pathname: "/project-config", query: { id: project.id, user: user.id }}},
+                    { display: "results", href: { pathname: "/project-results", query: { id: project.id, user: user.id }}}
+                ]}
+                >
+                    {this.renderResults()}
+                </Nav>
                 <style jsx>{`
                     .project-header {
                         display: flex;
@@ -310,4 +276,4 @@ class Project extends React.Component {
     }
 }
 
-export default Project;
+export default ProjectConfig;
