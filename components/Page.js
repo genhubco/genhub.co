@@ -60,7 +60,6 @@ export default ({ className, contentClassName = "content-medium", header = <Head
 
             .small-btn-primary {
                 font-family: "PT Sans", sans-serif;
-                margin-right: 10px;
                 padding: 1px 7px 1px;
                 height: 18px;
                 min-width: 70px;
@@ -71,16 +70,11 @@ export default ({ className, contentClassName = "content-medium", header = <Head
                 cursor: pointer;
             }
 
-            .small-btn-primary:last-child {
-                margin-right: 0;
-            }
-
             .small-btn-primary:hover {
                 background-color: #f2f3f4;
             }
 
             .link {
-                margin-right: 10px;
                 font-size: 14px;
                 color: #007fff;
                 text-decoration: none;
@@ -95,12 +89,7 @@ export default ({ className, contentClassName = "content-medium", header = <Head
                 font-weight: bold;
             }
 
-            .link:last-child {
-                margin-right: 0;
-            }
-
             .internal-link {
-                margin-right: 10px;
                 color: black;
                 text-decoration: none;
                 font-size: 14px;
@@ -113,10 +102,6 @@ export default ({ className, contentClassName = "content-medium", header = <Head
 
             .internal-link:hover {
                 font-weight: bold;
-            }
-
-            .internal-link:last-child {
-                margin-right: 0;
             }
 
             .internal-link-active {
