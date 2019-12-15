@@ -1,67 +1,50 @@
-import classNames from "classnames";
+import React from "react";
+import css from "styled-jsx/css";
 
-export default ({data}) => {
-    if (!data.headers.length) {
-        return null;
-    }
-    return (
-        <div className="rank-table-container">
-            <table className="rank-table">
-                <tbody>
-                    <tr>
-                        {data.headers.map((item, i) => (<th key={`key-${i}`} className={classNames({
-                            "rank-table-first-header": i == 0,
-                            "rank-table-header": i != 0,
-                        })}>{item.display}</th>))}
-                    </tr>
-                    {data.results.map((row, i) => (
-                        <tr key={`key-${i}`}>
-                            {data.headers.map((item, j) => (<td key={`key-${i}-${j}`} className={classNames({
-                                "rank-table-first-column": j == 0,
-                                "rank-table-column": j != 0,
-                            })}>{row[item.key]}</td>))}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            <style jsx global>{`
-                  .rank-table-container {
-                      width: 750px;
-                      border-radius: 5px;
-                      box-sizing: border-box;
-                      padding: 10px;
-                      border: 1px solid #f2f3f4;
-                  }
+import Text from "./Text";
 
-                  .rank-table {
-                      font-family: "PT Sans", sans-serif;
-                      width: 728px;
-                  }
-
-                  .rank-table-first-header {
-                      font-weight: 200;
-                      padding: 4px;
-                      color: #a7afb5;
-                      text-align: left;
-                  }
-
-                  .rank-table-header {
-                      font-weight: 200;
-                      padding: 4px;
-                      color: #a7afb5;
-                      text-align: center;
-                  }
-
-                  .rank-table-first-column {
-                      text-align: left;
-                      padding: 4px;
-                  }
-
-                  .rank-table-column {
-                      text-align: center;
-                      padding: 4px;
-                  }
-            `}</style>
-        </div>
-    );
+const Table = ({ headers = [], items = [], weights = [], renderRowItem = () => {} }) => {
+	if (!items.length) {
+		return null;
+	}
+	return (
+		<div className="table">
+			<div className="table-header">
+				{headers.map((item, i) => (
+					<div key={`header-${i}`} className="table-header-item" style={{ flex: weights[i] }}>
+						<Text desc>{item.display}</Text>
+					</div>
+				))}
+			</div>
+			{items.map((row, i) => (
+				<div className="table-row" key={`row-${i}`}>
+					{headers.map((header, j) => (
+						<div key={`row-item-${i}-${j}`} className="table-row-item" style={{ flex: weights[j] }}>
+							{renderRowItem(header.key, row[header.key])}
+						</div>
+					))}
+				</div>
+			))}
+			<style jsx>{styles}</style>
+		</div>
+	);
 };
+
+const styles = css`
+.table {
+	border: 1px solid #EBEBEB;
+	border-radius: 9px;
+	padding: 10px 0;
+	box-sizing: border-box;
+}
+
+.table-header, .table-row {
+	display: flex;
+}
+
+.table-row-item, .table-header-item {
+	padding: 10px 20px;
+}
+`;
+
+export default Table;

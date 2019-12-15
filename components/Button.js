@@ -1,44 +1,41 @@
+import React from "react";
+import css from "styled-jsx/css";
 import classnames from "classnames";
 
-export default class Button extends React.Component {
-    constructor(props) {
-        super(props);
-        this.mounted = false;
-        this.state = { loading: false };
-        this.onClick = this.onClick.bind(this);
-    }
+const Button = ({ loading, text = "", onClick = () => {} }) => {
+	return (
+		<button onClick={onClick} disabled={loading} className={classnames("btn", { "btn-disabled": loading })}>
+			{loading ? "..." : text}
+			<style jsx>{styles}</style>
+		</button>
+	);
+};
 
-    componentDidMount() {
-        this.mounted = true;
-    }
-
-    componentWillUnmount() {
-        this.mounted = false;
-    }
-
-    async onClick(e) {
-        this.setState({ loading: true });
-        await this.props.onClick(e);
-        if (this.mounted) {
-            this.setState({ loading: false });
-        }
-    }
-
-    render() {
-        const { className, children } = this.props;
-        const { loading } = this.state;
-        return (
-            <button onClick={this.onClick} disabled={loading} className={classnames("btn", className, {
-                "btn-disabled": loading
-            })}>
-                {loading ? "..." : children }
-                <style>{`
-                    .btn-disabled {
-                        cursor: default;
-                        background-color: #f2f3f4;
-                    }
-                `}</style>
-            </button>
-        );
-    }
+const styles = css`
+.btn {
+	vertical-align: bottom;
+	border: none;
+	font-size: 16px;
+	font-family: "PT Sans", sans-serif;
+	border-radius: 9px;
+	background-color: #007FFF;
+	box-sizing: border-box;
+	color: white;
+	cursor: pointer;
+	display: inline-block;
+	height: 40px;
+	min-width: 80px;
 }
+
+.btn:hover {
+	background-color: #2793ff;
+}
+
+.btn-disabled {
+	cursor: default;
+	background-color: #2793ff;
+}
+
+`;
+
+export default Button;

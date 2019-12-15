@@ -1,46 +1,47 @@
-import classnames from "classnames";
+import React, { useState, useEffect, useRef } from "react";
 
-export default class WithState extends React.Component {
-    constructor(props) {
-        super(props);
-        this.mounted = true;
-        this.state = props.initialState;
-        this.data = props.initialData;
-        this.safeSetState = this.safeSetState.bind(this);
-        this.setData = this.setData.bind(this);
-        this.getData = this.getData.bind(this);
-    }
+const WithState = ({ initialState = {}, initialData = {}, render = () => {} }) => {
+	const [state, setState] = useState(initialState);
+	const data = useRef(initialData);
 
-    componentDidMount() {
-        this.mounted = true;
-    }
+	const mounted = useRef(true);
+	useEffect(() => {
+		mounted.current = true;
+		return () => {
+			mounted.current = false;
+		};
+	});
 
-    componentWillUnmount() {
-        this.mounted = false;
-    }
+	const setData = (newData) => {
+		data.current = {
+			...data.current,
+			...newData
+		};
+	};
 
-    setData(data) {
-        const currentData = this.data;
-        this.data = { ...currentData, ...data };
-    }
+	const getData = () => data.current;
 
-    getData() {
-        return this.data;
-    }
+	const safeSetState = (newState) => {
+		if (!mounted.current) {
+			return;
+		}
 
-    safeSetState(newState) {
-        if (!this.mounted) {
-            return;
-        }
-        this.setState(newState);
-    }
+		setState({
+			...state,
+			...newState
+		});
+	};
 
-    render() {
-        const { className } = this.props;
-        return (
-            <div className={classnames("shared-state", className)}>
-                {this.props.render({ state: this.state, setState: this.safeSetState, setData: this.setData, getData: this.getData })}
-            </div>
-        );
-    }
-}
+	return (
+		<div className="shared-state">
+			{render({
+				state,
+				setState: safeSetState,
+				setData,
+				getData
+			})}
+		</div>
+	);
+};
+
+export default WithState;
