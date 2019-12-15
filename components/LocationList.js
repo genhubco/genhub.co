@@ -62,7 +62,7 @@ const listStyles = css`
 }
 
 .list-item-gene {
-	width: 120px;
+	width: 140px;
 }
 
 .list-item-chr {
@@ -70,7 +70,7 @@ const listStyles = css`
 }
 
 .list-item-strand {
-	width: 100px;
+	width: 70px;
 }
 
 .list-item-id {
