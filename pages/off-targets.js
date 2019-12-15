@@ -69,7 +69,9 @@ const OffTargets = ({ status = 0, data = {}, species = "", seq = "", strand = ""
 				<Text>{seq.substring(3)}</Text>
 				<Text desc> - Species: </Text><Text>{species} </Text>
 				<Text desc> - Strand: </Text><Text>{strand}</Text>
-				<Text desc> - Count: </Text><Text>{data.count.join(" - ")}</Text>
+			</div>
+			<div className="off-targets-count">
+				<Text desc>Count: </Text><Text>{data.count.join(" - ")}</Text>
 			</div>
 			<div className="off-targets-table">
 				<Table headers={[{
@@ -172,7 +174,12 @@ const styles = css`
 
 .off-targets-header {
 	box-sizing: border-box;
-	padding: 0 65px 20px 65px;
+	padding: 0 65px 10px 65px;
+}
+
+.off-targets-count {
+	box-sizing: border-box;
+	padding: 0 65px 10px 65px;
 }
 
 .off-targets-table {
