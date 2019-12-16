@@ -9,7 +9,7 @@ const Footer = () => (
 			<Text><ExternalLink to="mailto:lazoviccorp@gmail.com">contact</ExternalLink></Text>
 		</div>
 		<div className="footer-item">
-			<Text><ExternalLink to="https://medium.com/genhub">blog</ExternalLink></Text>
+			<Text><ExternalLink to="https://twitter.com/gogenhub">twitter</ExternalLink></Text>
 		</div>
 		<Text><ExternalLink to="https://angel.co/gogenhub/jobs">jobs</ExternalLink></Text>
 		<style jsx>{styles}</style>
