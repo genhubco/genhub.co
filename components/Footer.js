@@ -6,7 +6,7 @@ import Text from "./Text";
 const Footer = () => (
 	<div className="footer">
 		<div className="footer-item">
-			<Text><ExternalLink to="mailto:lazoviccorp@gmail.com">contact</ExternalLink></Text>
+			<Text><ExternalLink to="mailto:team@genhub.co">contact</ExternalLink></Text>
 		</div>
 		<div className="footer-item">
 			<Text><ExternalLink to="https://twitter.com/gogenhub">twitter</ExternalLink></Text>
