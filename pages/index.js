@@ -13,7 +13,7 @@ import ExternalLink from "../components/ExternalLink";
 const Animation = () => (
 	<div className="animation-container">
 		<WithState initialState={{
-			val: false,
+			toggle: true,
 		}} render={({
 			state, setState,
 		}) => {
