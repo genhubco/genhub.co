@@ -7,15 +7,15 @@ import Text from "./Text";
 
 const format = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-const LocationList = ({ locations = [], onSelect = () => {}, id = "id" }) => (
+const LocationList = ({ locations = [], onSelect = () => {} }) => (
 	<div className="list">
 		<WithState initialState={{ selected: {} }} render={({ state, setState }) => {
 			if (!locations.length) {
 				return (<div className="list-empty"><Text desc>No items found.</Text></div>);
 			}
 			return locations.slice(0, 5).map(item => (
-				<div key={`key-${item[id]}`} className={classnames("list-item", {
-					"list-item-selected": item[id] === state.selected[id]
+				<div key={`key-${item.id}`} className={classnames("list-item", {
+					"list-item-selected": item.id === state.selected.id
 				})} onClick={() => {
 					setState({ selected: item });
 					onSelect(item);

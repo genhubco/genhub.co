@@ -1,16 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const WithState = ({ initialState = {}, initialData = {}, render = () => {} }) => {
+const WithState = ({ initialState = {}, initialData = {}, onStart = () => {}, render = () => {} }) => {
 	const [state, setState] = useState(initialState);
 	const data = useRef(initialData);
-
-	const mounted = useRef(true);
-	useEffect(() => {
-		mounted.current = true;
-		return () => {
-			mounted.current = false;
-		};
-	});
 
 	const setData = (newData) => {
 		data.current = {
@@ -21,16 +13,32 @@ const WithState = ({ initialState = {}, initialData = {}, render = () => {} }) =
 
 	const getData = () => data.current;
 
+	const mounted = useRef(true);
+	useEffect(() => {
+		mounted.current = true;
+		return () => {
+			mounted.current = false;
+		};
+	});
+
 	const safeSetState = (newState) => {
 		if (!mounted.current) {
 			return;
 		}
-
 		setState({
 			...state,
 			...newState
 		});
 	};
+
+	useEffect(() => {
+		onStart({
+			state,
+			setState: safeSetState,
+			data,
+			getData
+		});
+	}, []);
 
 	return (
 		<div className="shared-state">

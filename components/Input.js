@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import classnames from "classnames";
 import css from "styled-jsx/css";
 
@@ -14,6 +14,10 @@ const Input = ({
 	placeholder = ""
 }) => {
 	const [state, setState] = useState(initialState);
+
+	useEffect(() => {
+		setState(initialState);
+	}, [initialState]);
 
 	const handleChange = (e) => {
 		const newState = { value: e.target.value };

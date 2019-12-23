@@ -2,14 +2,12 @@ import React from "react";
 import css from "styled-jsx/css";
 import classnames from "classnames";
 
-const Button = ({ loading, text = "", onClick = () => {} }) => {
-	return (
-		<button onClick={onClick} disabled={loading} className={classnames("btn", { "btn-disabled": loading })}>
-			{loading ? "..." : text}
-			<style jsx>{styles}</style>
-		</button>
-	);
-};
+const Button = ({ loading, text = "", onClick = () => {} }) => (
+	<button onClick={onClick} disabled={loading} className={classnames("btn", { "btn-disabled": loading })}>
+		{loading ? "..." : text}
+		<style jsx>{styles}</style>
+	</button>
+);
 
 const styles = css`
 .btn {

@@ -9,20 +9,18 @@ const Table = ({ headers = [], items = [], weights = [], renderRowItem = () => {
 	}
 	return (
 		<div className="table">
-			<div className="table-header">
-				{headers.map((item, i) => (
-					<div key={`header-${i}`} className="table-header-item" style={{ flex: weights[i] }}>
-						<Text desc>{item.display}</Text>
+			{headers.map((header, i) => (
+				<div key={`column-${i}`} className="table-column" style={{ flex: weights[i] }}>
+					<div className="table-header-item">
+						<Text desc>{header.display}</Text>
 					</div>
-				))}
-			</div>
-			{items.map((row, i) => (
-				<div className="table-row" key={`row-${i}`}>
-					{headers.map((header, j) => (
-						<div key={`row-item-${i}-${j}`} className="table-row-item" style={{ flex: weights[j] }}>
-							{renderRowItem(header.key, row[header.key])}
-						</div>
-					))}
+					<div className="table-rows">
+						{items.map((item, j) => (
+							<div key={`row-${i}-${j}`} className="table-row-item">
+								{renderRowItem(header.key, item)}
+							</div>
+						))}
+					</div>
 				</div>
 			))}
 			<style jsx>{styles}</style>
@@ -32,18 +30,20 @@ const Table = ({ headers = [], items = [], weights = [], renderRowItem = () => {
 
 const styles = css`
 .table {
+	display: flex;
 	border: 1px solid #EBEBEB;
 	border-radius: 9px;
 	padding: 10px 0;
 	box-sizing: border-box;
 }
 
-.table-header, .table-row {
-	display: flex;
+.table-column {
+	flex-flow: column;
 }
 
 .table-row-item, .table-header-item {
-	padding: 10px 20px;
+	padding: 10px 0;
+	text-align: center;
 }
 `;
 

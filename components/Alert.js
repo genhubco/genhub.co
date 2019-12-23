@@ -47,6 +47,7 @@ const styles = css`
 .error {
 	border: 1px solid #f3ada8;
 	background-color: #f5bdb9;
+	color: white;
 }
 `;
 
