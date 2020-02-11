@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import css from "styled-jsx/css";
-
-const map = (num, inMin, inMax, outMin, outMax) => {
-	return (num - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
-};
-
-const format = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+import { map, format } from "../utils";
 
 const CrisprTargetMap = ({ targets = [], start = 0, end = 0, width = 730 }) => {
 	const [state, setState] = useState({
@@ -55,8 +50,8 @@ const CrisprTargetMap = ({ targets = [], start = 0, end = 0, width = 730 }) => {
 		return null;
 	}
 
-	const forwardTargets = groupTargets(targets, 1);
-	const backwardsTargets = [];
+	const forwardTargets = groupTargets(targets.filter(item => item.strand === 1), 1);
+	const backwardsTargets = groupTargets(targets.filter(item => item.strand === -1), -1);
 
 	const levelHeight = 3;
 
@@ -81,6 +76,8 @@ const CrisprTargetMap = ({ targets = [], start = 0, end = 0, width = 730 }) => {
 			<svg viewBox={`0 0 100 ${viewBoxHeight}`} xmlns="http://www.w3.org/2000/svg">
 				{forwardTargets.length && <text x="1" y="3" className="strand-text">{"+ strand"}</text>}
 				{backwardsTargets.length && <text x="1" y={viewBoxHeight - 1} className="strand-text">{"- strand"}</text>}
+				{forwardTargets.length && <text x={viewBoxWidth - 4} y="3" className="strand-text">{"-->"}</text>}
+				{backwardsTargets.length && <text x={viewBoxWidth - 4} y={viewBoxHeight - 1} className="strand-text">{"<--"}</text>}
 				{forwardTargets.map((levelItems, level) => levelItems.map((item, i) => (
 					<line
 						onMouseOver={() => setState({
@@ -96,9 +93,9 @@ const CrisprTargetMap = ({ targets = [], start = 0, end = 0, width = 730 }) => {
 							show: false
 						})}
 						key={`${item.index}-${level}-${i}`}
-						x1={item.pos}
+						x1={item.pos - targetLength}
 						y1={(level + 1) * levelHeight}
-						x2={item.pos + targetLength}
+						x2={item.pos}
 						y2={(level + 1) * levelHeight}
 						strokeLinecap="round"
 						className="target-sequence"

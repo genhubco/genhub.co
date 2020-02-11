@@ -9,60 +9,64 @@ import Footer from "./Footer";
 import css from "styled-jsx/css";
 
 const Page = ({
-	type = "normal",
 	title = "Democratizing genetic engineering - GenHub",
 	render = () => {},
 	children,
 }) => (
 	<div className="page">
-		<WithState initialState={{ error: null }} render={({ state, setState }) => {
-			const setError = (message) => {
-				setTimeout(() => {
-					setState({ error: null });
-				}, 6000);
-				setState({ error: message });
-			};
-			return (
-				<>
-					{
-						state.error &&
-						<div className="page-error">
-							<Text error>● </Text><Text>{state.error}</Text>
-						</div>
-					}
-					<Head>
-						<title>{title}</title>
-						<link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet"/>
-						<link rel="icon" type="image/png" href="/favicon.png" />
+		<WithState
+			initialState={{ toast: { type: null } }}
+			initialData={{ timeoutId: null }}
+			render={({ state, setState, getData, setData }) => {
+				const setToast = data => {
+					const newTimeoutId = setTimeout(() => {
+						setState({ toast: { type: null } });
+						setData({ timeoutId: null });
+					}, data.duration || 6000);
 
-						<meta name="twitter:card" content="summary_large_image" />
-						<meta name="twitter:site" content="@gogenhub" />
-						<meta name="twitter:creator" content="@gogenhub" />
-						<meta
-							name="og:description"
-							content="Search for targets with highest score and review off-targets."
-						/>
-						<meta name="og:title" content="Democratizing genetic engineering - GenHub" />
-						<meta
-							name="og:image"
-							content={
-								process.env.NOW_GITHUB_COMMIT_REF === "staging" ?
-									"https://genhubco-git-staging.genhub.now.sh/twitter-card.png" :
-									"https://genhubco-git-master.genhub.now.sh/twitter-card.png"
-							}
-						/>
-					</Head>
-					<Header/>
-					<div className={classnames({
-						"content": type === "normal",
-						"content-center": type === "center",
-					})}>
-						{children || render(setError)}
-					</div>
-					<Footer/>
-				</>
-			);
-		}}/>
+					const currTimeout = getData().timeoutId;
+					clearTimeout(currTimeout);
+					setData({ timeoutId: newTimeoutId });
+
+					setState({ toast: data });
+				};
+				const toastOpts = { [state.toast.type]: state.toast.type != null };
+				return (
+					<>
+						{
+							state.toast.type &&
+						<div className="page-toast">
+							<Text {...toastOpts}>● </Text><Text>{state.toast.message}</Text>
+						</div>
+						}
+						<Head>
+							<title>{title}</title>
+							<link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet"/>
+							<link rel="icon" type="image/png" href="/favicon.png" />
+
+							<meta name="twitter:card" content="summary_large_image" />
+							<meta name="twitter:site" content="@gogenhub" />
+							<meta name="twitter:creator" content="@gogenhub" />
+							<meta
+								name="og:description"
+								content="Search for targets with highest score and review off-targets."
+							/>
+							<meta name="og:title" content="Democratizing genetic engineering - GenHub" />
+							<meta
+								name="og:image"
+								content={
+									process.env.NOW_GITHUB_COMMIT_REF === "staging" ?
+										"https://genhubco-git-staging.genhub.now.sh/twitter-card.png" :
+										"https://genhubco-git-master.genhub.now.sh/twitter-card.png"
+								}
+							/>
+						</Head>
+						<Header/>
+						{children || render(setToast)}
+						<Footer/>
+					</>
+				);
+			}}/>
 		<style jsx global>{`
 		html {
 			margin: 0;
@@ -95,7 +99,7 @@ const styles = css`
 	box-shadow: 0px 0px 13px -4px rgba(0,0,0,0.1);
 }
 
-.page-error {
+.page-toast {
 	z-index: 10;
 	bottom: 20px;
 	right: 20px;

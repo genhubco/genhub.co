@@ -10,23 +10,12 @@ import Alert from "../components/Alert";
 import ExternalLink from "../components/ExternalLink";
 import Text from "../components/Text";
 import WithState from "../components/WithState";
-
-const format = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-const lerpColor = (colorFrom, colorTo, amount) => {
-	const ah = parseInt(colorFrom.replace(/#/g, ""), 16),
-		ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
-		bh = parseInt(colorTo.replace(/#/g, ""), 16),
-		br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
-		rr = ar + amount * (br - ar),
-		rg = ag + amount * (bg - ag),
-		rb = ab + amount * (bb - ab);
-
-	return "#" + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
-};
+import { lerpColor, format } from "../utils";
+import { searchLocations, getTargets } from "../utils/api-calls";
 
 const Demo = () => {
 	return (
-		<Page title={"Design - GenHub"} render={(setError) => (
+		<Page title={"Design - GenHub"} render={(setToast) => (
 			<>
 				<div className="beta-alert-container">
 					<Alert><Text>The app is currently in beta! Give us <ExternalLink to="https://forms.gle/MmTHWiy4zzsv5s8N9">
@@ -47,49 +36,47 @@ const Demo = () => {
 						</div>
 						<div className="search-inputs">
 							<LocationSearch onChange={async (data) => {
-								const res = await fetch(`${process.env.FUNCTIONS}/${data.species}-search-locations?q=${data.gene}`);
-								if (!res.ok) {
-									if (res.status === 400) {
-										return setError("Invalid input.");
-									}
-									setError("Oop! Something went wrong while searching for locations.");
+								const res = await searchLocations(data.species, data.gene);
+								if (!res.ok && res.status === 400) {
+									return setToast({
+										type: "error",
+										message: "Invalid input."
+									});
 								}
-								const items = await res.json();
+								if (!res.ok) {
+									return setToast({
+										type: "error",
+										message: "Oop! Something went wrong while searching for locations."
+									});
+								}
 								setState({
-									locations: items,
+									locations: res.data,
 									species: data.species
 								});
 							}}/>
 						</div>
 						<div className="location-list">
 							<LocationList locations={state.locations} onSelect={async (item) => {
-								const res = await fetch(`${process.env.FUNCTIONS}/${state.species}-targets?id=${item.id}`);
-								if (!res.ok) {
-									return setError("Oops! Something went wrong while searching for targets.");
-								}
-								const targets = await res.json();
-								const slices = targets.map(tar => `${item.chr}:${tar.index - 2}..${tar.index + 27}:${item.strand}`);
-								const res2 = await fetch(`https://rest.ensembl.org/sequence/region/${state.species}`, {
-									method: "POST",
-									headers: {
-										"Content-Type": "application/json"
-									},
-									body: JSON.stringify({ regions: slices })
+								setToast({
+									type: "warning",
+									message: "Searching for targets!",
+									duration: 14000
 								});
-
-								if (!res2.ok) {
-									return setError("Oops! Something went wrong while searching for targets.");
+								const res = await getTargets(state.species, item);
+								setToast({
+									type: "success",
+									message: "Targets acquired!",
+									duration: 2000
+								});
+								if (!res.ok) {
+									return setToast({
+										type: "error",
+										message: "Oops! Something went wrong while searching for targets."
+									});
 								}
-								const objs = await res2.json();
-								const seqs = objs.map(obj => obj.seq);
-
-								const targetsWithSeqs = targets.map((tar, i) => ({
-									...tar,
-									sequence: seqs[i]
-								}));
 
 								setState({
-									targets: targetsWithSeqs,
+									targets: res.data,
 									selectedLocation: item
 								});
 							}} />
@@ -98,7 +85,7 @@ const Demo = () => {
 							<CrisprTargetMap
 								targets={state.targets.map(tar => ({
 									...tar,
-									sequence: tar.sequence.substring(3, 26) 
+									sequence: tar.sequence.slice(3, 26)
 								}))}
 								start={state.selectedLocation.start}
 								end={state.selectedLocation.end}
@@ -117,43 +104,30 @@ const Demo = () => {
 							}, {
 								display: "Score",
 								key: "score"
-							}, {
-								display: "Off-targets",
-								key: "offTargets"
-							}]} items={state.targets} weights={[7, 1, 2, 2, 3]} renderRowItem={(header, item) => {
+							}]} items={state.targets} weights={[7, 1, 3, 3]} renderRowItem={(header, item) => {
 								const tableRowMap = {
 									sequence: () => {
 										const seq = item.sequence;
 										const preffix = seq.substring(0, 3);
-										const pam = seq.substring(3, 6);
-										const target = seq.substring(6, 26);
+										const target = item.strand === 1 ? seq.substring(3, 23) : seq.substring(6, 26);
+										const pam = item.strand === 1 ? seq.substring(23, 26) : seq.substring(3, 6);
 										const suffix = seq.substring(26, 30);
 										return (
 											<>
 												<Text desc>{preffix}</Text>
-												<Text warning>{pam}</Text>
-												<Text>{target}</Text>
+												{item.strand === 1 ?
+													<span><Text>{target}</Text>
+														<Text warning>{pam}</Text></span> :
+													<span><Text warning>{pam}</Text>
+														<Text>{target}</Text></span>
+												}
 												<Text desc>{suffix} </Text>
 											</>
 										);
 									},
 									index: () => <Text>{format(item.index)}</Text>,
 									score: () => <Text color={lerpColor("#EE6868", "#49E500", item.score)}>{item.score.toFixed(2)}</Text>,
-									strand: () => <Text>{"1"}</Text>,
-									offTargets: () => {
-										const seq = item.sequence;
-										const pam = seq.substring(3, 6);
-										const target = seq.substring(6, 26);
-										return (
-											<a target="_blank" rel="noopener noreferrer"
-												href={`/off-targets?species=${state.species}&seq=${pam + target}&strand=${state.selectedLocation.strand}`}
-												className="table-off-targets"
-											>
-												<Text>{"0 - 1 - 2 - 3 - 4 "}</Text>
-												<span className="new-tab-icon">{" ⇥"}</span>
-											</a>
-										);
-									},
+									strand: () => <Text>{item.strand}</Text>
 								};
 								return tableRowMap[header]();
 							}} />

@@ -1,11 +1,14 @@
 import React from "react";
 import css from "styled-jsx/css";
-import classnames from "classnames";
 
 import WithState from "./WithState";
 import Input from "./Input";
+import Selected from "./Select";
 
-const availableSpecies = ["homo_sapiens"];
+const availableSpecies = [{
+	key: "homo_sapiens",
+	display: "homo_sapiens (Humans)"
+}];
 
 const Inputs = ({ onChange = () => {} }) => (
 	<WithState initialState={{
@@ -14,14 +17,6 @@ const Inputs = ({ onChange = () => {} }) => (
 		timer: 0,
 		gene: ""
 	}} render={({ state, setState, getData, setData }) => {
-		const handleSelect = (val) => {
-			const { gene } = getData();
-			setState({ species: val });
-			onChange({
-				species: val,
-				gene
-			});
-		};
 		const handleChange = (key, val) => {
 			setData({ [key]: val });
 			const species = state.species;
@@ -40,10 +35,10 @@ const Inputs = ({ onChange = () => {} }) => (
 			<div className="search-container">
 				<div className="search-input-container">
 					<div className="search-input-wrapper">
-						<Input
-							disabled
+						<Selected
+							items={availableSpecies}
+							onChange={species => setState({ species })}
 							initialState={{ value: state.species }}
-							prefix="species:"
 						/>
 					</div>
 					<div className="search-input-wrapper">
@@ -54,19 +49,6 @@ const Inputs = ({ onChange = () => {} }) => (
 							prefix="gene:"
 						/>
 					</div>
-				</div>
-				<div className="search-species-options">
-					{availableSpecies.map((item, i) => (
-						<div key={`key-${item}-${i}`} className="search-species-option-container">
-							<div
-								onClick={() => handleSelect(item)}
-								className={classnames("search-species-option", {
-									"search-species-option-selected": state.species === item
-								})}>
-								{item}
-							</div>
-						</div>
-					))}
 				</div>
 				<style jsx>{inputStyles}</style>
 			</div>
@@ -79,7 +61,7 @@ const inputStyles = css`
 	display: flex;
 	justify-content: space-between;
 	box-sizing: border-box;
-	padding-bottom: 10px;
+	padding-bottom: 20px;
 }
 
 .search-input-wrapper {

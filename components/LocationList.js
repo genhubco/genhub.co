@@ -1,11 +1,10 @@
 import React from "react";
 import css from "styled-jsx/css";
 import classnames from "classnames";
+import { format } from "../utils";
 
 import WithState from "./WithState";
 import Text from "./Text";
-
-const format = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 const LocationList = ({ locations = [], onSelect = () => {} }) => (
 	<div className="list">

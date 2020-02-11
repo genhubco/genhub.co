@@ -9,38 +9,7 @@ import Text from "../components/Text";
 import Table from "../components/Table";
 import Alert from "../components/Alert";
 import ExternalLink from "../components/ExternalLink";
-
-const format = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-const groupElements = (seq1, seq2) => {
-	const arr = [];
-	let range = [];
-	const changes = seq1.split("").map((letter, i) => letter === seq2[i]);
-	changes.forEach((current, i) => {
-		const isChange = current != changes[i - 1];
-		if (!isChange) {
-			return;
-		}
-
-		range.push(i);
-		if (range.length === 2) {
-			arr.push({
-				val: changes[i - 1],
-				range
-			});
-			range = [i];
-		}
-	});
-
-	if (range.length) {
-		range.push(seq1.length);
-		arr.push({
-			val: changes[changes.length - 1],
-			range
-		});
-	}
-	return arr;
-};
+import { groupElements, format } from "../utils";
 
 const OffTargets = ({ status = 0, data = {}, species = "", seq = "", strand = "" }) => {
 	if (status) {
