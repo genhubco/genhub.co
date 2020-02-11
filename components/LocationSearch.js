@@ -11,22 +11,20 @@ const availableSpecies = [{
 }];
 
 const Inputs = ({ onChange = () => {} }) => (
-	<WithState initialState={{
-		species: "homo_sapiens"
-	}} initialData={{
+	<WithState initialData={{
 		timer: 0,
-		gene: ""
-	}} render={({ state, setState, getData, setData }) => {
+		location: "",
+		species: "homo_sapiens"
+	}} render={({ getData, setData }) => {
 		const handleChange = (key, val) => {
 			setData({ [key]: val });
-			const species = state.species;
-			const { gene, timer } = getData();
+			const { location, species, timer } = getData();
 
 			clearTimeout(timer);
 			const newTimer = setTimeout(() => {
 				onChange({
 					species,
-					gene
+					location
 				});
 			}, 500);
 			setData({ timer: newTimer });
@@ -37,16 +35,16 @@ const Inputs = ({ onChange = () => {} }) => (
 					<div className="search-input-wrapper">
 						<Selected
 							items={availableSpecies}
-							onChange={species => setState({ species })}
-							initialState={{ value: state.species }}
+							onChange={species => handleChange({ species })}
+							initialState={{ value: getData().species }}
 						/>
 					</div>
 					<div className="search-input-wrapper">
 						<Input
 							placeholder="EMX1, ENS..., etc."
-							onChange={(val) => handleChange("gene", val)}
-							initialState={{ value: getData().gene }}
-							prefix="gene:"
+							onChange={(val) => handleChange("location", val)}
+							initialState={{ value: getData().location }}
+							prefix="location:"
 						/>
 					</div>
 				</div>
@@ -100,7 +98,7 @@ const inputStyles = css`
 const SearchWithPause = ({ onChange = () => {} }) => (
 	<WithState initialData={{ lastReq: null }} render={({ getData, setData }) => (
 		<Inputs onChange={async (data) => {
-			if (!data.species || !data.gene) {
+			if (!data.species || !data.location) {
 				return;
 			}
 			let { lastReq } = getData();

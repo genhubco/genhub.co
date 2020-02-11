@@ -5,13 +5,14 @@ function comp(seq) {
 		"C": "G",
 		"G": "C"
 	};
-	return seq.split("").map(letter => comp[letter]).join("");
+	return seq.split("").map(letter => comp[letter]).reverse().join("");
 }
 
 async function getTargets(species, location) {
 	try {
-		const resForward = await fetch(`${process.env.FUNCTIONS}/targets-${species}-${location.chr}-forward?start=${location.start}&end=${location.end}`);
-		const resBackward = await fetch(`${process.env.FUNCTIONS}/targets-${species}-${location.chr}-backward?start=${location.start}&end=${location.end}`);
+		const resForwardPromise = await fetch(`${process.env.FUNCTIONS}/targets-${species}-${location.chr}-forward?start=${location.start}&end=${location.end}`);
+		const resBackwardPromise = await fetch(`${process.env.FUNCTIONS}/targets-${species}-${location.chr}-backward?start=${location.start}&end=${location.end}`);
+		const [resForward, resBackward] = await Promise.all([resForwardPromise, resBackwardPromise]);
 
 		if (!resForward.ok) {
 			return { status: resForward.status };
@@ -21,8 +22,9 @@ async function getTargets(species, location) {
 			return { status: resBackward.status };
 		}
 
-		const targetsForward = await resForward.json();
-		const targetsBackward = await resBackward.json();
+		const targetsForwardPromise = await resForward.json();
+		const targetsBackwardPromise = await resBackward.json();
+		const [targetsForward, targetsBackward] = await Promise.all([targetsForwardPromise, targetsBackwardPromise]);
 		const targetsForwardWithStrand = targetsForward.map(item => ({
 			...item,
 			strand: 1
@@ -69,9 +71,9 @@ async function getTargets(species, location) {
 
 }
 
-async function searchLocations(species, gene) {
+async function searchLocations(species, q) {
 	try {
-		const res = await fetch(`${process.env.FUNCTIONS}/locations-${species}?q=${gene}`);
+		const res = await fetch(`${process.env.FUNCTIONS}/locations-${species}?q=${q}`);
 		if (!res.ok) {
 			return { status: res.status };
 		}

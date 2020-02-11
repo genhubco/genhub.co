@@ -32,11 +32,11 @@ const Demo = () => {
 				}} render={({ state, setState }) => (
 					<>
 						<div className="search-title">
-							<Text desc>Search for targets at location:</Text>
+							<Text desc>Search for targets at:</Text>
 						</div>
 						<div className="search-inputs">
 							<LocationSearch onChange={async (data) => {
-								const res = await searchLocations(data.species, data.gene);
+								const res = await searchLocations(data.species, data.location);
 								if (!res.ok && res.status === 400) {
 									return setToast({
 										type: "error",
@@ -59,7 +59,7 @@ const Demo = () => {
 							<LocationList locations={state.locations} onSelect={async (item) => {
 								setToast({
 									type: "warning",
-									message: "Searching for targets!",
+									message: "Searching for targets...",
 									duration: 14000
 								});
 								const res = await getTargets(state.species, item);
@@ -109,25 +109,21 @@ const Demo = () => {
 									sequence: () => {
 										const seq = item.sequence;
 										const preffix = seq.substring(0, 3);
-										const target = item.strand === 1 ? seq.substring(3, 23) : seq.substring(6, 26);
-										const pam = item.strand === 1 ? seq.substring(23, 26) : seq.substring(3, 6);
+										const target = seq.substring(3, 23);
+										const pam = seq.substring(23, 26);
 										const suffix = seq.substring(26, 30);
 										return (
 											<>
 												<Text desc>{preffix}</Text>
-												{item.strand === 1 ?
-													<span><Text>{target}</Text>
-														<Text warning>{pam}</Text></span> :
-													<span><Text warning>{pam}</Text>
-														<Text>{target}</Text></span>
-												}
+												<Text>{target}</Text>
+												<Text warning>{pam}</Text>
 												<Text desc>{suffix} </Text>
 											</>
 										);
 									},
 									index: () => <Text>{format(item.index)}</Text>,
 									score: () => <Text color={lerpColor("#EE6868", "#49E500", item.score)}>{item.score.toFixed(2)}</Text>,
-									strand: () => <Text>{item.strand}</Text>
+									strand: () => <Text>{item.strand === 1 ? "+" : "-"}</Text>
 								};
 								return tableRowMap[header]();
 							}} />

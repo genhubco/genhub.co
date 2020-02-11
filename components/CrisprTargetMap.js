@@ -84,7 +84,7 @@ const CrisprTargetMap = ({ targets = [], start = 0, end = 0, width = 730 }) => {
 							show: true,
 							pos: {
 								top: map((level + 1) * levelHeight, 0, viewBoxHeight, 0, heightInPx) - 25,
-								left: map(item.pos, 0, viewBoxWidth, 0, width) + 50
+								left: map(item.pos, 0, viewBoxWidth, 0, width) + 10
 							},
 							info: `Sequence: ${item.sequence}\nPosition: ${format(item.index)}`
 						})}
