@@ -3,16 +3,14 @@ import Link from "next/link";
 import { withRouter } from "next/router";
 import css from "styled-jsx/css";
 
-export default withRouter(() => {
-	return (
-		<div className="header">
-			<Link href="/">
-				<img className="header-logo" src="/applogo.svg" />
-			</Link>
-			<style jsx>{styles}</style>
-		</div>
-	);
-});
+export default withRouter(() => (
+	<div className="header">
+		<Link href="/">
+			<img className="header-logo" src="/applogo.svg" />
+		</Link>
+		<style jsx>{styles}</style>
+	</div>
+));
 
 const styles = css`
 .header {

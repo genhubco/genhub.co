@@ -1,31 +1,30 @@
 import React from "react";
 import css from "styled-jsx/css";
 import classnames from "classnames";
+import { format } from "../utils";
 
 import WithState from "./WithState";
 import Text from "./Text";
 
-const format = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-const LocationList = ({ locations = [], onSelect = () => {}, id = "id" }) => (
+const LocationList = ({ locations = [], onSelect = () => {} }) => (
 	<div className="list">
 		<WithState initialState={{ selected: {} }} render={({ state, setState }) => {
 			if (!locations.length) {
 				return (<div className="list-empty"><Text desc>No items found.</Text></div>);
 			}
-			return locations.slice(0, 5).map(item => (
-				<div key={`key-${item[id]}`} className={classnames("list-item", {
-					"list-item-selected": item[id] === state.selected[id]
+			return locations.map(item => (
+				<div key={`key-${item.id}`} className={classnames("list-item", {
+					"list-item-selected": item.id === state.selected.id
 				})} onClick={() => {
 					setState({ selected: item });
 					onSelect(item);
 				}}>
 					{["id", "gene", "chr", "strand"].map((key, i) => (
-						<div key={`${key}-${i}`} className={`list-item-chunk list-item-${key}`}>
+						<div key={`${key}-${i}`} className="list-item-chunk">
 							<Text desc>{key}:</Text>{" "}<Text>{item[key]}</Text>
 						</div>
 					))}
-					<div className="list-item-chunk list-item-location">
+					<div className="list-item-chunk">
 						<Text desc>location:</Text>{" "}
 						<Text>{format(item.start)} - {format(item.end)}</Text>
 					</div>
@@ -46,7 +45,6 @@ const listStyles = css`
 }
 
 .list-item {
-	display: flex;
 	padding: 10px 20px;
 	box-sizing: border-box;
 }
@@ -59,22 +57,8 @@ const listStyles = css`
 
 .list-item-chunk {
 	display: inline-block;
-}
-
-.list-item-gene {
-	width: 140px;
-}
-
-.list-item-chr {
-	width: 60px;
-}
-
-.list-item-strand {
-	width: 70px;
-}
-
-.list-item-id {
-	width: 160px;
+	box-sizing: border-box;
+	padding-right: 10px;
 }
 
 .list-item-selected {
