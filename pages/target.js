@@ -92,7 +92,7 @@ const OffTargets = ({ status = 0, species = "", seq = "", strand = null }) => {
 						</ExternalLink>.</Text></Alert>
 					</div>
 					<div className="off-targets-header">
-						<div><Text desc>Off-targets for: </Text><Text>{seq}</Text></div>
+						<div><Text desc>Target sequence: </Text><Text>{seq}</Text></div>
 						<div><Text desc> Species: </Text><Text>{availableSpecies[species]}</Text></div>
 						<div><Text desc> Strand: </Text><Text>{strands[strand]}</Text></div>
 					</div>
