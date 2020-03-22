@@ -83,7 +83,7 @@ const Index = () => (
 			<Title>A synthetic biology platform</Title>
 		</div>
 		<div className="sub-slogan-container">
-			<InternalLink to="/design">{"Try out CRISPR target design tool (beta) ->"}</InternalLink>
+			<InternalLink to="/design">{"Try out CRISPR guide design tool (beta) ->"}</InternalLink>
 		</div>
 		<Animation/>
 		<div className="early-access">
