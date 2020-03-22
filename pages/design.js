@@ -128,7 +128,7 @@ const Demo = () => {
 		<Page title={"Design - GenHub"} render={(setToast) => (
 			<>
 				<div className="beta-alert-container">
-					<Alert><Text>The app is currently in beta! Give us <ExternalLink to="https://forms.gle/MmTHWiy4zzsv5s8N9">
+					<Alert><Text>The app is currently in beta! Give us <ExternalLink to="https://forms.gle/zSseAoHbeeF6JUXV7">
 					feedback
 					</ExternalLink>.</Text></Alert>
 				</div>

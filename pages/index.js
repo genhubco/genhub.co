@@ -87,7 +87,7 @@ const Index = () => (
 		</div>
 		<Animation/>
 		<div className="early-access">
-			<Text>Sign up for <ExternalLink to="https://forms.gle/XqsjJ3FYXH4ch2eW9">updates</ExternalLink>.</Text>
+			<Text>Sign up for <ExternalLink to="https://forms.gle/N5MiERhMpKtdxGMX8">updates</ExternalLink>.</Text>
 		</div>
 		<style jsx>{styles}</style>
 	</Page>
