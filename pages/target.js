@@ -100,7 +100,9 @@ const OffTargets = ({ status = 0, species = "", seq = "", strand = null }) => {
 						state.offs &&
 						<div className="off-targets-results">
 							<div className="off-targets-table-desc">
-								<Text desc>All occurrence of the target sequence:</Text>
+								<Text desc>All occurrences of the target sequence with up to </Text>
+								<Text>3</Text>
+								<Text desc> mismatches:</Text>
 							</div>
 							<div className="off-targets-table">
 								<Table headers={[{
