@@ -19,14 +19,16 @@ const Page = ({
 			initialData={{ timeoutId: null }}
 			render={({ state, setState, getData, setData }) => {
 				const setToast = data => {
-					const newTimeoutId = setTimeout(() => {
-						setState({ toast: { type: null } });
-						setData({ timeoutId: null });
-					}, data.duration || 6000);
-
 					const currTimeout = getData().timeoutId;
 					clearTimeout(currTimeout);
-					setData({ timeoutId: newTimeoutId });
+
+					if (data.duration) {
+						const newTimeoutId = setTimeout(() => {
+							setState({ toast: { type: null } });
+							setData({ timeoutId: null });
+						}, data.duration);
+						setData({ timeoutId: newTimeoutId });
+					}
 
 					setState({ toast: data });
 				};
@@ -103,7 +105,7 @@ const styles = css`
 	z-index: 10;
 	bottom: 20px;
 	right: 20px;
-	width: 250px;
+	width: 300px;
 	position: fixed;
 	box-sizing: border-box;
 	padding: 10px 20px;

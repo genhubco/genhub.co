@@ -14,8 +14,21 @@ export default withRouter(() => (
 
 const styles = css`
 .header {
-	padding: 10px 10px 0 10px;
+	display: flex;
+	justify-content: space-between;
+	padding: 10px 20px 0 15px;
 	box-sizing: border-box;
+}
+
+.header-link {
+	padding-top: 5px;
+	font-family: "PT Sans", sans-serif;
+	text-decoration: none;
+	color: inherit;
+}
+
+.header-link:hover {
+	font-weight: bold;
 }
 
 .header-logo {

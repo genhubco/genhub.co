@@ -4,12 +4,9 @@ import css from "styled-jsx/css";
 import Text from "./Text";
 
 const Table = ({ headers = [], items = [], weights = [], renderRowItem = () => {} }) => {
-	if (!items.length) {
-		return null;
-	}
 	return (
 		<div className="table">
-			{headers.map((header, i) => (
+			{items.length ? headers.map((header, i) => (
 				<div key={`column-${i}`} className="table-column" style={{ flex: weights[i] }}>
 					<div className="table-header-item">
 						<Text desc>{header.display}</Text>
@@ -22,7 +19,11 @@ const Table = ({ headers = [], items = [], weights = [], renderRowItem = () => {
 						))}
 					</div>
 				</div>
-			))}
+			)) : (
+				<div className="table-no-data">
+					<Text desc>No data found.</Text>
+				</div>
+			)}
 			<style jsx>{styles}</style>
 		</div>
 	);
@@ -39,6 +40,13 @@ const styles = css`
 
 .table-column {
 	flex-flow: column;
+}
+
+.table-no-data {
+	box-sizing: border-box;
+	padding: 60px 0;
+	text-align: center;
+	width: 100%;
 }
 
 .table-row-item, .table-header-item {

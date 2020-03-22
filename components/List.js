@@ -1,12 +1,11 @@
 import React from "react";
 import css from "styled-jsx/css";
 import classnames from "classnames";
-import { format } from "../utils";
 
 import WithState from "./WithState";
 import Text from "./Text";
 
-const LocationList = ({ locations = [], onSelect = () => {} }) => (
+const LocationList = ({ locations = [], onSelect = () => {}, renderItem = () => {} }) => (
 	<div className="list">
 		<WithState initialState={{ selected: {} }} render={({ state, setState }) => {
 			if (!locations.length) {
@@ -19,15 +18,11 @@ const LocationList = ({ locations = [], onSelect = () => {} }) => (
 					setState({ selected: item });
 					onSelect(item);
 				}}>
-					{["id", "gene", "chr", "strand"].map((key, i) => (
+					{Object.keys(item).map((key, i) => (
 						<div key={`${key}-${i}`} className="list-item-chunk">
-							<Text desc>{key}:</Text>{" "}<Text>{item[key]}</Text>
+							{renderItem(item, key, i)}
 						</div>
 					))}
-					<div className="list-item-chunk">
-						<Text desc>location:</Text>{" "}
-						<Text>{format(item.start)} - {format(item.end)}</Text>
-					</div>
 				</div>
 			));
 		}}/>
