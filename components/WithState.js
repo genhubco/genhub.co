@@ -25,17 +25,17 @@ const WithState = ({ initialState = {}, initialData = {}, onStart = () => {}, re
 		if (!mounted.current) {
 			return;
 		}
-		setState({
-			...state,
+		setState(prevState => ({
+			...prevState,
 			...newState
-		});
+		}));
 	};
 
 	useEffect(() => {
 		onStart({
 			state,
 			setState: safeSetState,
-			data,
+			setData,
 			getData
 		});
 	}, []);

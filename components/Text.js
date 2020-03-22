@@ -2,15 +2,16 @@ import React from "react";
 import classnames from "classnames";
 import css from "styled-jsx/css";
 
-const Text = ({ small, warning, desc, error, success, color = null, outlineError, children }) => (
+const Text = ({ small, big, warning, desc, error, success, color = null, outlineError, children }) => (
 	<span style={{ color }} className={classnames("text", {
 		desc: desc && !color,
 		warning: warning && !color,
 		error: error && !color,
 		success: success && !color,
 		"outline-error": outlineError,
-		"text-normal": !small,
-		"text-small": small
+		"text-normal": !small && !big,
+		"text-small": small,
+		"text-big": big
 	})}>
 		{children}
 		<style jsx>{styles}</style>
@@ -22,6 +23,10 @@ const styles = css`
 	letter-spacing: 0.5px;
 	font-family: "PT Sans", sans-serif;
 	margin: 0;
+}
+
+.text-big {
+	font-size: 20px;
 }
 
 .text-normal {
