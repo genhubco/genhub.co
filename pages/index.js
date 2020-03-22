@@ -80,7 +80,7 @@ const animationStyles = css`
 const Index = () => (
 	<Page>
 		<div className="slogan-container">
-			<Title>A synthetic biology platform</Title>
+			<Title>Synthetic biology platform</Title>
 		</div>
 		<div className="sub-slogan-container">
 			<InternalLink to="/design">{"Try out CRISPR guide design tool (beta) ->"}</InternalLink>
