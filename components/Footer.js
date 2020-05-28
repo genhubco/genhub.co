@@ -18,6 +18,7 @@ const Footer = () => (
 
 const styles = css`
 .footer {
+	box-sizing: border-box;
 	border-top: 1px solid #f2f3f4;
 	padding: 20px 0;
 	text-align: center;

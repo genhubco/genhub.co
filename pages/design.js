@@ -7,7 +7,6 @@ import List from "../components/List";
 import CrisprTargetMap from "../components/CrisprTargetMap";
 import Table from "../components/Table";
 import Alert from "../components/Alert";
-import ExternalLink from "../components/ExternalLink";
 import Text from "../components/Text";
 import Input from "../components/Input";
 import Select from "../components/Select";
@@ -20,7 +19,7 @@ const availableSpecies = [{
 	display: "homo_sapiens (Humans)"
 }];
 
-const Inputs = ({ onChange = () => {} }) => (
+const Inputs = ({ onChange = () => { } }) => (
 	<WithState initialData={{
 		timer: 0,
 		location: "",
@@ -61,7 +60,7 @@ const Inputs = ({ onChange = () => {} }) => (
 				<style jsx>{inputStyles}</style>
 			</div>
 		);
-	}}/>
+	}} />
 );
 
 const inputStyles = css`
@@ -105,7 +104,7 @@ const inputStyles = css`
 }
 `;
 
-const SearchWithPause = ({ onChange = () => {} }) => (
+const SearchWithPause = ({ onChange = () => { } }) => (
 	<WithState initialData={{ lastReq: null }} render={({ getData, setData }) => (
 		<Inputs onChange={async (data) => {
 			if (!data.species || !data.location) {
@@ -123,14 +122,14 @@ const SearchWithPause = ({ onChange = () => {} }) => (
 	)} />
 );
 
-const Demo = () => {
+const Design = () => {
 	return (
-		<Page title={"Design - GenHub"} render={(setToast) => (
+		<Page title={"Design - GenHub"} onLoad={({ emit }) => emit("page", {
+			path: "/design"
+		})} render={({ setToast }) => (
 			<>
 				<div className="beta-alert-container">
-					<Alert><Text>The app is currently in beta! Give us <ExternalLink to="https://forms.gle/zSseAoHbeeF6JUXV7">
-					feedback
-					</ExternalLink>.</Text></Alert>
+					<Alert warning><Text>The app is made for demonstration purposes! Do not use it in production.</Text></Alert>
 				</div>
 				<WithState initialState={{
 					targets: [],
@@ -167,7 +166,7 @@ const Demo = () => {
 									});
 
 								}
-							}}/>
+							}} />
 						</div>
 						<div className="location-list">
 							<List locations={state.locations.map(item => ({
@@ -201,7 +200,7 @@ const Demo = () => {
 									});
 								}
 							}} renderItem={(item, key) => (key !== "start" && key !== "end") ? (
-								[<Text desc key={`key-${key}`}>{key}:</Text>," ",<Text key={`value-${key}`}>{item[key]}</Text>]
+								[<Text desc key={`key-${key}`}>{key}:</Text>, " ", <Text key={`value-${key}`}>{item[key]}</Text>]
 							) : null} />
 						</div>
 						{
@@ -307,10 +306,10 @@ const Demo = () => {
 							)
 						}
 					</>
-				)}/>
+				)} />
 				<style jsx>{styles}</style>
 			</>
-		)}/>
+		)} />
 	);
 };
 
@@ -367,4 +366,4 @@ const styles = css`
 
 `;
 
-export default Demo;
+export default Design;
