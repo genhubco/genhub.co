@@ -54,23 +54,6 @@ const Page = ({
 						<title>{title}</title>
 						<link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet" />
 						<link rel="icon" type="image/png" href="/favicon.png" />
-
-						<meta name="twitter:card" content="summary_large_image" />
-						<meta name="twitter:site" content="@gogenhub" />
-						<meta name="twitter:creator" content="@gogenhub" />
-						<meta
-							name="og:description"
-							content="Search for targets with highest score and review off-targets."
-						/>
-						<meta name="og:title" content="Next-gen synthetic biology platform - GenHub" />
-						<meta
-							name="og:image"
-							content={
-								process.env.NOW_GITHUB_COMMIT_REF === "staging" ?
-									"https://genhubco-git-staging.genhub.now.sh/twitter-card.png" :
-									"https://genhubco-git-master.genhub.now.sh/twitter-card.png"
-							}
-						/>
 					</Head>
 					{!hideHeader ? <Header /> : null}
 					{children || render({ setToast, emit })}
