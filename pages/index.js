@@ -19,7 +19,7 @@ const Index = () => (
 					<Title big>Next-gen synthetic biology platform</Title>
 				</div>
 				<div className="sub-slogan-container">
-					<Text big>Turning biology into information technology.</Text>
+					<Text big>Turning biology into information technology</Text>
 				</div>
 				<div className="contact-us">
 					<Text>contact us at <ExternalLink to="mailto:team@genhub.co">team@genhub.co</ExternalLink></Text>
