@@ -1,6 +1,7 @@
 module.exports = {
 	target: "serverless",
 	env: {
+		MIXPANEL_TOKEN: process.env.MIXPANEL_TOKEN,
 		FUNCTIONS: `${
 			process.env.NODE_ENV === "development" ?
 				"http://localhost:34567/.netlify/functions" :

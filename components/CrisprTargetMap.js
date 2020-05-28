@@ -12,7 +12,7 @@ const CrisprTargetMap = ({
 	defaultStart = 0,
 	defaultEnd = 0,
 	width = 730,
-	onZoom = () => {}
+	onZoom = () => { }
 }) => {
 	const [state, setState] = useState({
 		zoomMode: false,
@@ -129,7 +129,7 @@ const CrisprTargetMap = ({
 						...state,
 						zoomCursorPos: newPos
 					});
-				}}/>}
+				}} />}
 			<svg className="crispr-target-map-svg" viewBox={`0 0 ${width} ${height}`} xmlns="http://www.w3.org/2000/svg">
 				{forwardTargets.map((levelItems, level) => levelItems.map((item, i) => (
 					<line
@@ -263,7 +263,7 @@ const CrisprTargetMap = ({
 						zoomMode: toggle
 					}))}>⟷</Toggle>
 				</div>
-				<Button small disabled={start === defaultStart && end === defaultEnd} onClick={() => {
+				<Button small secondary disabled={start === defaultStart && end === defaultEnd} onClick={() => {
 					onZoom({
 						start: defaultStart,
 						end: defaultEnd

@@ -2,10 +2,10 @@ import React from "react";
 import css from "styled-jsx/css";
 import Link from "next/link";
 
-const InternalLink = ({ children, to = "" }) => (
+const InternalLink = ({ children, to = "", onClick = () => { } }) => (
 	<div className="internal-link-container">
 		<Link href={to}>
-			<a className="internal-link">
+			<a className="internal-link" onClick={onClick}>
 				{children}
 			</a>
 		</Link>
@@ -20,18 +20,19 @@ const styles = css`
 
 .internal-link {
 	color: inherit;
-	font-size: 14px;
+	opacity: 0.6;
+	font-size: inherit;
 	text-decoration: none;
-	font-family: "PT Sans", sans-serif;
+	font-family: inherit;
 	border: none;
 	background: none;
 	cursor: pointer;
 	padding: 0;
+	text-decoration: underline;
 }
 
 .internal-link:hover {
-	font-weight: bold;
-	text-decoration: underline;
+	opacity: 1;
 }
 `;
 

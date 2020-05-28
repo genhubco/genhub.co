@@ -2,12 +2,13 @@ import React from "react";
 import classnames from "classnames";
 import css from "styled-jsx/css";
 
-const Text = ({ small, big, warning, desc, error, success, color = null, outlineError, children }) => (
+const Text = ({ small, big, warning, desc, error, success, info, color = null, outlineError, children }) => (
 	<span style={{ color }} className={classnames("text", {
 		desc: desc && !color,
 		warning: warning && !color,
 		error: error && !color,
 		success: success && !color,
+		info: info && !color,
 		"outline-error": outlineError,
 		"text-normal": !small && !big,
 		"text-small": small,
@@ -26,7 +27,7 @@ const styles = css`
 }
 
 .text-big {
-	font-size: 20px;
+	font-size: 21px;
 }
 
 .text-normal {
@@ -38,11 +39,15 @@ const styles = css`
 }
 
 .desc {
-	color: #a7afb5;
+	color: #9ca5ac;
 }
 
 .error {
 	color: #EE6868;
+}
+
+.info {
+	color: #538cb2;
 }
 
 .outline-error {
@@ -54,7 +59,7 @@ const styles = css`
 }
 
 .success {
-	color: #49E500;
+	color: #43d100;
 }
 `;
 
