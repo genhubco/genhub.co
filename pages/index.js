@@ -28,20 +28,20 @@ const Index = () => (
 			<Container>
 				<div className="product">
 					<div className="product-title">
-						<Text big>Emergence programming language. </Text>
+						<Text big>Emergence programming language.</Text>
 					</div>
 					<div className="product-body">
 						<div className="process">
 							<img className="process-step-img" src="first-part.svg" />
 							<div className="process-text">
 								<div><Text>1. Write a program.</Text></div>
-								<Text desc small>Emergence is a modern and minimalistic language for writing biological circuts.</Text>
+								<Text desc small>Emergence is a modern and minimalistic language for writing biological circuits.</Text>
 							</div>
 						</div>
 						<div className="process">
 							<img className="process-step-img" src="second-part.svg" />
 							<div className="process-text">
-								<div><Text>2. Compile it to genetic circut.</Text></div>
+								<div><Text>2. Compile it to a genetic circuit.</Text></div>
 								<Text desc small>Evaluate the gates assigned by the compiler.</Text>
 							</div>
 						</div>
