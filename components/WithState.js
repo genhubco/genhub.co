@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const WithState = ({ initialState = {}, initialData = {}, onStart = () => {}, render = () => {} }) => {
+const WithState = ({ initialState = {}, initialData = {}, onStart = () => { }, render = () => { } }) => {
 	const [state, setState] = useState(initialState);
 	const data = useRef(initialData);
 
@@ -41,14 +41,14 @@ const WithState = ({ initialState = {}, initialData = {}, onStart = () => {}, re
 	}, []);
 
 	return (
-		<div className="shared-state">
+		<>
 			{render({
 				state,
 				setState: safeSetState,
 				setData,
 				getData
 			})}
-		</div>
+		</>
 	);
 };
 

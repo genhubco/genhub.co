@@ -11,7 +11,7 @@ import css from "styled-jsx/css";
 mixpaned.init(process.env.MIXPANEL_TOKEN);
 
 function emit(name, data) {
-	mixpaned.track(name, data);
+	// mixpaned.track(name, data);
 }
 
 const Page = ({
@@ -19,9 +19,7 @@ const Page = ({
 	render = () => { },
 	onLoad = () => { },
 	children,
-	hideHeader,
-	hideFooter
-}) => (<div className="page">
+}) => (<div className="page-wrapper">
 	<WithState
 		onStart={() => onLoad({ emit })}
 		initialState={{ toast: { type: null } }}
@@ -43,7 +41,7 @@ const Page = ({
 			};
 			const toastOpts = { [state.toast.type]: state.toast.type !== null };
 			return (
-				<>
+				<div className="page">
 					{
 						state.toast.type &&
 						<div className="page-toast">
@@ -55,10 +53,10 @@ const Page = ({
 						<link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet" />
 						<link rel="icon" type="image/png" href="/favicon.png" />
 					</Head>
-					{!hideHeader ? <Header /> : null}
+					<Header />
 					{children || render({ setToast, emit })}
-					{!hideFooter ? <Footer /> : null}
-				</>
+					<Footer />
+				</div>
 			);
 		}} />
 	<style jsx global>{`
@@ -66,16 +64,13 @@ const Page = ({
 				margin: 0;
 				background: #f2f3f4;
 			}
-
 			#__next {
 				margin: 0;
 				background: #f2f3f4;
 			}
-
 			body {
 				margin: 0;
 			}
-
 			*:focus {
 				outline: 1px solid #007fff;
 			}
@@ -84,18 +79,16 @@ const Page = ({
 </div>);
 
 const styles = css`
+.page-wrapper {
+	max-width: 850px;
+	min-width: 460px;
+	margin: 0 auto;
+	padding: 20px;
+}
 .page {
 	border-radius: 9px;
 	background: white;
-	width: 850px;
-	margin: 20px auto;
 	box-shadow: 0px 0px 13px -4px rgba(0,0,0,0.1);
-}
-
-.page-landing {
-	background: white;
-	width: 850px;
-	margin: 20px auto;
 }
 
 .page-toast {

@@ -2,28 +2,33 @@ import React from "react";
 import css from "styled-jsx/css";
 
 const ExternalLink = ({ children, to = "" }) => (
-	<>
-		<a target="_blank" rel="noopener noreferrer" href={to} className="link">
+	<div className="external-link-container">
+		<a target="_blank" rel="noopener noreferrer" href={to} className="external-link">
 			{children}
 		</a>
 		<style jsx>{styles}</style>
-	</>
+	</div>
 );
 
 const styles = css`
-.link {
-	font-size: 14px;
-	color: #007fff;
-	text-decoration: none;
-	font-family: "PT Sans", sans-serif;
+.external-link-container {
+	display: inline-block;
+}
+
+.external-link {
+	display: block;
 	border: none;
 	background: none;
 	cursor: pointer;
-	padding: 0;
+	box-sizing: border-box;
+	padding: 10px;
+	border-radius: 10px;
+	text-decoration: none;
 }
 
-.link:hover {
-	font-weight: bold;
+.external-link:hover {
+	opacity: 0.7;
+	background: #f0f8ff;
 }
 `;
 

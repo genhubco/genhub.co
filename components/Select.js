@@ -4,7 +4,7 @@ import css from "styled-jsx/css";
 const Select = ({
 	items = [],
 	initialState = { value: "" },
-	onChange = () => {},
+	onChange = () => { },
 }) => {
 	const [state, setState] = useState(initialState);
 
@@ -32,6 +32,7 @@ const Select = ({
 
 const styles = css`
 .select-container {
+	display: inline-block;
 	min-width: 200px;
 }
 

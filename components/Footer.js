@@ -1,32 +1,23 @@
 import React from "react";
 import css from "styled-jsx/css";
-import ExternalLink from "./ExternalLink";
-import Text from "./Text";
+
+import ExternalLink from "../components/ExternalLink";
+import Text from "../components/Text";
 
 const Footer = () => (
 	<div className="footer">
-		<div className="footer-item">
-			<Text><ExternalLink to="mailto:team@genhub.co">contact</ExternalLink></Text>
-		</div>
-		<div className="footer-item">
-			<Text><ExternalLink to="https://twitter.com/gogenhub">twitter</ExternalLink></Text>
-		</div>
-		<Text><ExternalLink to="https://angel.co/gogenhub/jobs">jobs</ExternalLink></Text>
+		<ExternalLink to="mailto:team@genhub.co"><Text info>contact</Text></ExternalLink>
+		<ExternalLink to="https://twitter.com/gogenhub"><Text info>twitter</Text></ExternalLink>
+		<ExternalLink to="https://angel.co/gogenhub/jobs"><Text info>jobs</Text></ExternalLink>
 		<style jsx>{styles}</style>
 	</div>
 );
 
 const styles = css`
 .footer {
-	box-sizing: border-box;
-	border-top: 1px solid #f2f3f4;
-	padding: 20px 0;
 	text-align: center;
-}
-
-.footer-item {
-	display: inline-block;
-	padding-right: 10px;
+	padding: 15px;
+	box-sizing: border-box;
 }
 `;
 
