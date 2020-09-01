@@ -1,15 +1,13 @@
 import React from "react";
 import css from "styled-jsx/css";
 import Editor, { keyMap, lifeCycleMap, renderEmergence, renderErrors } from "granit";
-import hash from "object-hash";
 import { saveAs, encodeBase64 } from '@progress/kendo-file-saver';
 
-import Page from "../components/Page";
+import FullScreenPage from "../components/FullScreenPage";
+import InternalLink from "../components/InternalLink";
 import WithState from "../components/WithState";
-import Alert from "../components/Alert";
 import Text from "../components/Text";
-import Button from "../components/Button";
-import { hslToHex, map } from "../utils";
+import { map, lerpColor } from "../utils";
 
 import { Cds, Promoter, Rbs, Ribozyme, Terminator } from "../components/Parts";
 
@@ -22,204 +20,353 @@ fn nor(a, b) -> c {
 }
 
 gene main (TetR, LacI, AraC) -> RFP {
-	let tl = nor(TetR, LacI);
-	let notl = not(LacI);
-	let nla = nor(notl, AraC);
-	RFP = nor(tl, nla);
+	let ntl = nor(TetR, LacI);
+	let nl = not(LacI);
+	let nla = nor(nl, AraC);
+	RFP = nor(nla, ntl);
 }`;
 
 const Write = () => (
-	<Page title={"Write - GenHub"} onLoad={({ emit }) => emit("page", {
-		path: "/write"
-	})}>
-		<div className="beta-alert-container">
-			<Alert warning><Text>The app is made for demonstration purposes! Do not use it in production.</Text></Alert>
-		</div>
-		<div className="editor-container">
-			<WithState initialState={{
-				contentHash: "",
-				savedHash: "",
-				loading: false,
-			}} initialData={{
-				errors: [],
-				warnings: [],
-				gates: {},
-				output: {},
-				parts: {},
-			}} render={({ setState, setData, getData, state }) => {
-				const compile = async (text) => {
-					setState({ loading: true });
-					try {
-						const res = await fetch("https://emergence-on8vsuyr2.now.sh/api/compile.rs", {
-							method: "POST",
-							headers: {
-								"Content-Type": "text/plain"
-							},
-							body: text
-						});
+	<FullScreenPage title={"Write - GenHub"}>
+		<WithState initialState={{
+			loading: false,
+		}} initialData={{
+			code: "",
+			errors: [],
+			warnings: [],
+			gc: { genes: [], inputs: [] },
+			simulation: [],
+			gates_dna: "",
+			out_dna: "",
+			gates_plasmid: "",
+			out_plasmid: ""
+		}} render={({ setState, setData, getData, state }) => {
+			const compile = async (text) => {
+				setState({ loading: true });
+				try {
+					const res = await fetch("https://emergence-9o3syu8h4.vercel.app/api/compile.rs", {
+						method: "POST",
+						headers: {
+							"Content-Type": "text/plain"
+						},
+						body: text
+					});
 
-						if (res.status === 500) {
-							const errors = [{
-								message: "Oops, something went wrong while compiling the code.",
-								pos: [0, 0]
-							}];
-							setData({ errors });
-						} else if (res.status === 400) {
-							const error = await res.json();
-							const errors = [error];
-							setData({ errors });
-						} else {
-							const data = await res.json();
-							setData({ ...data, errors: [] });
-						}
-					} catch (e) {
+					if (res.status === 500) {
 						const errors = [{
-							message: "Oops, something went wrong while compiling the code.",
-							pos: [0, 0]
+							message: "Oops, something went wrong!",
+							pos: [0, 0],
+							kind: "ServerError"
 						}];
 						setData({ errors });
+					} else if (res.status === 400) {
+						const error = await res.json();
+						const errors = [error];
+						setData({ errors });
+					} else {
+						const data = await res.json();
+						setData({ ...data, errors: [] });
 					}
-					setState({ loading: false });
+				} catch (e) {
+					const errors = [{
+						message: "Oops, something went wrong!",
+						pos: [0, 0],
+						kind: "ServerError"
+					}];
+					setData({ errors });
 				}
+				setState({ loading: false });
+			}
 
-				const { errors, warnings, gates, parts, output } = getData();
-				const gatesEntries = Object.entries(gates);
-				const promoterColors = {};
-				gatesEntries.forEach((item, i) => {
-					const color = hslToHex(map(i, 0, gatesEntries.length, 0, 359), 100, 70);
-					promoterColors[item[1].promoter] = color;
-				});
-				return (
-					<>
-						<div className="editor-header">
-							<Text desc>main.em</Text>
-							{state.savedHash !== state.contentHash ? <Text info>●</Text> : null}
-						</div>
-						<div className="editor-body">
-							<Editor
-								width={730}
-								height={400}
-								initialValue={defaultValue}
-								keyMap={keyMap}
-								lifeCycleMap={lifeCycleMap}
-								renderHighlight={renderEmergence}
-								renderErrors={(text) => renderErrors(text, errors, warnings)}
-								onChange={text => setState({ contentHash: hash(text) })}
-								onSave={(text) => {
-									setState({ savedHash: hash(text) });
-									compile(text);
-								}}
-							/>
-						</div>
-						<div className="editor-footer">
-							<Text
-								error={errors.length && !state.loading}
-								success={!errors.length && !state.loading}
-								info={state.loading}
-							>{(() => {
-								if (errors.length && !state.loading) {
-									return `● ${errors[0].kind}: ${errors[0].message}`
-								}
-
-								if (!errors.length && !state.loading) {
-									return "● Compiled successfully!"
-								}
-
-								if (state.loading) {
-									return "● Compiling...";
-								}
-							})()}</Text>
-							<Text desc>press (⌘ + s) or (ctrl + s) to save</Text>
-						</div>
-						{gatesEntries.length ? <>
-							<div className="genetic-circut-desc">
-								<Text desc>Assigned gates:</Text>
+			const { warnings, gc, simulation, gates_dna, out_dna, gates_plasmid, out_plasmid, errors } = getData();
+			let simMax = Math.max(...simulation.map(item => item[2]));
+			const promoterColors = {};
+			gc.genes.forEach((item, i) => {
+				promoterColors[item.promoter] = item.color;
+			});
+			return (
+				<div className="workspace">
+					<div className="header">
+						<InternalLink to="/">
+							<img className="header-logo" src="/mini-applogo.svg" />
+						</InternalLink>
+					</div>
+					<div className="body">
+						<div className="editor">
+							<div className="editor-header">
+								<Text small desc>main.em</Text>
 							</div>
-							<div className="genetic-circut-gates">
-								{[...gatesEntries.map((item, i) => {
-									const color = promoterColors[item[1].promoter];
-									const ps = item[1].parts.map(it => parts[it]);
-									const partMap = {
-										Cds: <Cds key="cds" color={color} name={item[0].split("_")[1]} />,
-										Rbs: <Rbs key="rbs" color={color} />,
-										Ribozyme: <Ribozyme key="ribo" />,
-										Terminator: <Terminator key="term" />,
-									};
-
-									const otherParts = ps.map(it => partMap[it.kind]);
-									const inputs = item[1].inputs.map(input => <Promoter key={`${item[1].name}-${input}`} color={promoterColors[input]} name={input} />);
-									const allParts = [...inputs, ...otherParts];
-									return (<div key={item[0]} className="genetic-circut-gate">{allParts}</div>);
-								}), <div key="out" className="genetic-circut-gate">{(() => {
-									if (!output.inputs) {
-										return;
-									}
-									const inputs = output.inputs.map(input => <Promoter key={`out-${input}`} name={input} color={promoterColors[input]} />);
-									const allParts = [...inputs, <Ribozyme key="ribo" />, <Rbs key="rbs" />, <Cds key="cds" name={output.name} />, <Terminator key="term" />];
-									return allParts;
-								})()}</div>]}
+							<div className="editor-body">
+								<Editor
+									background="#f2f3f4"
+									initialValue={defaultValue}
+									keyMap={keyMap}
+									lifeCycleMap={lifeCycleMap}
+									renderHighlight={renderEmergence}
+									renderErrors={(text) => renderErrors(text, errors, warnings)}
+									onChange={text => {
+										setData({ code: text });
+									}}
+									onSave={(text) => {
+										setData({ code: text });
+										compile(text);
+									}}
+								/>
 							</div>
-							<Button onClick={() => {
-								let dna = gatesEntries.map(item => {
-									const inputsSeq = item[1].inputs.map(pro => parts[pro].seq).join("");
-									const partsSeq = item[1].parts.map(part => parts[part].seq).join("");
-									return inputsSeq + partsSeq;
-								}).join("");
-								dna += output.inputs.map(pro => parts[pro].seq).join("") + output.seq;
-								const dataURI = "data:text/plain;base64," + encodeBase64(dna);
-								saveAs(dataURI, "main-dna.txt");
-							}} secondary medium className="genetic-circut-dna-download">
-								Download DNA
-							</Button>
-						</> : null}
-					</>
-				)
-			}} />
+							<div className="editor-footer">
+								<button className="run" onClick={() => compile(getData().code)}>
+									<Text info>{"› Run"}</Text>
+								</button>
+								<div className="status">
+									<Text
+										small
+										error={errors.length && !state.loading}
+										success={!errors.length && !state.loading}
+										info={state.loading}
+									>{(() => {
+										if (errors.length && !state.loading) {
+											return `● ${errors[0].kind}: ${errors[0].message}`
+										}
 
-		</div>
+										if (!errors.length && !state.loading) {
+											return "● Compiled successfully!"
+										}
+
+										if (state.loading) {
+											return "● Compiling...";
+										}
+									})()}</Text>
+								</div>
+							</div>
+						</div>
+						<div className="results">
+							<div className="results-body">
+								<div className="genetic-circuit-header">
+									<Text desc>Assigned gates:</Text>
+								</div>
+								<div className="genetic-circuit-gates">
+									<Text desc small>Gates:</Text>
+									<div>
+										{gc.genes.map(item => {
+											const inputs = item.inputs.map(input => <Promoter key={`${item.name}-${input}`} color={promoterColors[input]} name={input} />);
+											const ribo = <Ribozyme key="ribo" />;
+											const rbs = <Rbs key="rbs" color={item.color} />;
+											const cds = <Cds key="cds" color={item.color} name={item.name.split("_")[1]} />;
+											const term = <Terminator key="term" />;
+											const allParts = [...inputs, ribo, rbs, cds, term];
+											return (<div key={item.name} className="genetic-circuit-gate">{allParts}</div>);
+										})}
+									</div>
+									<Text desc small>Output:</Text>
+									<div key="out">{(() => {
+										if (!gc.output) {
+											return;
+										}
+										const inputs = gc.output.inputs.map(input => <Promoter key={`out-${input}`} name={input} color={promoterColors[input]} />);
+										const allParts = [...inputs, <Ribozyme key="ribo" />, <Rbs key="rbs" />, <Cds key="cds" name={gc.output.name} />, <Terminator key="term" />];
+										return allParts;
+									})()}</div>
+								</div>
+								<div className="genetic-circuit-header">
+									<Text desc>Output RPUs:</Text>
+								</div>
+								<div className="genetic-circuit-prediction">
+									<Text desc small>Inputs: </Text><Text small>{gc.inputs.join(", ")}</Text>
+									{simulation.map(item => (
+										<div key={item[0]} className="genetic-circuit-rpu">
+											<div className="rpu-label">
+												<Text small>{item[0]}</Text>
+											</div>
+											<div>
+												<div className="bar" style={{
+													borderRadius: "0 5px 5px 0",
+													height: "30px",
+													width: `${map(item[2], 0, simMax, 0, 380)}px`,
+													background: lerpColor("#00000", "#ebebeb", map(item[2], 0, simMax, 1, 0))
+												}} />
+												<Text desc small>{item[2].toFixed(2)}</Text>
+											</div>
+										</div>
+									))}
+								</div>
+							</div>
+							<div className="results-footer">
+								<button onClick={() => {
+									const dataURI = "data:text/plain;base64," + encodeBase64(gates_dna);
+									saveAs(dataURI, "gates-dna.txt");
+								}} className="genetic-circuit-dna-download">Gates DNA &#10515;</button>
+								<button onClick={() => {
+									const dataURI = "data:text/plain;base64," + encodeBase64(out_dna);
+									saveAs(dataURI, "out-dna.txt");
+								}} className="genetic-circuit-dna-download">Output DNA &#10515;</button>
+								<button onClick={() => {
+									const dataURI = "data:text/plain;base64," + encodeBase64(gates_plasmid);
+									saveAs(dataURI, "gates-plasmid.gb");
+								}} className="genetic-circuit-dna-download">Gates Plasmid &#10515;</button>
+								<button onClick={() => {
+									const dataURI = "data:text/plain;base64," + encodeBase64(out_plasmid);
+									saveAs(dataURI, "out-plasmid.gb");
+								}} className="genetic-circuit-dna-download">Output Plasmid &#10515;</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			)
+		}} />
 		<style jsx>{styles}</style>
-	</Page>
+	</FullScreenPage>
 );
 
 const styles = css`
-.beta-alert-container {
-	box-sizing: border-box;
-	padding: 50px 60px 30px 60px;
+.workspace {
+	height: 100vh;
 }
 
-.editor-container {
+.header {
+	display: flex;
+	padding: 5px;
+	border-bottom: 1px solid #e7e9eb;
 	box-sizing: border-box;
-	padding: 0 60px 30px 60px;
+}
+
+.header-logo {
+	height: 20px;
+	display: block;
+}
+
+.body {
+	height: calc(100vh - 51px);
+	display: flex;
+	flex-wrap: wrap;
+	overflow: scroll;
+	padding: 10px 0 0 10px;
+	box-sizing: border-box;
+}
+
+.editor {
+	flex: 1;
+	height: 100%;
+	min-width: 480px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+	box-sizing: border-box;
 }
 
 .editor-header {
-	display: flex;
-	justify-content: space-between;
-	padding: 10px 12px;
-	border-radius: 5px 5px 0 0;
+	padding: 10px 20px;
 	background: #f2f3f4;
+	border-radius: 10px 10px 0 0;
+}
+
+.editor-body {
+	height: calc(100% - 82px);
 }
 
 .editor-footer {
-	display: flex;
-	justify-content: space-between;
-	border-radius: 0 0 5px 5px;
-	background: #f2f3f4;
-	padding: 10px 12px;
-}
-
-.genetic-circut-gates {
-	flex-wrap: wrap;
-	display: flex;
-}
-
-.genetic-circut-gate {
-	display: flex;
-}
-
-.genetic-circut-desc {
+	border-radius: 0 0 10px 10px;
+	border: 1px solid #e7e9eb;
 	box-sizing: border-box;
-	padding: 30px 0 10px 0;
+}
+
+.run {
+	background: transparent;
+	border: none;
+	padding: 0 20px;
+	width: 84px;
+	height: 100%;
+	height: 40px;
+	border-radius: 0 0 0 10px;
+	border-right: 1px solid #e7e9eb;
+}
+
+.run:hover {
+	cursor: pointer;
+	background: #f0f8ff;
+}
+
+.status {
+	padding: 10px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.results {
+	min-width: 480px;
+	flex: 1;
+	box-sizing: border-box;
+	height: 100%;
+	padding: 0 10px 10px 0;
+}
+
+.results-body {
+	overflow: scroll;
+	border-top: 1px solid #e7e9eb;
+	border-left: 1px solid #e7e9eb;
+	border-right: 1px solid #e7e9eb;
+	border-radius: 10px 10px 0 0;
+	box-sizing: border-box;
+	height: calc(100% - 42px);
+}
+
+.results-footer {
+	border-radius: 0 0 10px 10px;
+	border: 1px solid #e7e9eb;
+	box-sizing: border-box;
+}
+
+.genetic-circuit-gate {
+	display: inline-block;
+}
+
+.genetic-circuit-header {
+	padding: 30px 20px 10px 20px;
+	border-bottom: 1px solid #e7e9eb;
+}
+
+.genetic-circuit-gates {
+	padding: 20px 20px 0 20px;
+}
+
+.genetic-circuit-prediction {
+	padding: 20px 20px 0 20px;
+}
+
+.genetic-circuit-rpu {
+	padding: 10px 0;
+	border-left: 1px solid #f2f3f4;
+	border-top: 1px solid #f2f3f4;
+}
+
+.bar {
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 10px;
+}
+
+.rpu-label {
+	padding: 0 0 5px 10px;
+}
+
+.genetic-circuit-dna-download {
+	height: 40px;
+	min-width: 80px;
+	font-size: 14px;
+	padding: 0 10px;
+	background-color: transparent;
+	vertical-align: bottom;
+	font-family: "PT Sans", sans-serif;
+	box-sizing: border-box;
+	cursor: pointer;
+	border: none;
+	display: inline-block;
+	border-radius: 10px;
+}
+
+.genetic-circuit-dna-download:hover {
+	text-decoration: underline;
 }
 `;
 

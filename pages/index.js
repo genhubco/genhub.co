@@ -2,80 +2,59 @@ import React from "react";
 import css from "styled-jsx/css";
 
 import Page from "../components/Page";
+import Container from "../components/Container";
+import ExternalLink from "../components/ExternalLink";
 import Text from "../components/Text";
 import Title from "../components/Title";
-import ExternalLink from "../components/ExternalLink";
-import InternalLink from "../components/InternalLink";
-import Header from "../components/Header";
 
 const Index = () => (
-	<Page hideHeader onLoad={({ emit }) => emit("page", {
+	<Page onLoad={({ emit }) => emit("page", {
 		path: "/"
-	})} render={({ emit }) => (
+	})} render={() => (
 		<>
-			<div className="top-section">
-				<Header />
-				<div className="slogan-container">
-					<Title big>Next-gen synthetic biology platform</Title>
-				</div>
-				<div className="sub-slogan-container">
-					<Text big>Turning biology into information technology</Text>
-				</div>
-				<div className="contact-us">
-					<Text>contact us at <ExternalLink to="mailto:team@genhub.co">team@genhub.co</ExternalLink></Text>
-				</div>
-			</div>
-			<div className="products">
-				<Title medium>Products</Title>
-			</div>
-			<div className="product-title">
-				<Text big>Emergence programming language. </Text>
-				<Text big><InternalLink to="/write" onClick={() => emit("internal-link", {
-					from: "/",
-					to: "/write"
-				})}>See demo -></InternalLink></Text>
-			</div>
-			<div className="process-body">
-				<div className="process-step">
-					<img className="process-step-img" src="first-part.svg" />
-					<div className="process-text">
-						<div><Text>Write a program.</Text></div>
-						<Text desc>Emergence is modern and minimalistic language for writing biological circuts.</Text>
+			<Container>
+				<div className="top-section">
+					<div className="slogan-container">
+						<Title big>Next-gen synthetic biology platform</Title>
+					</div>
+					<div className="sub-slogan-container">
+						<Text big>We are turning biology into information technology</Text>
+					</div>
+					<div className="contact">
+						<Text>contact us at</Text><ExternalLink to="mailto:team@genhub.co"><Text info>team@genhub.co</Text></ExternalLink>
 					</div>
 				</div>
-				<div className="process-line-left" />
-				<div className="process-step">
-					<img className="process-step-img" src="second-part.svg" />
-					<div className="process-text">
-						<div><Text>Compile it to genetic circut.</Text></div>
-						<Text desc>Evaluate the gates assigned by the compiler.</Text>
+			</Container>
+			<Container>
+				<div className="product">
+					<div className="product-title">
+						<Text big>Emergence programming language. </Text>
+					</div>
+					<div className="product-body">
+						<div className="process">
+							<img className="process-step-img" src="first-part.svg" />
+							<div className="process-text">
+								<div><Text>1. Write a program.</Text></div>
+								<Text desc small>Emergence is a modern and minimalistic language for writing biological circuts.</Text>
+							</div>
+						</div>
+						<div className="process">
+							<img className="process-step-img" src="second-part.svg" />
+							<div className="process-text">
+								<div><Text>2. Compile it to genetic circut.</Text></div>
+								<Text desc small>Evaluate the gates assigned by the compiler.</Text>
+							</div>
+						</div>
+						<div className="process">
+							<img className="process-step-img" src="third-part.svg" />
+							<div className="process-text">
+								<div><Text>3. Predict the results.</Text></div>
+								<Text desc small>See what to expect before doing the experiment.</Text>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div className="product-title">
-				<Text big>CRISPR design tool. </Text>
-				<Text big><InternalLink to="/design" onClick={() => emit("internal-link", {
-					from: "/",
-					to: "/design"
-				})}>See demo -></InternalLink></Text>
-			</div>
-			<div className="process-body">
-				<div className="process-step">
-					<div className="process-text">
-						<div><Text>Search for locations.</Text></div>
-						<Text desc>Find what you are looking for from 60k available locations.</Text>
-					</div>
-					<img className="process-step-img" src="third-part.svg" />
-				</div>
-				<div className="process-line-right" />
-				<div className="process-step">
-					<div className="process-text">
-						<div><Text>Get a visual.</Text></div>
-						<Text desc>Inspect targets on a target map, and evaluate their scores.</Text>
-					</div>
-					<img className="process-step-img" src="fourth-part.svg" />
-				</div>
-			</div>
+			</Container>
 			<style jsx>{styles}</style>
 		</>
 	)} />
@@ -83,72 +62,57 @@ const Index = () => (
 
 const styles = css`
 .top-section {
+	height: 100%;
+	box-sizing: border-box;
 	background-size: 20.2px 20px;
+	padding: 0 20px;
+	text-align: center;
 	background-image: radial-gradient(circle, rgb(210, 210, 210) 1px, rgba(0, 0, 0, 0) 1px);
 }
 
 .slogan-container {
-	text-align: center;
-	padding: 80px 0 20px 0;
+	padding: 100px 0 40px 0;
 }
 
 .sub-slogan-container {
-	text-align: center;
-	padding: 80px 0 20px 0;
+	padding-bottom: 20px;
 }
 
-.contact-us {
-	padding-bottom: 100px;
-	text-align: center;
+.contact {
+	padding-bottom: 80px;
 }
 
-.try-demo {
-	padding: 10px 80px 30px 80px;
-	text-align: center;
-}
-
-.products {
-	border-top: 1px solid #f2f3f4;
-	text-align: center;
-	padding: 30px 0 80px 0;
+.product {
+	padding: 0 20px;
 }
 
 .product-title {
 	text-align: center;
-	padding-bottom: 30px;
+	padding: 40px 0;
 }
 
-.process-text {
-	width: 100%;
-	padding-top: 10px;
-	padding-left: 40px;
-	padding-right: 40px;
-}
-
-.process-step {
-	display: flex;
-	padding: 0 80px;
-}
-
-.process-body {
-	box-sizing: border-box;
-	padding-bottom: 80px;
+.process {
+	font-size: 0;
+	text-align: center;
+	padding-bottom: 20px;
 }
 
 .process-step-img {
-	display: block;
+	width: 326px;
+	display: inline-block;
 }
 
-.process-line-left {
-	height: 20px;
-	width: 205px;
-	border-right: 2px solid #f2f3f4;
+.process-body {
+	padding-bottom: 20px;
 }
 
-.process-line-right {
-	height: 20px;
-	width: 645px;
-	border-right: 2px solid #f2f3f4;
+.process-text {
+	width: 350px;
+	box-sizing: border-box;
+	padding: 20px;
+	display: inline-block;
+	vertical-align: top;
+	text-align: left;
 }
 `;
 

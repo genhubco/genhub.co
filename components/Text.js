@@ -27,15 +27,15 @@ const styles = css`
 }
 
 .text-big {
-	font-size: 21px;
+	font-size: 23px;
 }
 
 .text-normal {
-	font-size: 14px;
+	font-size: 18px;
 }
 
 .text-small {
-	font-size: 10px;
+	font-size: 16px;
 }
 
 .desc {
