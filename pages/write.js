@@ -38,13 +38,14 @@ const Write = () => (
 			simulation: [],
 			gates_dna: "",
 			out_dna: "",
+			score: 0,
 			gates_plasmid: "",
 			out_plasmid: ""
 		}} render={({ setState, setData, getData, state }) => {
 			const compile = async (text) => {
 				setState({ loading: true });
 				try {
-					const res = await fetch("https://emergence-9o3syu8h4.vercel.app/api/compile.rs", {
+					const res = await fetch("https://emergence-c7gvaqnl9.vercel.app/api/compile.rs", {
 						method: "POST",
 						headers: {
 							"Content-Type": "text/plain"
@@ -78,7 +79,7 @@ const Write = () => (
 				setState({ loading: false });
 			}
 
-			const { warnings, gc, simulation, gates_dna, out_dna, gates_plasmid, out_plasmid, errors } = getData();
+			const { warnings, score, gc, simulation, gates_dna, out_dna, gates_plasmid, out_plasmid, errors } = getData();
 			let simMax = Math.max(...simulation.map(item => item[2]));
 			const promoterColors = {};
 			gc.genes.forEach((item, i) => {
@@ -142,7 +143,7 @@ const Write = () => (
 						<div className="results">
 							<div className="results-body">
 								<div className="genetic-circuit-header">
-									<Text desc>Assigned gates:</Text>
+									<Text desc>Assigned gates</Text>
 								</div>
 								<div className="genetic-circuit-gates">
 									<Text desc small>Gates:</Text>
@@ -168,26 +169,31 @@ const Write = () => (
 									})()}</div>
 								</div>
 								<div className="genetic-circuit-header">
-									<Text desc>Output RPUs:</Text>
+									<Text desc>Output RPUs</Text>
 								</div>
 								<div className="genetic-circuit-prediction">
-									<Text desc small>Inputs: </Text><Text small>{gc.inputs.join(", ")}</Text>
-									{simulation.map(item => (
-										<div key={item[0]} className="genetic-circuit-rpu">
-											<div className="rpu-label">
-												<Text small>{item[0]}</Text>
+									<Text desc small>Minimum gate score: </Text><Text small>{score.toFixed(2)}</Text>
+									<div className="genetic-circuit-prediction-inputs">
+										<Text desc small>Inputs: </Text><Text small>{gc.inputs.join(", ")}</Text>
+									</div>
+									<div className="genetic-circuit-prediction-table">
+										{simulation.map(item => (
+											<div key={item[0]} className="genetic-circuit-rpu">
+												<div className="rpu-label">
+													<Text small>{item[0]}</Text>
+												</div>
+												<div>
+													<div className="bar" style={{
+														borderRadius: "0 5px 5px 0",
+														height: "30px",
+														width: `${map(item[2], 0, simMax, 0, 360)}px`,
+														background: lerpColor("#00000", "#ebebeb", map(item[2], 0, simMax, 1, 0))
+													}} />
+													<Text desc small>{item[2].toFixed(2)}</Text>
+												</div>
 											</div>
-											<div>
-												<div className="bar" style={{
-													borderRadius: "0 5px 5px 0",
-													height: "30px",
-													width: `${map(item[2], 0, simMax, 0, 380)}px`,
-													background: lerpColor("#00000", "#ebebeb", map(item[2], 0, simMax, 1, 0))
-												}} />
-												<Text desc small>{item[2].toFixed(2)}</Text>
-											</div>
-										</div>
-									))}
+										))}
+									</div>
 								</div>
 							</div>
 							<div className="results-footer">
@@ -331,13 +337,20 @@ const styles = css`
 }
 
 .genetic-circuit-prediction {
-	padding: 20px 20px 0 20px;
+	padding: 20px;
+}
+
+.genetic-circuit-prediction-table {
+	border: 1px solid #e7e9eb;
+	border-radius: 10px;
+}
+
+.genetic-circuit-prediction-inputs {
+	padding-bottom: 10px;
 }
 
 .genetic-circuit-rpu {
 	padding: 10px 0;
-	border-left: 1px solid #f2f3f4;
-	border-top: 1px solid #f2f3f4;
 }
 
 .bar {
