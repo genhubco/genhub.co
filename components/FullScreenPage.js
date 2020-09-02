@@ -36,6 +36,7 @@ const FullScreenPage = ({
 
 const styles = css`
 .page-wrapper {
+	min-width: 500px;
 	height: 100vh;
 }
 
