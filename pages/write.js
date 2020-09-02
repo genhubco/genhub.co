@@ -277,7 +277,8 @@ const styles = css`
 	background: transparent;
 	border: none;
 	padding: 0 20px;
-	width: 84px;
+	width: 85px;
+	box-sizing: border-box;
 	height: 100%;
 	height: 40px;
 	border-radius: 0 0 0 10px;
