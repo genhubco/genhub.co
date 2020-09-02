@@ -244,7 +244,6 @@ const styles = css`
 	height: calc(100vh - 51px);
 	display: flex;
 	flex-wrap: wrap;
-	overflow: scroll;
 	padding: 10px 0 0 10px;
 	box-sizing: border-box;
 }
