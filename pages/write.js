@@ -53,7 +53,7 @@ const Write = () => (
 				const compile = async (text) => {
 					setState({ loading: true });
 					try {
-						const res = await fetch("https://emergence-c7gvaqnl9.vercel.app/api/compile.rs", {
+						const res = await fetch("https://emergence-9z5lh68ok.vercel.app/api/compile.rs", {
 							method: "POST",
 							headers: {
 								"Content-Type": "text/plain"
