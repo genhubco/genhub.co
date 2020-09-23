@@ -8,28 +8,39 @@ import FullScreenPage from "../components/FullScreenPage";
 import InternalLink from "../components/InternalLink";
 import WithState from "../components/WithState";
 import Text from "../components/Text";
-import { map, lerpColor } from "../utils";
+import Simulation from "../components/Simulation";
 
 import { Cds, Promoter, Rbs, Ribozyme, Terminator } from "../components/Parts";
 
 mixpaned.init(process.env.MIXPANEL_TOKEN);
 function emit(name, data) {
-	mixpaned.track(name, data);
+	// mixpaned.track(name, data);
 }
 
-const defaultValue = `fn not a -> b {
+const defaultValue = `func not a -> b {
 	b = ~a;
 }
 
-fn nor(a, b) -> c {
+func nor(a, b) -> c {
 	c = a ~| b;
 }
 
-gene main (TetR, LacI, AraC) -> RFP {
-	let ntl = nor(TetR, LacI);
-	let nl = not(LacI);
-	let nla = nor(nl, AraC);
-	RFP = nor(nla, ntl);
+func main(in1, in2, in3) -> out {
+	let ntl = nor(in1, in2);
+	let nl = not(in2);
+	let nla = nor(nl, in3);
+	out = nor(nla, ntl);
+}
+
+test main(TetR, LacI, AraC) -> RFP {
+	@100
+	TetR = true;
+	@200
+	TetR = false;
+	LacI = true;
+    @300
+    AraC = true;
+    TetR = true;
 }`;
 
 const Write = () => (
@@ -41,7 +52,6 @@ const Write = () => (
 			}} initialData={{
 				code: "",
 				errors: [],
-				warnings: [],
 				gc: { genes: [], inputs: [] },
 				simulation: [],
 				gates_dna: "",
@@ -53,7 +63,7 @@ const Write = () => (
 				const compile = async (text) => {
 					setState({ loading: true });
 					try {
-						const res = await fetch("https://emergence-9z5lh68ok.vercel.app/api/compile.rs", {
+						const res = await fetch("https://emergence-h4jag776m.vercel.app/api/compile.rs", {
 							method: "POST",
 							headers: {
 								"Content-Type": "text/plain"
@@ -87,11 +97,15 @@ const Write = () => (
 					setState({ loading: false });
 				}
 
-				const { warnings, score, gc, simulation, gates_dna, out_dna, gates_plasmid, out_plasmid, errors } = getData();
-				let simMax = Math.max(...simulation.map(item => item[2]));
+				const { score, gc, simulation, gates_dna, out_dna, gates_plasmid, out_plasmid, errors } = getData();
 				const promoterColors = {};
-				gc.genes.forEach((item, i) => {
+				const promoterGenes = {};
+				gc.genes.forEach(item => {
+					promoterGenes[item.promoter] = item.name.split("_")[1];
 					promoterColors[item.promoter] = item.color;
+				});
+				gc.inputs.forEach(item => {
+					promoterGenes[item.promoter] = item.name;
 				});
 				return (
 					<div className="workspace">
@@ -112,7 +126,7 @@ const Write = () => (
 										keyMap={keyMap}
 										lifeCycleMap={lifeCycleMap}
 										renderHighlight={renderEmergence}
-										renderErrors={(text) => renderErrors(text, errors, warnings)}
+										renderErrors={(text) => renderErrors(text, errors, [])}
 										onChange={text => {
 											setData({ code: text });
 										}}
@@ -182,27 +196,32 @@ const Write = () => (
 									<div className="genetic-circuit-prediction">
 										<Text desc small>Minimum gate score: </Text><Text small>{score.toFixed(2)}</Text>
 										<div className="genetic-circuit-prediction-inputs">
-											<Text desc small>Inputs: </Text><Text small>{gc.inputs.join(", ")}</Text>
-										</div>
-										<div className="genetic-circuit-prediction-table">
-											{simulation.map(item => (
-												<div key={item[0]} className="genetic-circuit-rpu">
-													<div className="rpu-label">
-														<Text small>{item[0]}</Text>
-													</div>
-													<div>
-														<div className="bar" style={{
-															borderRadius: "0 5px 5px 0",
-															height: "30px",
-															width: `${map(item[2], 0, simMax, 0, 360)}px`,
-															background: lerpColor("#00000", "#ebebeb", map(item[2], 0, simMax, 1, 0))
-														}} />
-														<Text desc small>{item[2].toFixed(2)}</Text>
-													</div>
-												</div>
-											))}
+											<Text desc small>Inputs: </Text><Text small>{gc.inputs.map(item => item.name).join(", ")}</Text>
 										</div>
 									</div>
+									<WithState initialState={{
+										selected: 200,
+									}} render={({ state, setState }) => {
+										const inputs = gc.inputs.map((inp, i) => ([
+											<div key={`${inp.promoter}-${i}`} className="simulation-info"><Text small>{inp.name} = {(simulation[inp.promoter][state.selected]).toFixed(2)}</Text><Text small>Time = {state.selected}</Text></div>,
+											<Simulation key={`${inp.promoter}-${i}-sim`} values={simulation[inp.promoter]} selected={state.selected} setSelected={sel => setState({ selected: sel })} />,
+											<div className="simulation-time">
+												<Text small desc>0 min</Text>
+												<Text small desc>500 min</Text>
+												<Text small desc>1000 min</Text>
+											</div>
+										]));
+										const genes = gc.genes.map((gene, i) => ([
+											<div key={`${gene.promoter}-${i}`} className="simulation-info"><Text small>{gene.name.split("_")[1]} = {(simulation[gene.promoter][state.selected]).toFixed(2)}</Text><Text small>Time = {state.selected}</Text></div>,
+											<Simulation key={`${gene.promoter}-${i}-sim`} color={gene.color} values={simulation[gene.promoter]} selected={state.selected} setSelected={sel => setState({ selected: sel })} />,
+											<div className="simulation-time">
+												<Text small desc>0 min</Text>
+												<Text small desc>500 min</Text>
+												<Text small desc>1000 min</Text>
+											</div>
+										]));
+										return [...inputs, ...genes].flat();
+									}} />
 								</div>
 								<div className="results-footer">
 									<button onClick={() => {
@@ -348,27 +367,19 @@ const styles = css`
 	padding: 20px;
 }
 
-.genetic-circuit-prediction-table {
-	border: 1px solid #e7e9eb;
-	border-radius: 10px;
-}
-
 .genetic-circuit-prediction-inputs {
 	padding-bottom: 10px;
 }
 
-.genetic-circuit-rpu {
-	padding: 10px 0;
+.simulation-info {
+	padding: 10px;
+	display: flex;
+	justify-content: space-between;
 }
 
-.bar {
-	display: inline-block;
-	vertical-align: middle;
-	margin-right: 10px;
-}
-
-.rpu-label {
-	padding: 0 0 5px 10px;
+.simulation-time {
+	display: flex;
+	justify-content: space-between;
 }
 
 .genetic-circuit-dna-download {

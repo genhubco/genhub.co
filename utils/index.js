@@ -22,8 +22,28 @@ function map(num, inMin, inMax, outMin, outMax) {
 	return (num - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
 
+function expScale(x) {
+	return 1 - Math.exp(-1 * x);
+}
+
+function sigScale(x) {
+	let k = 11;
+	let x0 = 0.5;
+	return 1 / (1 + Math.exp(-k * (x - x0)));
+}
+
+function svgPath(scaleMin, scaleMax, arr, color) {
+	const points = arr.map((item, i) => [i, map(expScale(item), 0, 1, scaleMax, scaleMin)]);
+	const d = points.reduce((acc, point, i) => {
+		const val = i === 0 ? `M ${point[0]},${point[1]}` : `L ${point[0]},${point[1]}`;
+		return acc + val;
+	}, "");
+	return <path d={d} fill="none" strokeWidth="2" stroke={color} pointerEvents="none" />;
+}
+
 export {
 	map,
 	format,
-	lerpColor
+	lerpColor,
+	svgPath
 };
