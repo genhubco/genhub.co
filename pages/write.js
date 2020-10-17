@@ -14,7 +14,7 @@ import { Cds, Promoter, Rbs, Ribozyme, Terminator } from "../components/Parts";
 
 mixpaned.init(process.env.MIXPANEL_TOKEN);
 function emit(name, data) {
-	// mixpaned.track(name, data);
+	mixpaned.track(name, data);
 }
 
 const defaultValue = `func not a -> b {
@@ -26,9 +26,11 @@ func nor(a, b) -> c {
 }
 
 func main(in1, in2, in3) -> out {
-	let ntl = nor(in1, in2);
-	let nl = not(in2);
-	let nla = nor(nl, in3);
+	let (ntl, nl, nla);
+
+	ntl = nor(in1, in2);
+	nl = not(in2);
+	nla = nor(nl, in3);
 	out = nor(nla, ntl);
 }
 
@@ -63,7 +65,7 @@ const Write = () => (
 				const compile = async (text) => {
 					setState({ loading: true });
 					try {
-						const res = await fetch("https://emergence-4k9gaucih.vercel.app/api/compile.rs", {
+						const res = await fetch("https://emergence-5mfsoz287.vercel.app/api/compile.rs", {
 							method: "POST",
 							headers: {
 								"Content-Type": "text/plain"
@@ -194,7 +196,7 @@ const Write = () => (
 										<Text desc>Output RPUs</Text>
 									</div>
 									<div className="genetic-circuit-prediction">
-										<Text desc small>Minimum gate score: </Text><Text small>{score.toFixed(2)}</Text>
+										<Text desc small>Circuit score: </Text><Text small>{score.toFixed(2)}</Text>
 										<div className="genetic-circuit-prediction-inputs">
 											<Text desc small>Inputs: </Text><Text small>{gc.inputs.map(item => item.name).join(", ")}</Text>
 										</div>

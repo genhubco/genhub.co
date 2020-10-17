@@ -11,7 +11,7 @@ import css from "styled-jsx/css";
 mixpaned.init(process.env.MIXPANEL_TOKEN);
 
 function emit(name, data) {
-	// mixpaned.track(name, data);
+	mixpaned.track(name, data);
 }
 
 const Page = ({
