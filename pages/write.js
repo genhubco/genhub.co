@@ -14,36 +14,30 @@ import { Cds, Promoter, Rbs, Ribozyme, Terminator } from "../components/Parts";
 
 mixpaned.init(process.env.MIXPANEL_TOKEN);
 function emit(name, data) {
-	mixpaned.track(name, data);
+	// mixpaned.track(name, data);
 }
 
-const defaultValue = `func not a -> b {
-	b = ~a;
+const defaultValue = `
+func main(a, in1, in2) {
+	let nega = ~a;
+	let out1 = a ~| in1;
+	let out2 = nega ~| in2;
+	let o = out1 ~| out2;
+	out o;
 }
 
-func nor(a, b) -> c {
-	c = a ~| b;
-}
-
-func main(in1, in2, in3) -> out {
-	let (ntl, nl, nla);
-
-	ntl = nor(in1, in2);
-	nl = not(in2);
-	nla = nor(nl, in3);
-	out = nor(nla, ntl);
-}
-
-test main(TetR, LacI, AraC) -> RFP {
-	@100
+test main(TetR, LacI, AraC) {
+	@300
 	TetR = true;
-	@200
+	LacI = false;
+	AraC = true;
+	@600
 	TetR = false;
-	LacI = true;
-    @300
-    AraC = true;
-    TetR = true;
-}`;
+	LacI = false;
+	AraC = true;
+}
+
+`;
 
 const Write = () => (
 	<FullScreenPage title={"Write - GenHub"}>
@@ -54,7 +48,7 @@ const Write = () => (
 			}} initialData={{
 				code: "",
 				errors: [],
-				gc: { genes: [], inputs: [] },
+				gc: { genes: [], inputs: [], score: 0.0, output: "" },
 				simulation: [],
 				gates_dna: "",
 				out_dna: "",
@@ -65,7 +59,7 @@ const Write = () => (
 				const compile = async (text) => {
 					setState({ loading: true });
 					try {
-						const res = await fetch("https://emergence-5mfsoz287.vercel.app/api/compile.rs", {
+						const res = await fetch("https://emergence-ouxycp2vo.vercel.app/api/compile.rs", {
 							method: "POST",
 							headers: {
 								"Content-Type": "text/plain"
@@ -99,7 +93,12 @@ const Write = () => (
 					setState({ loading: false });
 				}
 
-				const { score, gc, simulation, gates_dna, out_dna, gates_plasmid, out_plasmid, errors } = getData();
+				const {
+					gc,
+					simulation,
+					steady_states,
+					errors
+				} = getData();
 				const promoterColors = {};
 				const promoterGenes = {};
 				gc.genes.forEach(item => {
@@ -182,23 +181,17 @@ const Write = () => (
 												return (<div key={item.name} className="genetic-circuit-gate">{allParts}</div>);
 											})}
 										</div>
-										<Text desc small>Output:</Text>
-										<div key="out">{(() => {
-											if (!gc.output) {
-												return;
-											}
-											const inputs = gc.output.inputs.map(input => <Promoter key={`out-${input}`} name={input} color={promoterColors[input]} />);
-											const allParts = [...inputs, <Ribozyme key="ribo" />, <Rbs key="rbs" />, <Cds key="cds" name={gc.output.name} />, <Terminator key="term" />];
-											return allParts;
-										})()}</div>
 									</div>
 									<div className="genetic-circuit-header">
 										<Text desc>Output RPUs</Text>
 									</div>
 									<div className="genetic-circuit-prediction">
-										<Text desc small>Circuit score: </Text><Text small>{score.toFixed(2)}</Text>
-										<div className="genetic-circuit-prediction-inputs">
+										<Text desc small>Circuit score: </Text><Text small>{gc.score.toFixed(2)}</Text>
+										<div>
 											<Text desc small>Inputs: </Text><Text small>{gc.inputs.map(item => item.name).join(", ")}</Text>
+										</div>
+										<div>
+											<Text desc small>Outputs: </Text><Text small>{gc.output.split("_")[1]}</Text>
 										</div>
 									</div>
 									<WithState initialState={{
@@ -206,8 +199,8 @@ const Write = () => (
 									}} render={({ state, setState }) => {
 										const inputs = gc.inputs.map((inp, i) => ([
 											<div key={`${inp.promoter}-${i}`} className="simulation-info"><Text small>{inp.name} = {(simulation[inp.promoter][state.selected]).toFixed(2)}</Text><Text small>Time = {state.selected}</Text></div>,
-											<Simulation key={`${inp.promoter}-${i}-sim`} values={simulation[inp.promoter]} selected={state.selected} setSelected={sel => setState({ selected: sel })} />,
-											<div className="simulation-time">
+											<Simulation limits={steady_states[inp.promoter]} key={`${inp.promoter}-${i}-sim`} values={simulation[inp.promoter]} selected={state.selected} setSelected={sel => setState({ selected: sel })} />,
+											<div key={`${inp.promoter}-${i}-texts`} className="simulation-time">
 												<Text small desc>0 min</Text>
 												<Text small desc>500 min</Text>
 												<Text small desc>1000 min</Text>
@@ -215,8 +208,8 @@ const Write = () => (
 										]));
 										const genes = gc.genes.map((gene, i) => ([
 											<div key={`${gene.promoter}-${i}`} className="simulation-info"><Text small>{gene.name.split("_")[1]} = {(simulation[gene.promoter][state.selected]).toFixed(2)}</Text><Text small>Time = {state.selected}</Text></div>,
-											<Simulation key={`${gene.promoter}-${i}-sim`} color={gene.color} values={simulation[gene.promoter]} selected={state.selected} setSelected={sel => setState({ selected: sel })} />,
-											<div className="simulation-time">
+											<Simulation limits={steady_states[gene.promoter]} key={`${gene.promoter}-${i}-sim`} color={gene.color} values={simulation[gene.promoter]} selected={state.selected} setSelected={sel => setState({ selected: sel })} />,
+											<div key={`${gene.promoter}-${i}-texts`} className="simulation-time">
 												<Text small desc>0 min</Text>
 												<Text small desc>500 min</Text>
 												<Text small desc>1000 min</Text>
@@ -227,21 +220,13 @@ const Write = () => (
 								</div>
 								<div className="results-footer">
 									<button onClick={() => {
-										const dataURI = "data:text/plain;base64," + encodeBase64(gates_dna);
+										const dataURI = "data:text/plain;base64," + encodeBase64(gc.dna);
 										saveAs(dataURI, "gates-dna.txt");
-									}} className="genetic-circuit-dna-download">Gates DNA &#10515;</button>
+									}} className="genetic-circuit-dna-download">DNA &#10515;</button>
 									<button onClick={() => {
-										const dataURI = "data:text/plain;base64," + encodeBase64(out_dna);
-										saveAs(dataURI, "out-dna.txt");
-									}} className="genetic-circuit-dna-download">Output DNA &#10515;</button>
-									<button onClick={() => {
-										const dataURI = "data:text/plain;base64," + encodeBase64(gates_plasmid);
+										const dataURI = "data:text/plain;base64," + encodeBase64(gc.plasmid);
 										saveAs(dataURI, "gates-plasmid.gb");
-									}} className="genetic-circuit-dna-download">Gates Plasmid &#10515;</button>
-									<button onClick={() => {
-										const dataURI = "data:text/plain;base64," + encodeBase64(out_plasmid);
-										saveAs(dataURI, "out-plasmid.gb");
-									}} className="genetic-circuit-dna-download">Output Plasmid &#10515;</button>
+									}} className="genetic-circuit-dna-download">Plasmid &#10515;</button>
 								</div>
 							</div>
 						</div>
@@ -367,10 +352,6 @@ const styles = css`
 
 .genetic-circuit-prediction {
 	padding: 20px;
-}
-
-.genetic-circuit-prediction-inputs {
-	padding-bottom: 10px;
 }
 
 .simulation-info {
