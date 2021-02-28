@@ -2,7 +2,13 @@ import React from "react";
 import css from "styled-jsx/css";
 import { svgPath, map } from "../utils/index";
 
-const Simulation = ({ limits = [], color = "black", values = [], selected = 200, setSelected = () => { } }) => {
+const Simulation = ({
+	limits = [],
+	color = "black",
+	values = [],
+	selected = 200,
+	setSelected = () => {},
+}) => {
 	let height = 120;
 	let showHeight = 110;
 	let showStart = 20;
@@ -24,29 +30,77 @@ const Simulation = ({ limits = [], color = "black", values = [], selected = 200,
 			}}
 		>
 			<defs>
-				<pattern id="lines" x="0" y="0" width="100%" height="20" patternUnits="userSpaceOnUse">
+				<pattern
+					id="lines"
+					x="0"
+					y="0"
+					width="100%"
+					height="20"
+					patternUnits="userSpaceOnUse"
+				>
 					<line stroke="#d2d6d9" x1="0" x2="100%" y1="0" y2="0" />
 				</pattern>
 			</defs>
-			<rect x="0" y="0" width="100%" height={height} fill="url(#lines)" pointerEvents="none" />
-			<line x1="0" x2="100%" y1={off} y2={off} stroke="red" strokeWidth="7" opacity="0.2" pointerEvents="none" />
-			<line x1="0" x2="100%" y1={on} y2={on} stroke="#6ed827" strokeWidth="7" opacity="0.2" pointerEvents="none" />
+			<rect
+				x="0"
+				y="0"
+				width="100%"
+				height={height}
+				fill="url(#lines)"
+				pointerEvents="none"
+			/>
+			<line
+				x1="0"
+				x2="100%"
+				y1={off}
+				y2={off}
+				stroke="red"
+				strokeWidth="7"
+				opacity="0.2"
+				pointerEvents="none"
+			/>
+			<line
+				x1="0"
+				x2="100%"
+				y1={on}
+				y2={on}
+				stroke="#6ed827"
+				strokeWidth="7"
+				opacity="0.2"
+				pointerEvents="none"
+			/>
 			{svgPath(showHeight, showStart, values, color, limits)}
-			<line x1="0" x2="100%" y1={height} y2={height} stroke="#d2d6d9" strokeWidth="2" pointerEvents="none" />
-			<line x1={selected} x2={selected} y1="0" y2={height} stroke="black" strokeWidth="3" pointerEvents="none" />
+			<line
+				x1="0"
+				x2="100%"
+				y1={height}
+				y2={height}
+				stroke="#d2d6d9"
+				strokeWidth="2"
+				pointerEvents="none"
+			/>
+			<line
+				x1={selected}
+				x2={selected}
+				y1="0"
+				y2={height}
+				stroke="black"
+				strokeWidth="3"
+				pointerEvents="none"
+			/>
 			<style jsx>{styles}</style>
 		</svg>
 	);
 };
 
 const styles = css`
-.simulation {
-	display: block;
-}
+	.simulation {
+		display: block;
+	}
 
-.simulation:hover {
-	cursor: crosshair;
-}
+	.simulation:hover {
+		cursor: crosshair;
+	}
 `;
 
 export default Simulation;

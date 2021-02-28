@@ -1,13 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const WithState = ({ initialState = {}, initialData = {}, onStart = () => { }, render = () => { } }) => {
+const WithState = ({
+	initialState = {},
+	initialData = {},
+	onStart = () => {},
+	render = () => {},
+}) => {
 	const [state, setState] = useState(initialState);
 	const data = useRef(initialData);
 
-	const setData = (newData) => {
+	const setData = newData => {
 		data.current = {
 			...data.current,
-			...newData
+			...newData,
 		};
 	};
 
@@ -21,13 +26,13 @@ const WithState = ({ initialState = {}, initialData = {}, onStart = () => { }, r
 		};
 	});
 
-	const safeSetState = (newState) => {
+	const safeSetState = newState => {
 		if (!mounted.current) {
 			return;
 		}
 		setState(prevState => ({
 			...prevState,
-			...newState
+			...newState,
 		}));
 	};
 
@@ -36,7 +41,7 @@ const WithState = ({ initialState = {}, initialData = {}, onStart = () => { }, r
 			state,
 			setState: safeSetState,
 			setData,
-			getData
+			getData,
 		});
 	}, []);
 
@@ -46,7 +51,7 @@ const WithState = ({ initialState = {}, initialData = {}, onStart = () => { }, r
 				state,
 				setState: safeSetState,
 				setData,
-				getData
+				getData,
 			})}
 		</>
 	);

@@ -11,25 +11,25 @@ const ExternalLink = ({ children, to = "" }) => (
 );
 
 const styles = css`
-.external-link-container {
-	display: inline-block;
-}
+	.external-link-container {
+		display: inline-block;
+	}
 
-.external-link {
-	display: block;
-	border: none;
-	background: none;
-	cursor: pointer;
-	box-sizing: border-box;
-	padding: 10px;
-	border-radius: 10px;
-	text-decoration: none;
-}
+	.external-link {
+		display: block;
+		border: none;
+		background: none;
+		cursor: pointer;
+		box-sizing: border-box;
+		padding: 4px 10px;
+		border-radius: 10px;
+		text-decoration: none;
+	}
 
-.external-link:hover {
-	opacity: 0.7;
-	background: #f0f8ff;
-}
+	.external-link:hover {
+		opacity: 0.7;
+		background: #f0f8ff;
+	}
 `;
 
 export default ExternalLink;

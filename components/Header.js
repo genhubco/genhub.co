@@ -3,6 +3,7 @@ import css from "styled-jsx/css";
 
 import Container from "./Container";
 import InternalLink from "./InternalLink";
+import ExternalLink from "./ExternalLink";
 import Text from "./Text";
 
 const Header = () => (
@@ -12,7 +13,14 @@ const Header = () => (
 				<img className="header-logo" src="/applogo.svg" />
 			</InternalLink>
 			<div>
-				<InternalLink to="/write"><Text big>demo ›</Text></InternalLink>
+				<ExternalLink to="https://www.notion.so/Emergence-Official-Docs-0722d17ae7c54e5b85ff94cecb337622">
+					<Text big info>
+						docs
+					</Text>
+				</ExternalLink>
+				<InternalLink to="/write">
+					<Text big>demo ›</Text>
+				</InternalLink>
 			</div>
 		</div>
 		<style jsx>{styles}</style>
@@ -20,17 +28,17 @@ const Header = () => (
 );
 
 const styles = css`
-.header {
-	padding: 10px;
-	display: flex;
-	justify-content: space-between;
-	box-sizing: border-box;
-}
+	.header {
+		padding: 10px;
+		display: flex;
+		justify-content: space-between;
+		box-sizing: border-box;
+	}
 
-.header-logo {
-	height: 30px;
-	display: block;
-}
+	.header-logo {
+		height: 30px;
+		display: block;
+	}
 `;
 
 export default Header;
