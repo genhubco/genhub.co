@@ -7,38 +7,38 @@ import ExternalLink from "./ExternalLink";
 import Text from "./Text";
 
 const Header = () => (
-  <Container small>
-    <div className="header">
-      <InternalLink to="/">
-        <img className="header-logo" src="/applogo.svg" />
-      </InternalLink>
-      <div>
-        <ExternalLink to="https://www.notion.so/Emergence-Official-Docs-0722d17ae7c54e5b85ff94cecb337622">
-          <Text big info>
-            docs
-          </Text>
-        </ExternalLink>
-        <InternalLink to="/write">
-          <Text big>demo ›</Text>
-        </InternalLink>
-      </div>
-    </div>
-    <style jsx>{styles}</style>
-  </Container>
+	<Container small>
+		<div className="header">
+			<InternalLink to="/">
+				<img className="header-logo" src="/applogo.svg" />
+			</InternalLink>
+			<div>
+				<ExternalLink to="https://www.notion.so/Emergence-Official-Docs-0722d17ae7c54e5b85ff94cecb337622">
+					<Text big info>
+						docs
+					</Text>
+				</ExternalLink>
+				<InternalLink to="/write">
+					<Text big>demo ›</Text>
+				</InternalLink>
+			</div>
+		</div>
+		<style jsx>{styles}</style>
+	</Container>
 );
 
 const styles = css`
-  .header {
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    box-sizing: border-box;
-  }
+	.header {
+		padding: 10px;
+		display: flex;
+		justify-content: space-between;
+		box-sizing: border-box;
+	}
 
-  .header-logo {
-    height: 30px;
-    display: block;
-  }
+	.header-logo {
+		height: 30px;
+		display: block;
+	}
 `;
 
 export default Header;
