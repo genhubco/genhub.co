@@ -485,7 +485,7 @@ const styles = css`
   }
 
   .body {
-    height: calc(100vh - 51px);
+    height: calc(100vh - 39px);
     display: flex;
     flex-wrap: wrap;
     padding: 10px 0 0 10px;
