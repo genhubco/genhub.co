@@ -18,9 +18,11 @@ const Header = () => (
 						docs
 					</Text>
 				</ExternalLink>
-				<InternalLink to="/write">
-					<Text big>demo ›</Text>
-				</InternalLink>
+				<ExternalLink to="https://app.genhub.co/">
+					<Text big info>
+						demo ›
+					</Text>
+				</ExternalLink>
 			</div>
 		</div>
 		<style jsx>{styles}</style>
