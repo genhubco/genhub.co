@@ -1,0 +1,32 @@
+.text {
+  letter-spacing: 0.5px;
+  font-family: "PT Sans", sans-serif;
+  margin: 0;
+}
+.text-big {
+  font-size: 23px;
+}
+.text-medium {
+  font-size: 18px;
+}
+.text-small {
+  font-size: 16px;
+}
+.text-normal {
+  color: black;
+}
+.text-desc {
+  color: #9ca5ac;
+}
+.text-error {
+  color: #ee6868;
+}
+.text-info {
+  color: #538cb2;
+}
+.text-warning {
+  color: #ffc700;
+}
+.text-success {
+  color: #43d100;
+}

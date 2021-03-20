@@ -1,0 +1,14 @@
+.title {
+  font-weight: normal;
+  font-family: "Barlow", sans-serif;
+  margin: 0;
+}
+.title-big {
+  font-size: 44px;
+}
+.title-medium {
+  font-size: 34px;
+}
+.title-small {
+  font-size: 24px;
+}
