@@ -13,9 +13,6 @@ const Header = () => (
 				<img className="header-logo" src="/applogo.svg" />
 			</InternalLink>
 			<div>
-				<InternalLink to="/about">
-					<Text big>about</Text>
-				</InternalLink>
 				<ExternalLink to="https://app.genhub.co/">
 					<Text big info>
 						demo ›
