@@ -1,7 +1,7 @@
 import React from "react";
 import css from "styled-jsx/css";
 
-const Title = ({ children, big, medium, small }) => {
+const Title = ({ children, big, small }) => {
 	if (big) {
 		return (
 			<h1 className="big-title">
@@ -11,21 +11,21 @@ const Title = ({ children, big, medium, small }) => {
 		);
 	}
 
-	if (medium) {
+	if (small) {
 		return (
-			<h2 className="medium-title">
+			<h3 className="small-title">
 				{children}
 				<style jsx>{styles}</style>
-			</h2>
+			</h3>
 		);
 	}
 
-	if (small) {
-		<h3 className="small-title">
+	return (
+		<h2 className="medium-title">
 			{children}
 			<style jsx>{styles}</style>
-		</h3>;
-	}
+		</h2>
+	);
 };
 
 const styles = css`

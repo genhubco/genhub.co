@@ -8,77 +8,80 @@ import Text from "../components/Text";
 import Title from "../components/Title";
 
 const Index = () => (
-	<Page
-		onLoad={({ emit }) =>
-			emit("page", {
-				path: "/",
-			})
-		}
-		render={() => (
-			<>
-				<Container>
-					<div className="top-section">
-						<div className="slogan-container">
-							<Title big>Next-gen synthetic biology platform</Title>
-						</div>
-						<div className="sub-slogan-container">
-							<Text big>We are turning biology into information technology</Text>
-						</div>
-						<div className="contact">
-							<Text>contact us at</Text>
-							<ExternalLink to="mailto:team@genhub.co">
-								<Text info>team@genhub.co</Text>
-							</ExternalLink>
-						</div>
+	<Page>
+		<>
+			<Container>
+				<div className="top-section">
+					<div className="slogan-container">
+						<Title big>Next-gen synthetic biology platform</Title>
 					</div>
-				</Container>
-				<Container>
-					<div className="product">
-						<div className="product-title">
-							<Text big>Emergence programming language.</Text>
+					<div className="sub-slogan-container">
+						<Text big>We are making computer-aided biology tools</Text>
+					</div>
+					<div className="contact">
+						<Text>contact us at</Text>
+						<ExternalLink to="mailto:team@genhub.co">
+							<Text info>team@genhub.co</Text>
+						</ExternalLink>
+					</div>
+				</div>
+			</Container>
+			<Container>
+				<div className="product">
+					<div className="product-title">
+						<Text big>Emergence programming language</Text>
+					</div>
+					<div className="product-body">
+						<div className="process">
+							<img className="process-step-img" src="first-part.svg" />
+							<div className="process-text">
+								<div>
+									<Text>1. Write a program.</Text>
+								</div>
+								<Text desc small>
+									Emergence is a modern and minimalistic language for writing
+									biological circuits.
+								</Text>
+							</div>
 						</div>
-						<div className="product-body">
-							<div className="process">
-								<img className="process-step-img" src="first-part.svg" />
-								<div className="process-text">
-									<div>
-										<Text>1. Write a program.</Text>
-									</div>
-									<Text desc small>
-										Emergence is a modern and minimalistic language for writing
-										biological circuits.
-									</Text>
+						<div className="process">
+							<img className="process-step-img" src="second-part.svg" />
+							<div className="process-text">
+								<div>
+									<Text>2. Compile it to a genetic circuit.</Text>
 								</div>
+								<Text desc small>
+									Evaluate the gates assigned by the compiler.
+								</Text>
 							</div>
-							<div className="process">
-								<img className="process-step-img" src="second-part.svg" />
-								<div className="process-text">
-									<div>
-										<Text>2. Compile it to a genetic circuit.</Text>
-									</div>
-									<Text desc small>
-										Evaluate the gates assigned by the compiler.
-									</Text>
+						</div>
+						<div className="process">
+							<img className="process-step-img" src="third-part.svg" />
+							<div className="process-text">
+								<div>
+									<Text>3. Predict the results.</Text>
 								</div>
-							</div>
-							<div className="process">
-								<img className="process-step-img" src="third-part.svg" />
-								<div className="process-text">
-									<div>
-										<Text>3. Predict the results.</Text>
-									</div>
-									<Text desc small>
-										See what to expect before doing the experiment.
-									</Text>
-								</div>
+								<Text desc small>
+									See what to expect before doing the experiment.
+								</Text>
 							</div>
 						</div>
 					</div>
-				</Container>
-				<style jsx>{styles}</style>
-			</>
-		)}
-	/>
+					<div className="product-footer">
+						<Text desc>Checkout the</Text>
+						<ExternalLink to="https://app.genhub.co/">
+							<Text info>demo</Text>
+						</ExternalLink>
+						<Text desc>and</Text>
+						<ExternalLink to="https://www.notion.so/Emergence-Official-Docs-0722d17ae7c54e5b85ff94cecb337622">
+							<Text info>syntax breakdown</Text>
+						</ExternalLink>
+					</div>
+				</div>
+			</Container>
+			<style jsx>{styles}</style>
+		</>
+	</Page>
 );
 
 const styles = css`
@@ -108,6 +111,11 @@ const styles = css`
 	}
 
 	.product-title {
+		text-align: center;
+		padding: 40px 0;
+	}
+
+	.product-footer {
 		text-align: center;
 		padding: 40px 0;
 	}

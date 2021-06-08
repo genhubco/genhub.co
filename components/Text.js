@@ -38,6 +38,7 @@ const styles = css`
 		letter-spacing: 0.5px;
 		font-family: "PT Sans", sans-serif;
 		margin: 0;
+		color: black;
 	}
 
 	.text-big {

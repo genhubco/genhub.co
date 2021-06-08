@@ -14,56 +14,18 @@ function emit(name, data) {
 	// mixpaned.track(name, data);
 }
 
-const Page = ({
-	title = "Next-gen synthetic biology platform - GenHub",
-	render = () => {},
-	onLoad = () => {},
-	children,
-}) => (
+const Page = ({ title = "Next-gen synthetic biology platform - GenHub", children }) => (
 	<div className="page-wrapper">
-		<WithState
-			onStart={() => onLoad({ emit })}
-			initialState={{ toast: { type: null } }}
-			initialData={{ timeoutId: null }}
-			render={({ state, setState, getData, setData }) => {
-				const setToast = data => {
-					const currTimeout = getData().timeoutId;
-					clearTimeout(currTimeout);
-
-					if (data.duration) {
-						const newTimeoutId = setTimeout(() => {
-							setState({ toast: { type: null } });
-							setData({ timeoutId: null });
-						}, data.duration);
-						setData({ timeoutId: newTimeoutId });
-					}
-
-					setState({ toast: data });
-				};
-				const toastOpts = { [state.toast.type]: state.toast.type !== null };
-				return (
-					<div className="page">
-						{state.toast.type && (
-							<div className="page-toast">
-								<Text {...toastOpts}>● </Text>
-								<Text>{state.toast.message}</Text>
-							</div>
-						)}
-						<Head>
-							<title>{title}</title>
-							<link
-								href="https://fonts.googleapis.com/css?family=Barlow"
-								rel="stylesheet"
-							/>
-							<link rel="icon" type="image/png" href="/favicon.png" />
-						</Head>
-						<Header />
-						{children || render({ setToast, emit })}
-						<Footer />
-					</div>
-				);
-			}}
-		/>
+		<div className="page">
+			<Head>
+				<title>{title}</title>
+				<link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet" />
+				<link rel="icon" type="image/png" href="/favicon.png" />
+			</Head>
+			<Header />
+			{children}
+			<Footer />
+		</div>
 		<style jsx global>{`
 			html {
 				margin: 0;

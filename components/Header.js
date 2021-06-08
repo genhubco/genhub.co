@@ -7,17 +7,15 @@ import ExternalLink from "./ExternalLink";
 import Text from "./Text";
 
 const Header = () => (
-	<Container small>
+	<Container>
 		<div className="header">
 			<InternalLink to="/">
 				<img className="header-logo" src="/applogo.svg" />
 			</InternalLink>
 			<div>
-				<ExternalLink to="https://www.notion.so/Emergence-Official-Docs-0722d17ae7c54e5b85ff94cecb337622">
-					<Text big info>
-						docs
-					</Text>
-				</ExternalLink>
+				<InternalLink to="/about">
+					<Text big>about</Text>
+				</InternalLink>
 				<ExternalLink to="https://app.genhub.co/">
 					<Text big info>
 						demo ›
