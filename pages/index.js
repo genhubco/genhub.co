@@ -68,14 +68,16 @@ const Index = () => (
 						</div>
 					</div>
 					<div className="product-footer">
-						<Text desc>Checkout the</Text>
+						<Text desc>Check out the</Text>
 						<ExternalLink to="https://app.genhub.co/">
 							<Text info>demo</Text>
 						</ExternalLink>
-						<Text desc>and</Text>
-						<ExternalLink to="https://www.notion.so/Emergence-Official-Docs-0722d17ae7c54e5b85ff94cecb337622">
-							<Text info>syntax breakdown</Text>
-						</ExternalLink>
+						<div>
+							<Text desc>and</Text>
+							<ExternalLink to="https://www.notion.so/Emergence-Official-Docs-0722d17ae7c54e5b85ff94cecb337622">
+								<Text info>syntax breakdown</Text>
+							</ExternalLink>
+						</div>
 					</div>
 				</div>
 			</Container>
